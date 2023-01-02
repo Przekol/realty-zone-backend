@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  db:
+    container_name: realty-zone-database
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - /data/postgres:/data/postgres
+    env_file:
+      - docker.env
+    networks:
+      - app
+
+
+networks:
+  app:
+    driver: bridge
