@@ -30,15 +30,16 @@
 ## 3. Instalacja projektu
 
 ### I. Klonowanie z GitHub 
-1. Otwórz terminal i sklonuj repozytorium, wykonując poniższe polecenie:
+1. Otwórz terminal i sklonuj repozytoria, wykonując poniższe polecenia:
     ```bash  
    $ git clone https://github.com/Przekol/realty-zone-backend.git
+   $ git clone https://github.com/Przekol/realty-zone-frontend.git
     ``` 
 2. Przejdź do katalogu `realty-zone-backend`:
     ```bash 
    $ cd realty-zone-backend
     ```
-3. Stwórz pliki `.env` oraz `docker.env` w katalogu głównym i ustaw swoje zmienne środowiskowe na podstawie pliku `.env.example` i `docker.env`.
+3. Stwórz pliki `.env` oraz `docker.env` w katalogu `realty-zone-backend` i ustaw swoje zmienne środowiskowe na podstawie pliku `.env.example` i `docker.env`.
 
 ### II. Uruchomienie bazy danych PostgreSQL
 ##### _1. Instalacja bazy danych na komputerze_:
@@ -49,7 +50,7 @@
    5. Jeśli połączenie zostanie nawiązane pomyślnie, baza danych PostgreSQL zostanie uruchomiona i będzie dostępna do użytku.
 ##### _2. Uruchomienie bazy danych w kontenerze Docker_:
    1. Upewnij się, że masz zainstalowany Docker na swoim komputerze. Jeśli go jeszcze nie masz, możesz go pobrać ze strony https://www.docker.com/.
-   2. Otwórz terminal i przejdź do katalogu, w którym znajduje się plik `db-docker-compose.yml`.
+   2. Otwórz terminal i przejdź do katalogu `realty-zone-backend`, w którym znajduje się plik `db-docker-compose.yml`.
    3. Aby utworzyć kontener, wykonaj jedno z poleceń:
    ```bash
     # Utworzenie i uruchomienie w kontenerze o nazwie "database" w terminalu
@@ -62,15 +63,24 @@
   Kontener zostanie automatycznie uruchomiony po jego utworzeniu.
 
 ### III. Uruchomienie aplikacji
-1. Otwórz terminal, przejdź do głównego katalogu z aplikacją i zainstaluj zależności, wykonując polecenie:
+1. Otwórz terminal, przejdź do katalogu `realty-zone-backend` i zainstaluj zależności, wykonując polecenie:
     ```bash 
    $ npm install
     ```
-2. Uruchom aplikacje:
+2. Uruchom aplikacje backendową:
     ```bash 
    $ npm start
     ```
-- serwer zostanie uruchomiony pod adresem: http://localhost:3001
+3. Następnie otwórz terminal w katalogu `realty-zone-frontend` i zainstaluj zależności, wykonując polecenie:
+    ```bash 
+   $ npm install
+    ```
+4. Uruchom aplikację frontendową:
+    ```bash 
+   $ npm run dev
+    ```
+- serwer backendowy zostanie uruchomiony pod adresem: http://localhost:3001
+- serwer frontendowy zostanie uruchomiony pod adresem: http://localhost:3000
 - swagger zostanie uruchomiony pod adresem: http://localhost:3001/api
    
 
@@ -79,7 +89,7 @@
 
 1. Upewnij się, że masz zainstalowanego Docker na swoim komputerze. Jeśli go jeszcze nie masz, możesz go pobrać ze strony https://www.docker.com/.
 2. Wykonaj polecenia z części [I. Klonowanie z GitHub](#i-klonowanie-z-github)
-3. Otwórz terminal i przejdź do katalogu, w którym znajduje się plik `docker-compose.yml`. 
+3. Otwórz terminal i przejdź do katalogu `realty-zone-backend`, w którym znajduje się plik `docker-compose.yml`. 
 4. Aby utworzyć kontener, wykonaj jedno z poleceń:
     ```bash
     # Utworzenie i uruchomienie kontenera o nazwie "realty-zone" w terminalu
