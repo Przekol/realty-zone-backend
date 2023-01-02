@@ -13,10 +13,8 @@
 
 ## 1. Wprowadzenie
 
----
 ## 2. Technologie
 
----
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
 ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
@@ -28,9 +26,9 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 ![NPM](https://img.shields.io/badge/NPM-%23000000.svg?style=for-the-badge&logo=npm&logoColor=white)
+
 ## 3. Instalacja projektu
 
----
 ### I. Klonowanie z GitHub 
 1. Otwórz terminal i sklonuj repozytorium, wykonując poniższe polecenie:
     ```bash  
@@ -79,8 +77,6 @@
 
 ## 4. Docker - uruchomienie aplikacji
 
----
-
 1. Upewnij się, że masz zainstalowanego Docker na swoim komputerze. Jeśli go jeszcze nie masz, możesz go pobrać ze strony https://www.docker.com/.
 2. Wykonaj polecenia z części [I. Klonowanie z GitHub](#i-klonowanie-z-github)
 3. Otwórz terminal i przejdź do katalogu, w którym znajduje się plik `docker-compose.yml`. 
@@ -112,7 +108,6 @@
 
 ## 5. Pozostałe
 
----
 ### Licencja
 
 [MIT](https://choosealicense.com/licenses/mit/)
