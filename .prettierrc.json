@@ -6,8 +6,7 @@
   "useTabs": false,
   "semi": true,
   "bracketSpacing": true,
-  "arrowParens":"always",
-  "parser": "typescript",
+  "arrowParens": "always",
   "proseWrap": "always",
   "endOfLine": "lf"
-  }
+}
