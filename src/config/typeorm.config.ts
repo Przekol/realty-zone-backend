@@ -9,6 +9,7 @@ export const typeOrmConfig = (configService: ConfigService) =>
     password: configService.get('POSTGRES_PASSWORD'),
     database: configService.get('POSTGRES_DB'),
     entities: ['dist/**/**.entity{.ts,.js}'],
+    autoLoadEntities: true,
     synchronize: true,
     logging: true,
   } as TypeOrmModuleOptions);
