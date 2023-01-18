@@ -9,7 +9,7 @@ export const typeOrmConfig = (configService: ConfigService) =>
     username: configService.get('POSTGRES_USER'),
     password: configService.get('POSTGRES_PASSWORD'),
     database: configService.get('POSTGRES_DB'),
-    entities: ['dist/**/**.entity{.ts,.js}'],
+    entities: [],
     autoLoadEntities: true,
     synchronize: true,
     logging: true,
