@@ -31,7 +31,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       statusCode = exception.getStatus();
       message = ErrorMessage.NOT_FOUND;
     } else if (exception instanceof QueryFailedError) {
-      console.log(exception);
       statusCode = 400;
       const code = exception.driverError.code;
       message = this.getPostgresErrorMessage(code);
@@ -41,6 +40,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       statusCode = (errorResponse as ErrorResponseBadRequestException).statusCode;
     } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
+      message = exception.message;
+    } else if (exception instanceof Error) {
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       message = exception.message;
     } else {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;

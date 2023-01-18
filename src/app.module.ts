@@ -5,7 +5,8 @@ import { envValidation } from './config/env-validation.config';
 import { DatabaseModule } from './database/database.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
-import { GlobalResponseInterceptor } from './interceptors/globalResponseInterceptor';
+import { GlobalResponseInterceptor } from './interceptors/global-response.interceptor';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { GlobalResponseInterceptor } from './interceptors/globalResponseIntercep
       validationSchema: envValidation,
     }),
     DatabaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
