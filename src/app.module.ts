@@ -7,6 +7,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { GlobalResponseInterceptor } from './interceptors/global-response.interceptor';
 import { UsersModule } from './users/users.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UsersModule } from './users/users.module';
     }),
     DatabaseModule,
     UsersModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [
