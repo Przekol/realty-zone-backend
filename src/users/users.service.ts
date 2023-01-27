@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -9,5 +10,11 @@ export class UsersService {
       throw new HttpException(`User with email ${email} already exists`, HttpStatus.NOT_FOUND);
     }
     return user;
+  }
+
+  async create(userData: CreateUserDto): Promise<User> {
+    const newUser = User.create(userData);
+    await newUser.save();
+    return newUser;
   }
 }
