@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from '../types';
 
 @Injectable()
 export class UsersService {
@@ -12,9 +13,13 @@ export class UsersService {
     return user;
   }
 
-  async create(userData: CreateUserDto): Promise<User> {
-    const newUser = User.create(userData);
-    await newUser.save();
-    return newUser;
+  async create(userData: CreateUserDto): Promise<UserEntity> {
+    const { username, email, hashPwd } = userData;
+    const user = new User();
+    user.username = username;
+    user.email = email;
+    user.hashPwd = hashPwd;
+    await user.save();
+    return user;
   }
 }
