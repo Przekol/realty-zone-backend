@@ -9,13 +9,8 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
-import {
-  ErrorMessage,
-  ErrorResponse,
-  ErrorResponseBadRequestException,
-  PostgresErrorCode,
-  PostgresErrorMessage,
-} from '../types';
+import { ClientApiResponse, ErrorResponseBadRequestException, PostgresErrorCode } from '../types';
+import { ErrorMessage, PostgresErrorMessage } from '../utils';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -29,7 +24,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof NotFoundException) {
       statusCode = exception.getStatus();
-      message = ErrorMessage.NOT_FOUND;
+      message = ErrorMessage.NotFound;
     } else if (exception instanceof QueryFailedError) {
       statusCode = 400;
       const code = exception.driverError.code;
@@ -46,7 +41,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = exception.message;
     } else {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = ErrorMessage.INTERNAL_SERVER_ERROR;
+      message = ErrorMessage.InternalServerError;
     }
 
     // TODO if (exception instanceof ValidationError) {}
@@ -58,27 +53,23 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       path: request.url,
     });
     response.status(statusCode).json({
-      success: false,
-      error: {
-        statusCode,
-        message,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      },
-    } as ErrorResponse);
+      ok: false,
+      error: message,
+      status: statusCode,
+    } satisfies ClientApiResponse<null>);
   }
 
   private getPostgresErrorMessage(code: string): string {
     let message: string;
     switch (code) {
       case PostgresErrorCode.InvalidInput:
-        message = PostgresErrorMessage.INVALID_INPUT;
+        message = PostgresErrorMessage.InvalidInput;
         break;
       case PostgresErrorCode.UniqueViolation:
-        message = PostgresErrorMessage.UNIQUE_INPUT;
+        message = PostgresErrorMessage.UniqueInput;
         break;
       default:
-        message = ErrorMessage.INTERNAL_SERVER_ERROR;
+        message = ErrorMessage.InternalServerError;
         break;
     }
     return message;

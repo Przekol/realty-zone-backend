@@ -1,13 +1,18 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { SuccessResponse } from '../types';
+import { Response } from 'express';
+import { ClientApiResponse } from '../types';
 import { map, Observable } from 'rxjs';
 
 @Injectable()
-export class GlobalResponseInterceptor<T> implements NestInterceptor<T, SuccessResponse<T>> {
+export class GlobalResponseInterceptor<T> implements NestInterceptor<T, ClientApiResponse<T>> {
   intercept(
     context: ExecutionContext,
     next: CallHandler<T>,
-  ): Observable<SuccessResponse<T>> | Promise<Observable<SuccessResponse<T>>> {
-    return next.handle().pipe(map((data) => ({ success: true, data })));
+  ): Observable<ClientApiResponse<T>> | Promise<Observable<ClientApiResponse<T>>> {
+    const ctx = context.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const status = response.statusCode;
+
+    return next.handle().pipe(map((data) => ({ ok: true, status, data })));
   }
 }
