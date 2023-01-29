@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
-import { hashData } from '../utils';
+import { checkHash, hashData } from '../utils';
 
 @Injectable()
 export class AuthenticationService {
@@ -13,5 +13,21 @@ export class AuthenticationService {
       ...registrationData,
       hashPwd,
     });
+  }
+  async getAuthenticatedUser(email: string, password: string) {
+    try {
+      const user = await this.usersService.getByEmail(email);
+      await this.verifyPassword(password, user.hashPwd);
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('Wrong credentials provided');
+    }
+  }
+
+  private async verifyPassword(password: string, hashedPassword: string) {
+    const isPasswordMatching = await checkHash(password, hashedPassword);
+    if (!isPasswordMatching) {
+      throw new UnauthorizedException('Wrong credentials provided');
+    }
   }
 }
