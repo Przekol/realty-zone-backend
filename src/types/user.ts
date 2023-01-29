@@ -13,9 +13,9 @@ export interface UserEntity {
 }
 
 export enum UserStatus {
-  ACTIVE = 'active',
-  EMAIL_NOT_VERIFIED = 'email_not_verified',
-  BANNED = 'banned',
+  ACTIVE,
+  EMAIL_NOT_VERIFIED,
+  BANNED,
 }
 
 export interface UserAddress {
