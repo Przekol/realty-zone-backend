@@ -25,24 +25,24 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.EMAIL_NOT_VERIFIED })
   status: UserStatus;
 
-  @Column()
+  @Column({ nullable: false })
   username: string;
 
-  @Column()
-  firstName: string;
+  @Column({ default: null, nullable: true })
+  firstName?: string;
 
-  @Column()
-  lastName: string;
+  @Column({ default: null, nullable: true })
+  lastName?: string;
 
-  @Column()
-  phone: string;
+  @Column({ default: null, nullable: true })
+  phone?: string;
 
   @OneToOne(() => Address, {
     eager: true,
     cascade: true,
   })
   @JoinColumn()
-  address: Address;
+  address?: Address;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
