@@ -10,4 +10,6 @@ export const envValidation = Joi.object({
   POSTGRES_ENCODING: Joi.string().required(),
   APP_PORT: Joi.number().required(),
   APP_HOSTNAME: Joi.string().required(),
+  JWT_SECRET_ACCESS: Joi.string().required(),
+  JWT_EXPIRATION_TIME_ACCESS: Joi.number().required(),
 });
