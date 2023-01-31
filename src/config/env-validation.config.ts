@@ -12,4 +12,5 @@ export const envValidation = Joi.object({
   APP_HOSTNAME: Joi.string().required(),
   JWT_SECRET_ACCESS: Joi.string().required(),
   JWT_EXPIRATION_TIME_ACCESS: Joi.number().required(),
+  FRONTEND_DOMAIN: Joi.string().required(),
 });
