@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
-import { ClientApiResponse, ErrorResponseBadRequestException, PostgresErrorCode } from '../types';
+import { ClientApiResponse, ErrorResponseBadRequestException, PostgresErrorCode } from '../../@types';
 import { ErrorMessage, PostgresErrorMessage } from '../utils';
 
 @Catch()

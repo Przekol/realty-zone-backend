@@ -5,7 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
 import { ConfigService } from '@nestjs/config';
 import { CurrentUser } from '../decorators/current-user.decorator';
-import { CookiesNames, UserEntity } from '../types';
+import { CookiesNames, GetOneUserResponse, UserEntity } from '../../@types';
 import { CookieService } from './cookie.service';
 
 @Controller('authentication')
@@ -17,14 +17,14 @@ export class AuthenticationController {
   ) {}
 
   @Post('signup')
-  async register(@Body() registrationData: RegisterDto) {
+  async register(@Body() registrationData: RegisterDto): Promise<GetOneUserResponse> {
     return await this.authenticationService.register(registrationData);
   }
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('signin')
-  async login(@CurrentUser() user: UserEntity, @Res({ passthrough: true }) res: Response) {
+  async login(@CurrentUser() user: UserEntity, @Res({ passthrough: true }) res: Response): Promise<GetOneUserResponse> {
     const token = this.authenticationService.getJwtToken(
       { id: user.id },
       this.configService.get('JWT_SECRET_ACCESS'),

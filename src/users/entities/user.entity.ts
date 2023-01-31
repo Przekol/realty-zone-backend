@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, UserStatus } from '../../types';
+import { UserEntity, UserStatus } from '../../../@types';
 import { Address } from './address.entity';
 
 @Entity()

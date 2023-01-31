@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Response } from 'express';
-import { ClientApiResponse } from '../types';
+import { ClientApiResponse } from '../../@types';
 import { map, Observable } from 'rxjs';
 
 @Injectable()

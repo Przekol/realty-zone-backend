@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { CookiesNames, CookieTokenData } from '../types';
+import { CookiesNames, CookieTokenData } from '../../@types';
 import { CookieOptions } from 'express';
 import { COOKIE_OPTIONS } from '../config';
 
