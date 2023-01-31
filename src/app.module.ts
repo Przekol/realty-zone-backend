@@ -13,6 +13,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
   imports: [
     ConfigModule.forRoot({
       validationSchema: envValidation,
+      isGlobal: true,
     }),
     DatabaseModule,
     UsersModule,
