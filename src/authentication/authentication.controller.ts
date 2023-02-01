@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
@@ -44,5 +44,12 @@ export class AuthenticationController {
   async logout(@Res({ passthrough: true }) res: Response): Promise<null> {
     this.cookiesService.clearCookie(res, CookiesNames.AUTHENTICATION);
     return null;
+  }
+
+  @HttpCode(200)
+  @UseGuards(JwtAuthenticationGuard)
+  @Get()
+  async getAuthenticatedUser(@CurrentUser() user: UserEntity): Promise<UserEntity> {
+    return user;
   }
 }
