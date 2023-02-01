@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, Status } from '../../../@types';
+import { UserEntity, Status, Role } from '../../../@types';
 import { Address } from './address.entity';
 
 @Entity()
@@ -27,6 +27,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @Column({ nullable: false })
   username: string;
+
+  @Column({ type: 'enum', enum: Role, array: true, default: [Role.User] })
+  roles: Role[];
 
   @Column({ default: null, nullable: true })
   firstName?: string;

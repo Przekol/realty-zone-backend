@@ -6,6 +6,7 @@ export interface UserEntity {
   lastName?: string;
   username: string;
   email: string;
+  roles: Role[];
   hashPwd: string;
   phone?: string;
   address?: AddressEntity;
@@ -18,4 +19,9 @@ export enum Status {
   ACTIVE,
   EMAIL_NOT_VERIFIED,
   BANNED,
+}
+
+export enum Role {
+  User,
+  Admin,
 }
