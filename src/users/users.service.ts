@@ -22,4 +22,12 @@ export class UsersService {
     await user.save();
     return user;
   }
+
+  async getById(id: string): Promise<UserEntity> {
+    const user = await User.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User with this id does not exist.', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
 }
