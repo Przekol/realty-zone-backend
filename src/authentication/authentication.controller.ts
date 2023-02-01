@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post, Res, UseGuards } from '@nestjs/common
 import { Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
-import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
+import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
 import { ConfigService } from '@nestjs/config';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { CookiesNames, GetOneUserResponse, UserEntity } from '../../@types';
