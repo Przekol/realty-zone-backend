@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { CookiesNames, GetOneUserResponse, UserEntity } from '../../@types';
 import { CookieService } from './cookie.service';
+import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -35,5 +36,13 @@ export class AuthenticationController {
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME_ACCESS'),
     });
     return user;
+  }
+
+  @HttpCode(200)
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response): Promise<null> {
+    this.cookiesService.clearCookie(res, CookiesNames.AUTHENTICATION);
+    return null;
   }
 }
