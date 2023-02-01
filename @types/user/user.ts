@@ -1,3 +1,5 @@
+import { AddressEntity } from '../address';
+
 export interface UserEntity {
   id: string;
   firstName?: string;
@@ -6,24 +8,14 @@ export interface UserEntity {
   email: string;
   hashPwd: string;
   phone?: string;
-  address?: UserAddress;
-  status: UserStatus;
+  address?: AddressEntity;
+  status: Status;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export enum UserStatus {
+export enum Status {
   ACTIVE,
   EMAIL_NOT_VERIFIED,
   BANNED,
-}
-
-export interface UserAddress {
-  id: string;
-  street: string;
-  streetNumber: string;
-  flatNumber: string;
-  zipCode: string;
-  city: string;
-  country: string;
 }

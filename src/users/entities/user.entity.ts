@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, UserStatus } from '../../../@types';
+import { UserEntity, Status } from '../../../@types';
 import { Address } from './address.entity';
 
 @Entity()
@@ -22,8 +22,8 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ nullable: false })
   hashPwd: string;
 
-  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.EMAIL_NOT_VERIFIED })
-  status: UserStatus;
+  @Column({ type: 'enum', enum: Status, default: Status.EMAIL_NOT_VERIFIED })
+  status: Status;
 
   @Column({ nullable: false })
   username: string;
