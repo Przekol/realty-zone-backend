@@ -2,8 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { checkHash, hashData } from '../utils';
-import { TokenPayload, UserEntity } from '../../@types';
+import { Status, TokenPayload, UserEntity } from '../../@types';
 import { JwtService } from '@nestjs/jwt';
+import { UserLoginException } from '../exceptions';
 
 @Injectable()
 export class AuthenticationService {
@@ -20,8 +21,12 @@ export class AuthenticationService {
     try {
       const user = await this.usersService.getByEmail(email);
       await this.verifyPassword(password, user.hashPwd);
+      await this.verifyStatus(user.status);
       return user;
     } catch (error) {
+      if (error instanceof UserLoginException) {
+        throw error;
+      }
       throw new UnauthorizedException('Wrong credentials provided');
     }
   }
@@ -35,5 +40,11 @@ export class AuthenticationService {
 
   getJwtToken(payload: TokenPayload, secret: string, expiresIn: number): string {
     return this.jwtService.sign(payload, { secret, expiresIn });
+  }
+
+  private async verifyStatus(status: Status): Promise<void> {
+    if (status !== Status.ACTIVE) {
+      throw new UserLoginException(status);
+    }
   }
 }
