@@ -16,8 +16,8 @@ export interface UserEntity {
 }
 
 export enum Status {
+  PENDING_EMAIL_CONFIRMATION,
   ACTIVE,
-  EMAIL_NOT_VERIFIED,
   BANNED,
 }
 

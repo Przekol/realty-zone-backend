@@ -22,7 +22,7 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ nullable: false })
   hashPwd: string;
 
-  @Column({ type: 'enum', enum: Status, default: Status.EMAIL_NOT_VERIFIED })
+  @Column({ type: 'enum', enum: Status, default: Status.PENDING_EMAIL_CONFIRMATION })
   status: Status;
 
   @Column({ nullable: false })
