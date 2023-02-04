@@ -5,11 +5,14 @@ import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from '../../../@types';
 import { UsersService } from '../../users/users.service';
 import { Inject, UnauthorizedException } from '@nestjs/common';
+import { AuthenticationService } from '../authentication.service';
+import { UserLoginException } from '../../exceptions';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(ConfigService) private readonly configService: ConfigService,
     private readonly usersService: UsersService,
+    private authenticationService: AuthenticationService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -28,8 +31,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       if (!payload || !payload.id) {
         new UnauthorizedException('Wrong credentials provided');
       }
-      return await this.usersService.getById(payload.id);
+      const user = await this.usersService.getById(payload.id);
+      await this.authenticationService.verifyStatus(user.status);
+      return user;
     } catch (error) {
+      if (error instanceof UserLoginException) {
+        throw error;
+      }
       throw new UnauthorizedException('Wrong credentials provided');
     }
   }
