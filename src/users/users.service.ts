@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from '../../@types';
+import { hashData } from '../utils';
 
 @Injectable()
 export class UsersService {
@@ -29,5 +30,10 @@ export class UsersService {
       throw new HttpException('User with this id does not exist.', HttpStatus.NOT_FOUND);
     }
     return user;
+  }
+
+  async setCurrentRefreshToken(refreshToken: string, user: User): Promise<void> {
+    user.currentHashRefreshToken = await hashData(refreshToken);
+    await user.save();
   }
 }
