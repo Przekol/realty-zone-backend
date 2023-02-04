@@ -13,4 +13,6 @@ export const envValidation = Joi.object({
   JWT_SECRET_ACCESS: Joi.string().required(),
   JWT_EXPIRATION_TIME_ACCESS: Joi.number().required(),
   FRONTEND_DOMAIN: Joi.string().required(),
+  JWT_SECRET_REFRESH: Joi.string().required(),
+  JWT_EXPIRATION_TIME_REFRESH: Joi.number().required(),
 });
