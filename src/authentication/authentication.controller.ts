@@ -8,6 +8,8 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { CookiesNames, GetOneUserResponse, UserEntity } from '../../@types';
 import { CookieService } from './cookie.service';
 import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -15,6 +17,7 @@ export class AuthenticationController {
     private readonly authenticationService: AuthenticationService,
     private readonly configService: ConfigService,
     private readonly cookiesService: CookieService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Post('signup')
@@ -25,16 +28,18 @@ export class AuthenticationController {
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('signin')
-  async login(@CurrentUser() user: UserEntity, @Res({ passthrough: true }) res: Response): Promise<GetOneUserResponse> {
-    const token = this.authenticationService.getJwtToken(
-      { id: user.id },
-      this.configService.get('JWT_SECRET_ACCESS'),
-      this.configService.get('JWT_EXPIRATION_TIME_ACCESS'),
-    );
+  async login(@CurrentUser() user: User, @Res({ passthrough: true }) res: Response): Promise<GetOneUserResponse> {
+    const { authenticationToken, refreshToken } = this.authenticationService.createAuthenticationsTokens(user.id);
+
     this.cookiesService.setTokenInCookie(res, CookiesNames.AUTHENTICATION, {
-      token,
-      expiresIn: this.configService.get('JWT_EXPIRATION_TIME_ACCESS'),
+      token: authenticationToken.token,
+      expiresIn: authenticationToken.expiresIn,
     });
+    this.cookiesService.setTokenInCookie(res, CookiesNames.REFRESH, {
+      token: refreshToken.token,
+      expiresIn: refreshToken.expiresIn,
+    });
+    await this.usersService.setCurrentRefreshToken(refreshToken.token, user);
     return user;
   }
 
