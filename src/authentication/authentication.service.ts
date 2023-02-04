@@ -42,7 +42,7 @@ export class AuthenticationService {
     return this.jwtService.sign(payload, { secret, expiresIn });
   }
 
-  private async verifyStatus(status: Status): Promise<void> {
+  async verifyStatus(status: Status): Promise<void> {
     if (status !== Status.ACTIVE) {
       throw new UserLoginException(status);
     }
