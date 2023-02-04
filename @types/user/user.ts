@@ -11,6 +11,7 @@ export interface UserEntity {
   phone?: string;
   address?: AddressEntity;
   status: Status;
+  currentHashRefreshToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
