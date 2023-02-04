@@ -2,13 +2,18 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { checkHash, hashData } from '../utils';
-import { Status, TokenPayload, UserEntity } from '../../@types';
+import { AuthenticationsTokens, Status, TokenPayload, UserEntity } from '../../@types';
 import { JwtService } from '@nestjs/jwt';
 import { UserLoginException } from '../exceptions';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
   async register(registrationData: RegisterDto): Promise<UserEntity> {
     const hashPwd = await hashData(registrationData.password);
 
@@ -40,6 +45,23 @@ export class AuthenticationService {
 
   getJwtToken(payload: TokenPayload, secret: string, expiresIn: number): string {
     return this.jwtService.sign(payload, { secret, expiresIn });
+  }
+
+  createAuthenticationsTokens(id: UserEntity['id']): AuthenticationsTokens {
+    const expiresIn: Record<string, number> = {
+      authenticationToken: this.configService.get('JWT_EXPIRATION_TIME_ACCESS'),
+      refreshToken: this.configService.get('JWT_EXPIRATION_TIME_REFRESH'),
+    };
+    return {
+      authenticationToken: {
+        token: this.getJwtToken({ id }, this.configService.get('JWT_SECRET_ACCESS'), expiresIn.authenticationToken),
+        expiresIn: expiresIn.authenticationToken,
+      },
+      refreshToken: {
+        token: this.getJwtToken({ id }, this.configService.get('JWT_SECRET_REFRESH'), expiresIn.refreshToken),
+        expiresIn: expiresIn.refreshToken,
+      },
+    };
   }
 
   async verifyStatus(status: Status): Promise<void> {
