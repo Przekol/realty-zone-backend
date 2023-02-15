@@ -2,12 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { OptionsHashToken, UserEntity } from './types';
+import { OptionsHashToken, Status, UserEntity } from './types';
 import { hashData } from '../utils';
 
 @Injectable()
 export class UsersService {
-  async getByEmail(email: string): Promise<UserEntity> {
+  async getByEmail(email: string): Promise<User> {
     const user = await User.findOne({ where: { email } });
     if (!user) {
       throw new HttpException(`User with email ${email} already exists`, HttpStatus.NOT_FOUND);
@@ -46,6 +46,11 @@ export class UsersService {
       default:
         throw new HttpException('Invalid token type', 400);
     }
+    await user.save();
+  }
+
+  async updateUserStatus(user: User, status: Status): Promise<void> {
+    user.status = status;
     await user.save();
   }
 }
