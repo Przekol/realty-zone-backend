@@ -1,7 +1,8 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Response } from 'express';
-import { ClientApiResponse } from '../../@types';
 import { map, Observable } from 'rxjs';
+
+import { ClientApiResponse } from '../../@types';
 
 @Injectable()
 export class GlobalResponseInterceptor<T> implements NestInterceptor<T, ClientApiResponse<T>> {

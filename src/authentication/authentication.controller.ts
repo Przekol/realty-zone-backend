@@ -1,15 +1,18 @@
 import { Body, Controller, Get, HttpCode, Post, Res, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
-import { AuthenticationService } from './authentication.service';
-import { RegisterDto } from './dto/register.dto';
-import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
 import { ConfigService } from '@nestjs/config';
-import { CurrentUser } from '../decorators/current-user.decorator';
-import { CookiesNames, GetOneUserResponse, UserEntity } from '../../@types';
+import { Response } from 'express';
+
+import { AuthenticationService } from './authentication.service';
 import { CookieService } from './cookie.service';
+import { RegisterDto } from './dto/register.dto';
 import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
-import { UsersService } from '../users/users.service';
+import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
+import { CookiesNames } from './types';
+import { GetOneUserResponse } from '../../@types';
+import { CurrentUser } from '../decorators';
 import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/types';
+import { UsersService } from '../users/users.service';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -54,7 +57,7 @@ export class AuthenticationController {
   @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
   @Get()
-  async getAuthenticatedUser(@CurrentUser() user: UserEntity): Promise<UserEntity> {
+  async getAuthenticatedUser(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
     return user;
   }
 }

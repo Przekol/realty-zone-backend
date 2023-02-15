@@ -1,7 +1,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
+
+import { Role, UserEntity } from './types';
+import { GetOneUserResponse } from '../../@types';
 import { RoleGuard } from '../authentication/guards/role.guard';
-import { Role, UserEntity } from '../../@types';
-import { CurrentUser } from '../decorators/current-user.decorator';
+import { CurrentUser } from '../decorators';
 
 @UseGuards(RoleGuard(Role.User))
 @Controller('users')
@@ -14,9 +16,7 @@ export class UsersController {
     };
   }
   @Get('/profile')
-  async getUser(@CurrentUser() user: UserEntity) {
-    return {
-      user,
-    };
+  async getUser(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
+    return user;
   }
 }

@@ -1,5 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Status } from '../../@types';
+
+import { Status } from '../users/types';
 
 export class UserLoginException extends UnauthorizedException {
   constructor(status: Status) {

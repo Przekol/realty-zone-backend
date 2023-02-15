@@ -8,8 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, Status, Role } from '../../../@types';
+
 import { Address } from './address.entity';
+import { Role, Status, UserEntity } from '../types';
 
 @Entity()
 export class User extends BaseEntity implements UserEntity {

@@ -9,14 +9,16 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
-import { ClientApiResponse, ErrorResponseBadRequestException, PostgresErrorCode } from '../../@types';
+
+import { ErrorResponseBadRequestException, PostgresErrorCode } from './types';
+import { ClientApiResponse } from '../../@types';
 import { ErrorMessage, PostgresErrorMessage } from '../utils';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = ctx.getResponse<Response<ClientApiResponse<null>>>();
     const request = ctx.getRequest<Request>();
 
     let statusCode: number;
@@ -56,7 +58,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       ok: false,
       error: message,
       status: statusCode,
-    } satisfies ClientApiResponse<null>);
+    });
   }
 
   private getPostgresErrorMessage(code: string): string {
