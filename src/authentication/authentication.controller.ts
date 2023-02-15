@@ -6,13 +6,13 @@ import { AuthenticationService } from './authentication.service';
 import { CookieService } from './cookie.service';
 import { RegisterDto } from './dto/register.dto';
 import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
+import JwtRefreshGuard from './guards/jwt-refresh.guard';
 import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
 import { CookiesNames } from './types';
 import { GetOneUserResponse } from '../../@types';
 import { CurrentUser } from '../decorators';
 import { User } from '../users/entities/user.entity';
 import { UserEntity } from '../users/types';
-import { UsersService } from '../users/users.service';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -20,7 +20,6 @@ export class AuthenticationController {
     private readonly authenticationService: AuthenticationService,
     private readonly configService: ConfigService,
     private readonly cookiesService: CookieService,
-    private readonly usersService: UsersService,
   ) {}
 
   @Post('signup')
@@ -32,17 +31,7 @@ export class AuthenticationController {
   @UseGuards(LocalAuthenticationGuard)
   @Post('signin')
   async login(@CurrentUser() user: User, @Res({ passthrough: true }) res: Response): Promise<GetOneUserResponse> {
-    const { authenticationToken, refreshToken } = this.authenticationService.createAuthenticationsTokens(user.id);
-
-    this.cookiesService.setTokenInCookie(res, CookiesNames.AUTHENTICATION, {
-      token: authenticationToken.token,
-      expiresIn: authenticationToken.expiresIn,
-    });
-    this.cookiesService.setTokenInCookie(res, CookiesNames.REFRESH, {
-      token: refreshToken.token,
-      expiresIn: refreshToken.expiresIn,
-    });
-    await this.usersService.setCurrentRefreshToken(refreshToken.token, user);
+    await this.cookiesService.setAuthenticationCookies(res, user);
     return user;
   }
 
@@ -58,6 +47,17 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   async getAuthenticatedUser(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
+    return user;
+  }
+
+  @HttpCode(200)
+  @UseGuards(JwtRefreshGuard)
+  @Get('/refresh')
+  async getNewAuthenticatedTokensByRefreshToken(
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<GetOneUserResponse> {
+    await this.cookiesService.setAuthenticationCookies(res, user);
     return user;
   }
 }
