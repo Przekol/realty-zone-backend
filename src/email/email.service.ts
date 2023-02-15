@@ -8,7 +8,8 @@ export class EmailService {
   private nodemailerTransport: Mail;
   constructor(private readonly configService: ConfigService) {
     this.nodemailerTransport = createTransport({
-      service: configService.get('EMAIL_SERVICE'),
+      host: configService.get('EMAIL_HOST'),
+      port: configService.get('EMAIL_PORT'),
       auth: {
         user: configService.get('EMAIL_USER'),
         pass: configService.get('EMAIL_PASSWORD'),
