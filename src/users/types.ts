@@ -10,6 +10,7 @@ export interface UserEntity {
   address?: AddressEntity;
   status: Status;
   currentHashRefreshToken?: string;
+  activationHashToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
