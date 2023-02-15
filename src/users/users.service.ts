@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -10,7 +10,7 @@ export class UsersService {
   async getByEmail(email: string): Promise<User> {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      throw new HttpException(`User with email ${email} already exists`, HttpStatus.NOT_FOUND);
+      throw new NotFoundException(`User with this email does not exist`);
     }
     return user;
   }
@@ -28,7 +28,7 @@ export class UsersService {
   async getById(id: string): Promise<UserEntity> {
     const user = await User.findOne({ where: { id } });
     if (!user) {
-      throw new HttpException('User with this id does not exist.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('User with this id does not exist.');
     }
     return user;
   }
