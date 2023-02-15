@@ -5,14 +5,12 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UserLoginException } from '../../exceptions';
-import { UsersService } from '../../users/users.service';
 import { AuthenticationService } from '../authentication.service';
 import { TokenPayload } from '../types';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(ConfigService) private readonly configService: ConfigService,
-    private readonly usersService: UsersService,
     private authenticationService: AuthenticationService,
   ) {
     super({
@@ -24,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           return request?.cookies?.Authentication;
         },
       ]),
-      secretOrKey: configService.get('JWT_SECRET_ACCESS'),
+      secretOrKey: configService.get('JWT_SECRET_AUTHENTICATION_TOKEN'),
     });
   }
   async validate(payload: TokenPayload) {
@@ -32,14 +30,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       if (!payload || !payload.id) {
         new UnauthorizedException('Wrong credentials provided');
       }
-      const user = await this.usersService.getById(payload.id);
-      await this.authenticationService.verifyStatus(user.status);
-      return user;
+      return await this.authenticationService.getAuthenticatedUserByAuthenticationToken(payload.id);
     } catch (error) {
       if (error instanceof UserLoginException) {
         throw error;
+      } else {
+        throw new UnauthorizedException('Wrong credentials provided');
       }
-      throw new UnauthorizedException('Wrong credentials provided');
     }
   }
 }
