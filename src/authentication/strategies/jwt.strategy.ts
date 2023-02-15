@@ -7,7 +7,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserLoginException } from '../../exceptions';
 import { UsersService } from '../../users/users.service';
 import { AuthenticationService } from '../authentication.service';
-import { TokenPayload } from '../types';
+import { AuthenticationTokenPayload } from '../types';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get('JWT_SECRET_ACCESS'),
     });
   }
-  async validate(payload: TokenPayload) {
+  async validate(payload: AuthenticationTokenPayload) {
     try {
       if (!payload || !payload.id) {
         new UnauthorizedException('Wrong credentials provided');
