@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+
+import { AppController } from './app.controller';
+import { AuthenticationModule } from './authentication/authentication.module';
 import { envValidation } from './config';
 import { DatabaseModule } from './database/database.module';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters';
 import { GlobalResponseInterceptor } from './interceptors';
 import { UsersModule } from './users/users.module';
-import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [

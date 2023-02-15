@@ -1,5 +1,6 @@
-import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 import { ErrorMessage } from '../messages';
 
 export const checkHash = async (data: string, encrypted: string): Promise<boolean> => {

@@ -1,5 +1,3 @@
-import { AddressEntity } from '../address';
-
 export interface UserEntity {
   id: string;
   firstName?: string;
@@ -25,4 +23,14 @@ export enum Status {
 export enum Role {
   User,
   Admin,
+}
+
+export interface AddressEntity {
+  id: string;
+  street: string;
+  streetNumber: string;
+  flatNumber: string;
+  zipCode: string;
+  city: string;
+  country: string;
 }

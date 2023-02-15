@@ -1,12 +1,13 @@
+import { Inject, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
-import { TokenPayload } from '../../../@types';
-import { UsersService } from '../../users/users.service';
-import { Inject, UnauthorizedException } from '@nestjs/common';
-import { AuthenticationService } from '../authentication.service';
+
 import { UserLoginException } from '../../exceptions';
+import { UsersService } from '../../users/users.service';
+import { AuthenticationService } from '../authentication.service';
+import { TokenPayload } from '../types';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
