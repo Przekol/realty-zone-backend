@@ -6,9 +6,9 @@ import { RegisterDto } from './dto/register.dto';
 import { AuthenticationsTokens, TokenPayload } from './types';
 import { UserLoginException } from '../exceptions';
 import { User } from '../users/entities/user.entity';
-import { Status, UserEntity } from '../users/types';
+import { UserEntity } from '../users/types';
 import { UsersService } from '../users/users.service';
-import { checkHash, hashData } from '../utils';
+import { hashData } from '../utils';
 
 @Injectable()
 export class AuthenticationService {
@@ -28,8 +28,12 @@ export class AuthenticationService {
   async getAuthenticatedUser(email: string, password: string): Promise<UserEntity> {
     try {
       const user = await this.usersService.getByEmail(email);
-      await this.verifyToken(password, user.hashPwd);
-      await this.verifyStatus(user.status);
+      await this.usersService.verifyToken(
+        password,
+        user.hashPwd,
+        new UnauthorizedException('Wrong credentials provided'),
+      );
+      await this.usersService.checkUserActiveStatus(user.status);
       return user;
     } catch (error) {
       if (error instanceof UserLoginException) {
@@ -41,22 +45,19 @@ export class AuthenticationService {
 
   async getAuthenticatedUserByAuthenticationToken(id: string): Promise<UserEntity> {
     const user = await this.usersService.getById(id);
-    await this.verifyStatus(user.status);
+    await this.usersService.checkUserActiveStatus(user.status);
     return user;
   }
 
   async getAuthenticatedUserByRefreshToken(refreshToken: string, id: string): Promise<UserEntity> {
     const user = await this.usersService.getById(id);
-    await this.verifyToken(refreshToken, user.currentHashRefreshToken);
-    await this.verifyStatus(user.status);
+    await this.usersService.verifyToken(
+      refreshToken,
+      user.currentHashRefreshToken,
+      new UnauthorizedException('Wrong credentials provided'),
+    );
+    await this.usersService.checkUserActiveStatus(user.status);
     return user;
-  }
-
-  private async verifyToken(data: string, hashedData: string): Promise<void> {
-    const isTokenMatching = await checkHash(data, hashedData);
-    if (!isTokenMatching) {
-      throw new UnauthorizedException('Wrong credentials provided');
-    }
   }
 
   getJwtToken(payload: TokenPayload, secret: string, expiresIn: number): string {
@@ -82,11 +83,5 @@ export class AuthenticationService {
         expiresIn: expiresIn.refreshToken,
       },
     };
-  }
-
-  async verifyStatus(status: Status): Promise<void> {
-    if (status !== Status.ACTIVE) {
-      throw new UserLoginException(status);
-    }
   }
 }

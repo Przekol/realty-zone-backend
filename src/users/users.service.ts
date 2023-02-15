@@ -3,7 +3,8 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { OptionsHashToken, Status, UserEntity } from './types';
-import { hashData } from '../utils';
+import { UserLoginException } from '../exceptions';
+import { checkHash, hashData } from '../utils';
 
 @Injectable()
 export class UsersService {
@@ -49,8 +50,21 @@ export class UsersService {
     await user.save();
   }
 
+  async verifyToken(data: string, hashedData: string, error: HttpException): Promise<void> {
+    const isTokenMatching = await checkHash(data, hashedData);
+    if (!isTokenMatching) {
+      throw error;
+    }
+  }
+
   async updateUserStatus(user: User, status: Status): Promise<void> {
     user.status = status;
     await user.save();
+  }
+
+  async checkUserActiveStatus(status: Status): Promise<void> {
+    if (status !== Status.ACTIVE) {
+      throw new UserLoginException(status);
+    }
   }
 }
