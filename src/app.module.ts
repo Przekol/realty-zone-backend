@@ -1,20 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
-import { envValidation } from './config/env-validation.config';
-import { DatabaseModule } from './database/database.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { GlobalExceptionFilter } from './filters/global-exception.filter';
-import { GlobalResponseInterceptor } from './interceptors/global-response.interceptor';
+
+import { AppController } from './app.controller';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { envValidation } from './config';
+import { DatabaseModule } from './database/database.module';
+import { GlobalExceptionFilter } from './filters';
+import { GlobalResponseInterceptor } from './interceptors';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       validationSchema: envValidation,
+      isGlobal: true,
     }),
     DatabaseModule,
     UsersModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [

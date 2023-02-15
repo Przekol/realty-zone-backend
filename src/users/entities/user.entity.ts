@@ -8,8 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, UserStatus } from '../../types';
+
 import { Address } from './address.entity';
+import { Role, Status, UserEntity } from '../types';
 
 @Entity()
 export class User extends BaseEntity implements UserEntity {
@@ -22,27 +23,33 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ nullable: false })
   hashPwd: string;
 
-  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.EMAIL_NOT_VERIFIED })
-  status: UserStatus;
+  @Column({ type: 'enum', enum: Status, default: Status.PENDING_EMAIL_CONFIRMATION })
+  status: Status;
 
-  @Column()
+  @Column({ nullable: false })
   username: string;
 
-  @Column()
-  firstName: string;
+  @Column({ type: 'enum', enum: Role, array: true, default: [Role.User] })
+  roles: Role[];
 
-  @Column()
-  lastName: string;
+  @Column({ default: null, nullable: true })
+  firstName?: string;
 
-  @Column()
-  phone: string;
+  @Column({ default: null, nullable: true })
+  lastName?: string;
+
+  @Column({ default: null, nullable: true })
+  phone?: string;
 
   @OneToOne(() => Address, {
     eager: true,
     cascade: true,
   })
   @JoinColumn()
-  address: Address;
+  address?: Address;
+
+  @Column({ nullable: true })
+  currentHashRefreshToken?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
