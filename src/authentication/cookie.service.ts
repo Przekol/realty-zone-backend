@@ -38,6 +38,6 @@ export class CookieService {
       token: refreshToken.token,
       expiresIn: refreshToken.expiresIn,
     });
-    await this.usersService.setCurrentRefreshToken(refreshToken.token, user);
+    await this.usersService.setHashToken(refreshToken.token, user, { tokenType: 'refresh' });
   }
 }

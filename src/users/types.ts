@@ -35,3 +35,7 @@ export interface AddressEntity {
   city: string;
   country: string;
 }
+
+export interface OptionsHashToken {
+  tokenType: 'activation' | 'refresh';
+}

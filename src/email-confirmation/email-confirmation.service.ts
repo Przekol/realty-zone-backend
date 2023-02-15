@@ -23,9 +23,9 @@ export class EmailConfirmationService {
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME_VERIFICATION_TOKEN'),
     });
 
-    await this.usersService.setActivationToken(token, user);
+    await this.usersService.setHashToken(token, user, { tokenType: 'activation' });
 
-    const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?=token=${token}`;
+    const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
     const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
 
     return this.emailService.sendMail({

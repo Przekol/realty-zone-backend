@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { UserEntity } from './types';
+import { OptionsHashToken, UserEntity } from './types';
 import { hashData } from '../utils';
 
 @Injectable()
@@ -33,13 +33,19 @@ export class UsersService {
     return user;
   }
 
-  async setCurrentRefreshToken(refreshToken: string, user: User): Promise<void> {
-    user.currentHashRefreshToken = await hashData(refreshToken);
-    await user.save();
-  }
-
-  async setActivationToken(activationToken: string, user: User): Promise<void> {
-    user.activationHashToken = await hashData(activationToken);
+  async setHashToken(token: string, user: User, options: OptionsHashToken) {
+    const { tokenType } = options;
+    const hashToken = await hashData(token);
+    switch (tokenType) {
+      case 'activation':
+        user.activationHashToken = hashToken;
+        break;
+      case 'refresh':
+        user.currentHashRefreshToken = hashToken;
+        break;
+      default:
+        throw new HttpException('Invalid token type', 400);
+    }
     await user.save();
   }
 }
