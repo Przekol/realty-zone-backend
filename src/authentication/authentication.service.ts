@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { AuthenticationsTokens, TokenPayload } from './types';
 import { UserLoginException } from '../exceptions';
+import { User } from '../users/entities/user.entity';
 import { Status, UserEntity } from '../users/types';
 import { UsersService } from '../users/users.service';
 import { checkHash, hashData } from '../utils';
@@ -16,7 +17,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
-  async register(registrationData: RegisterDto): Promise<UserEntity> {
+  async register(registrationData: RegisterDto): Promise<User> {
     const hashPwd = await hashData(registrationData.password);
 
     return await this.usersService.create({
