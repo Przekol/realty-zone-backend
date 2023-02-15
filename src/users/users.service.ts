@@ -15,7 +15,7 @@ export class UsersService {
     return user;
   }
 
-  async create(userData: CreateUserDto): Promise<UserEntity> {
+  async create(userData: CreateUserDto): Promise<User> {
     const { username, email, hashPwd } = userData;
     const user = new User();
     user.username = username;
@@ -35,6 +35,11 @@ export class UsersService {
 
   async setCurrentRefreshToken(refreshToken: string, user: User): Promise<void> {
     user.currentHashRefreshToken = await hashData(refreshToken);
+    await user.save();
+  }
+
+  async setActivationToken(activationToken: string, user: User): Promise<void> {
+    user.activationHashToken = await hashData(activationToken);
     await user.save();
   }
 }
