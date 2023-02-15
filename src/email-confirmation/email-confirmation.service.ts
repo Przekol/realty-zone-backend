@@ -46,6 +46,13 @@ export class EmailConfirmationService {
         new BadRequestException('Bad confirmation token');
       }
 
+      const user = await this.usersService.getByEmail(payload.email);
+      await this.usersService.verifyToken(
+        token,
+        user.activationHashToken,
+        new BadRequestException('Bad confirmation token'),
+      );
+
       return payload.email;
     } catch (error) {
       if (error?.name === 'TokenExpiredError') {
