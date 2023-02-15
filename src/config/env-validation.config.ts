@@ -10,9 +10,9 @@ export const envValidation = Joi.object({
   POSTGRES_ENCODING: Joi.string().required(),
   APP_PORT: Joi.number().required(),
   APP_HOSTNAME: Joi.string().required(),
-  JWT_SECRET_ACCESS: Joi.string().required(),
-  JWT_EXPIRATION_TIME_ACCESS: Joi.number().required(),
+  JWT_SECRET_AUTHENTICATION_TOKEN: Joi.string().required(),
+  JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN: Joi.number().required(),
   FRONTEND_DOMAIN: Joi.string().required(),
-  JWT_SECRET_REFRESH: Joi.string().required(),
-  JWT_EXPIRATION_TIME_REFRESH: Joi.number().required(),
+  JWT_SECRET_REFRESH_TOKEN: Joi.string().required(),
+  JWT_EXPIRATION_TIME_REFRESH_TOKEN: Joi.number().required(),
 });

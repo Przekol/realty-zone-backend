@@ -1,4 +1,4 @@
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
@@ -6,9 +6,10 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UserLoginException } from '../../exceptions';
 import { AuthenticationService } from '../authentication.service';
-import { AuthenticationTokenPayload } from '../types';
+import { TokenPayload } from '../types';
 
-export class JwtStrategy extends PassportStrategy(Strategy) {
+@Injectable()
+export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
   constructor(
     @Inject(ConfigService) private readonly configService: ConfigService,
     private authenticationService: AuthenticationService,
@@ -16,21 +17,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          if (!request?.cookies?.Authentication) {
+          if (!request?.cookies?.Refresh) {
             throw new UnauthorizedException('Wrong credentials provided');
           }
-          return request?.cookies?.Authentication;
+          return request?.cookies?.Refresh;
         },
       ]),
-      secretOrKey: configService.get('JWT_SECRET_AUTHENTICATION_TOKEN'),
+      secretOrKey: configService.get('JWT_SECRET_REFRESH_TOKEN'),
+      passReqToCallback: true,
     });
   }
-  async validate(payload: AuthenticationTokenPayload) {
+
+  async validate(request: Request, payload: TokenPayload) {
     try {
       if (!payload || !payload.id) {
         new UnauthorizedException('Wrong credentials provided');
       }
-      return await this.authenticationService.getAuthenticatedUserByAuthenticationToken(payload.id);
+
+      const refreshToken = request.cookies?.Refresh;
+      return await this.authenticationService.getAuthenticatedUserByRefreshToken(refreshToken, payload.id);
     } catch (error) {
       if (error instanceof UserLoginException) {
         throw error;
