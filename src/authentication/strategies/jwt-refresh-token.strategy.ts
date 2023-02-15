@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UserLoginException } from '../../exceptions';
 import { AuthenticationService } from '../authentication.service';
-import { TokenPayload } from '../types';
+import { AuthenticationTokenPayload } from '../types';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
@@ -28,7 +28,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
     });
   }
 
-  async validate(request: Request, payload: TokenPayload) {
+  async validate(request: Request, payload: AuthenticationTokenPayload) {
     try {
       if (!payload || !payload.id) {
         new UnauthorizedException('Wrong credentials provided');
