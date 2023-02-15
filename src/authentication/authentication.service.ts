@@ -27,7 +27,7 @@ export class AuthenticationService {
   async getAuthenticatedUser(email: string, password: string): Promise<UserEntity> {
     try {
       const user = await this.usersService.getByEmail(email);
-      await this.verifyPassword(password, user.hashPwd);
+      await this.verifyToken(password, user.hashPwd);
       await this.verifyStatus(user.status);
       return user;
     } catch (error) {
@@ -38,9 +38,22 @@ export class AuthenticationService {
     }
   }
 
-  private async verifyPassword(password: string, hashedPassword: string): Promise<void> {
-    const isPasswordMatching = await checkHash(password, hashedPassword);
-    if (!isPasswordMatching) {
+  async getAuthenticatedUserByAuthenticationToken(id: string): Promise<UserEntity> {
+    const user = await this.usersService.getById(id);
+    await this.verifyStatus(user.status);
+    return user;
+  }
+
+  async getAuthenticatedUserByRefreshToken(refreshToken: string, id: string): Promise<UserEntity> {
+    const user = await this.usersService.getById(id);
+    await this.verifyToken(refreshToken, user.currentHashRefreshToken);
+    await this.verifyStatus(user.status);
+    return user;
+  }
+
+  private async verifyToken(data: string, hashedData: string): Promise<void> {
+    const isTokenMatching = await checkHash(data, hashedData);
+    if (!isTokenMatching) {
       throw new UnauthorizedException('Wrong credentials provided');
     }
   }
@@ -51,16 +64,20 @@ export class AuthenticationService {
 
   createAuthenticationsTokens(id: UserEntity['id']): AuthenticationsTokens {
     const expiresIn: Record<string, number> = {
-      authenticationToken: this.configService.get('JWT_EXPIRATION_TIME_ACCESS'),
-      refreshToken: this.configService.get('JWT_EXPIRATION_TIME_REFRESH'),
+      authenticationToken: this.configService.get('JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN'),
+      refreshToken: this.configService.get('JWT_EXPIRATION_TIME_REFRESH_TOKEN'),
     };
     return {
       authenticationToken: {
-        token: this.getJwtToken({ id }, this.configService.get('JWT_SECRET_ACCESS'), expiresIn.authenticationToken),
+        token: this.getJwtToken(
+          { id },
+          this.configService.get('JWT_SECRET_AUTHENTICATION_TOKEN'),
+          expiresIn.authenticationToken,
+        ),
         expiresIn: expiresIn.authenticationToken,
       },
       refreshToken: {
-        token: this.getJwtToken({ id }, this.configService.get('JWT_SECRET_REFRESH'), expiresIn.refreshToken),
+        token: this.getJwtToken({ id }, this.configService.get('JWT_SECRET_REFRESH_TOKEN'), expiresIn.refreshToken),
         expiresIn: expiresIn.refreshToken,
       },
     };
