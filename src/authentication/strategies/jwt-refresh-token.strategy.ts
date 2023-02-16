@@ -4,7 +4,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { UserLoginException } from '../../exceptions';
 import { AuthenticationService } from '../authentication.service';
 import { AuthenticationTokenPayload } from '../types';
 
@@ -37,11 +36,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
       const refreshToken = request.cookies?.Refresh;
       return await this.authenticationService.getAuthenticatedUserByRefreshToken(refreshToken, payload.id);
     } catch (error) {
-      if (error instanceof UserLoginException) {
-        throw error;
-      } else {
-        throw new UnauthorizedException('Wrong credentials provided');
-      }
+      throw new UnauthorizedException('Wrong credentials provided');
     }
   }
 }

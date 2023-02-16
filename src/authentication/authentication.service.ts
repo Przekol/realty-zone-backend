@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 
 import { RegisterDto } from './dto/register.dto';
 import { AuthenticationsTokens, TokenPayload } from './types';
-import { UserLoginException } from '../exceptions';
 import { User } from '../users/entities/user.entity';
 import { UserEntity } from '../users/types';
 import { UsersService } from '../users/users.service';
@@ -33,20 +32,15 @@ export class AuthenticationService {
         user.hashPwd,
         new UnauthorizedException('Wrong credentials provided'),
       );
-      await this.usersService.checkUserActiveStatus(user.status);
+
       return user;
     } catch (error) {
-      if (error instanceof UserLoginException) {
-        throw error;
-      }
       throw new UnauthorizedException('Wrong credentials provided');
     }
   }
 
   async getAuthenticatedUserByAuthenticationToken(id: string): Promise<UserEntity> {
-    const user = await this.usersService.getById(id);
-    await this.usersService.checkUserActiveStatus(user.status);
-    return user;
+    return await this.usersService.getById(id);
   }
 
   async getAuthenticatedUserByRefreshToken(refreshToken: string, id: string): Promise<UserEntity> {
