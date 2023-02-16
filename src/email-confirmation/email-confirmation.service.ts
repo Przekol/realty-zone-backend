@@ -28,7 +28,7 @@ export class EmailConfirmationService {
 
     const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
     const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
-
+    // TODO dodanie szablonów email
     return this.emailService.sendMail({
       to: user.email,
       subject: 'Email confirmation',
@@ -43,13 +43,17 @@ export class EmailConfirmationService {
       });
 
       if (!payload || !payload.email) {
-        new BadRequestException('Bad confirmation token');
+        throw new BadRequestException('Bad confirmation token');
       }
 
       const user = await this.usersService.getByEmail(payload.email);
+      if (user.status === Status.ACTIVE) {
+        throw new BadRequestException('Email already confirmed');
+      }
+
       await this.usersService.verifyToken(
         token,
-        user.activationHashToken,
+        user.activationHashToken || '',
         new BadRequestException('Bad confirmation token'),
       );
 
@@ -58,15 +62,20 @@ export class EmailConfirmationService {
       if (error?.name === 'TokenExpiredError') {
         throw new BadRequestException('Email confirmation token expired');
       }
-      throw new BadRequestException('Bad confirmation token');
+      throw error;
     }
   }
 
   async confirmEmail(email: string) {
     const user = await this.usersService.getByEmail(email);
+    await this.usersService.updateUserStatus(user, Status.ACTIVE);
+    await this.usersService.removeHashToken(user, { tokenType: 'activation' });
+  }
+
+  async resendConfirmationLink(user: User) {
     if (user.status === Status.ACTIVE) {
       throw new BadRequestException('Email already confirmed');
     }
-    await this.usersService.updateUserStatus(user, Status.ACTIVE);
+    await this.sendVerificationLink(user);
   }
 }
