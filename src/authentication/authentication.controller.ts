@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { CookieService } from './cookie.service';
 import { RegisterDto } from './dto/register.dto';
+import { ActiveUserGuard } from './guards/active-user.guard';
 import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
 import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
@@ -50,6 +51,7 @@ export class AuthenticationController {
   }
 
   @HttpCode(200)
+  @UseGuards(ActiveUserGuard)
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   async getAuthenticatedUser(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
@@ -57,6 +59,7 @@ export class AuthenticationController {
   }
 
   @HttpCode(200)
+  @UseGuards(ActiveUserGuard)
   @UseGuards(JwtRefreshGuard)
   @Get('/refresh')
   async getNewAuthenticatedTokensByRefreshToken(
