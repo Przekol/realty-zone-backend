@@ -14,11 +14,13 @@ import { CurrentUser } from '../decorators';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { User } from '../users/entities/user.entity';
 import { UserEntity } from '../users/types';
+import { UsersService } from '../users/users.service';
 
 @Controller('authentication')
 export class AuthenticationController {
   constructor(
     private readonly authenticationService: AuthenticationService,
+    private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly cookiesService: CookieService,
     private readonly emailConfirmationService: EmailConfirmationService,
@@ -42,9 +44,9 @@ export class AuthenticationController {
   @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
   @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response): Promise<null> {
+  async logout(@CurrentUser() user: User, @Res({ passthrough: true }) res: Response): Promise<void> {
     this.cookiesService.clearCookie(res, CookiesNames.AUTHENTICATION);
-    return null;
+    await this.usersService.removeHashToken(user, { tokenType: 'refresh' });
   }
 
   @HttpCode(200)
