@@ -35,8 +35,18 @@ export class UsersService {
   }
 
   async setHashToken(token: string, user: User, options: OptionsHashToken) {
-    const { tokenType } = options;
     const hashToken = await hashData(token);
+    await this.setOrRemoveHashToken(user, options, hashToken);
+    await user.save();
+  }
+
+  async removeHashToken(user: User, options: OptionsHashToken): Promise<void> {
+    await this.setOrRemoveHashToken(user, options, null);
+    await user.save();
+  }
+
+  private async setOrRemoveHashToken(user: User, options: OptionsHashToken, hashToken: string): Promise<void> {
+    const { tokenType } = options;
     switch (tokenType) {
       case 'activation':
         user.activationHashToken = hashToken;
