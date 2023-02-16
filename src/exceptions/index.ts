@@ -1,1 +1,1 @@
-export * from './UserLoginException';
+export * from './user-inactive.exception';

@@ -3,7 +3,7 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { OptionsHashToken, Status, UserEntity } from './types';
-import { UserLoginException } from '../exceptions';
+import { UserInactiveException } from '../exceptions';
 import { checkHash, hashData } from '../utils';
 
 @Injectable()
@@ -74,7 +74,7 @@ export class UsersService {
 
   async checkUserActiveStatus(status: Status): Promise<void> {
     if (status !== Status.ACTIVE) {
-      throw new UserLoginException(status);
+      throw new UserInactiveException(status);
     }
   }
 }

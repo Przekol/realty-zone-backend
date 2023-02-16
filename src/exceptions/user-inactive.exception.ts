@@ -2,7 +2,7 @@ import { UnauthorizedException } from '@nestjs/common';
 
 import { Status } from '../users/types';
 
-export class UserLoginException extends UnauthorizedException {
+export class UserInactiveException extends UnauthorizedException {
   constructor(status: Status) {
     let message;
 

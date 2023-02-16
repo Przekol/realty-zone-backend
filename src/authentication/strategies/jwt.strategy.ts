@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { UserLoginException } from '../../exceptions';
+import { UserInactiveException } from '../../exceptions';
 import { AuthenticationService } from '../authentication.service';
 import { AuthenticationTokenPayload } from '../types';
 
@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       }
       return await this.authenticationService.getAuthenticatedUserByAuthenticationToken(payload.id);
     } catch (error) {
-      if (error instanceof UserLoginException) {
+      if (error instanceof UserInactiveException) {
         throw error;
       } else {
         throw new UnauthorizedException('Wrong credentials provided');
