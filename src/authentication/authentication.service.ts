@@ -50,7 +50,6 @@ export class AuthenticationService {
       user.currentHashRefreshToken,
       new UnauthorizedException('Wrong credentials provided'),
     );
-    await this.usersService.checkUserActiveStatus(user.status);
     return user;
   }
 
