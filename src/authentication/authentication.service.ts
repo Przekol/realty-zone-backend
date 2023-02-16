@@ -4,10 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 
 import { RegisterDto } from './dto/register.dto';
 import { AuthenticationsTokens, TokenPayload } from './types';
-import { UserLoginException } from '../exceptions';
-import { Status, UserEntity } from '../users/types';
+import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/types';
 import { UsersService } from '../users/users.service';
-import { checkHash, hashData } from '../utils';
+import { hashData } from '../utils';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,7 +16,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
-  async register(registrationData: RegisterDto): Promise<UserEntity> {
+  async register(registrationData: RegisterDto): Promise<User> {
     const hashPwd = await hashData(registrationData.password);
 
     return await this.usersService.create({
@@ -27,35 +27,30 @@ export class AuthenticationService {
   async getAuthenticatedUser(email: string, password: string): Promise<UserEntity> {
     try {
       const user = await this.usersService.getByEmail(email);
-      await this.verifyToken(password, user.hashPwd);
-      await this.verifyStatus(user.status);
+      await this.usersService.verifyToken(
+        password,
+        user.hashPwd,
+        new UnauthorizedException('Wrong credentials provided'),
+      );
+
       return user;
     } catch (error) {
-      if (error instanceof UserLoginException) {
-        throw error;
-      }
       throw new UnauthorizedException('Wrong credentials provided');
     }
   }
 
   async getAuthenticatedUserByAuthenticationToken(id: string): Promise<UserEntity> {
-    const user = await this.usersService.getById(id);
-    await this.verifyStatus(user.status);
-    return user;
+    return await this.usersService.getById(id);
   }
 
   async getAuthenticatedUserByRefreshToken(refreshToken: string, id: string): Promise<UserEntity> {
     const user = await this.usersService.getById(id);
-    await this.verifyToken(refreshToken, user.currentHashRefreshToken);
-    await this.verifyStatus(user.status);
+    await this.usersService.verifyToken(
+      refreshToken,
+      user.currentHashRefreshToken,
+      new UnauthorizedException('Wrong credentials provided'),
+    );
     return user;
-  }
-
-  private async verifyToken(data: string, hashedData: string): Promise<void> {
-    const isTokenMatching = await checkHash(data, hashedData);
-    if (!isTokenMatching) {
-      throw new UnauthorizedException('Wrong credentials provided');
-    }
   }
 
   getJwtToken(payload: TokenPayload, secret: string, expiresIn: number): string {
@@ -81,11 +76,5 @@ export class AuthenticationService {
         expiresIn: expiresIn.refreshToken,
       },
     };
-  }
-
-  async verifyStatus(status: Status): Promise<void> {
-    if (status !== Status.ACTIVE) {
-      throw new UserLoginException(status);
-    }
   }
 }

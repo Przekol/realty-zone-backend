@@ -4,9 +4,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { UserLoginException } from '../../exceptions';
 import { AuthenticationService } from '../authentication.service';
-import { TokenPayload } from '../types';
+import { AuthenticationTokenPayload } from '../types';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -25,18 +24,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get('JWT_SECRET_AUTHENTICATION_TOKEN'),
     });
   }
-  async validate(payload: TokenPayload) {
+  async validate(payload: AuthenticationTokenPayload) {
     try {
       if (!payload || !payload.id) {
         new UnauthorizedException('Wrong credentials provided');
       }
       return await this.authenticationService.getAuthenticatedUserByAuthenticationToken(payload.id);
     } catch (error) {
-      if (error instanceof UserLoginException) {
-        throw error;
-      } else {
-        throw new UnauthorizedException('Wrong credentials provided');
-      }
+      throw new UnauthorizedException('Wrong credentials provided');
     }
   }
 }

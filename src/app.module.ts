@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { envValidation } from './config';
 import { DatabaseModule } from './database/database.module';
+import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
 import { GlobalExceptionFilter } from './filters';
 import { GlobalResponseInterceptor } from './interceptors';
 import { UsersModule } from './users/users.module';
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     DatabaseModule,
     UsersModule,
     AuthenticationModule,
+    EmailConfirmationModule,
   ],
   controllers: [AppController],
   providers: [

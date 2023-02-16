@@ -8,10 +8,11 @@ import { CookieService } from './cookie.service';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { EmailConfirmationModule } from '../email-confirmation/email-confirmation.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [UsersModule, PassportModule, JwtModule.register({})],
+  imports: [UsersModule, PassportModule, JwtModule.register({}), EmailConfirmationModule],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, LocalStrategy, CookieService, JwtStrategy, JwtRefreshTokenStrategy],
 })

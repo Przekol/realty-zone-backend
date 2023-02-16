@@ -51,6 +51,9 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ nullable: true })
   currentHashRefreshToken?: string;
 
+  @Column({ nullable: true })
+  activationHashToken?: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

@@ -10,6 +10,7 @@ export interface UserEntity {
   address?: AddressEntity;
   status: Status;
   currentHashRefreshToken?: string;
+  activationHashToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,4 +34,8 @@ export interface AddressEntity {
   zipCode: string;
   city: string;
   country: string;
+}
+
+export interface OptionsHashToken {
+  tokenType: 'activation' | 'refresh';
 }

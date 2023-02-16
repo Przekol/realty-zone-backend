@@ -1,6 +1,12 @@
-export interface TokenPayload {
+export interface AuthenticationTokenPayload {
   id: string;
 }
+
+export interface ActivationTokenPayload {
+  email: string;
+}
+
+export type TokenPayload = ActivationTokenPayload | AuthenticationTokenPayload;
 
 export enum CookiesNames {
   AUTHENTICATION = 'Authentication',
