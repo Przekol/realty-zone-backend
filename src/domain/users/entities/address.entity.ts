@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { User } from './user.entity';
+
 import { AddressEntity } from '../types';
 
 @Entity()

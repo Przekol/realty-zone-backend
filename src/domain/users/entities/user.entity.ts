@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { Address } from './address.entity';
+
 import { Role, Status, UserEntity } from '../types';
 
 @Entity()

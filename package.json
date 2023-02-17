@@ -92,7 +92,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@types": "<rootDir>/../src/types",
+      "^@common/(.*)$": "<rootDir>/..src/common/$1",
+      "^@shared(.*)$": "<rootDir>/..src/shared/$1",
+      "^@providers(.*)$": "<rootDir>/..src/providers/$1",
+      "^@config": "<rootDir>/../src/config",
+      "^@domain": "<rootDir>/../src/domain/$1"
+    }
   },
   "lint-staged": {
     "*.{ts,js,json}": "npm run format",

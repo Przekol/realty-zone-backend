@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
-import { UserInactiveException } from '../../../common';
-import { Status } from '../../users/types';
+import { UserInactiveException } from '@common/exceptions';
+
+import { Status } from '@domain/users/types';
 
 @Injectable()
 export class ActiveUserGuard implements CanActivate {

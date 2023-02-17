@@ -10,9 +10,10 @@ import {
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
+import { ErrorMessage, PostgresErrorMessage } from '@shared/messages';
+
 import { ErrorResponseBadRequestException, PostgresErrorCode } from './types';
-import { ErrorMessage, PostgresErrorMessage } from '../../shared';
-import { ClientApiResponse } from '../../types';
+import { ClientApiResponse } from '@types';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

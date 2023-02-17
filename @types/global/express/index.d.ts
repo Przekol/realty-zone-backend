@@ -1,4 +1,4 @@
-import { UserEntity } from '../../../src/domain/users/types';
+import { UserEntity } from '@domain/users/types';
 
 declare global {
   namespace Express {

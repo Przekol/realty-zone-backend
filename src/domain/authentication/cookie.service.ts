@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { CookieOptions } from 'express';
 
-import { AuthenticationService } from './authentication.service';
+import { COOKIE_OPTIONS } from '@config';
+import { UsersService } from '@domain/users';
+import { User } from '@domain/users/entities';
+
 import { CookiesNames, CookieTokenData } from './types';
-import { COOKIE_OPTIONS } from '../../config';
-import { User } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
+
+import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class CookieService {

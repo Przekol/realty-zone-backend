@@ -1,5 +1,5 @@
-import { AuthenticationModule } from './authentication/authentication.module';
-import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
-import { UsersModule } from './users/users.module';
+import { AuthenticationModule } from '@domain/authentication';
+import { EmailConfirmationModule } from '@domain/email-confirmation';
+import { UsersModule } from '@domain/users';
 
 export { AuthenticationModule, UsersModule, EmailConfirmationModule };

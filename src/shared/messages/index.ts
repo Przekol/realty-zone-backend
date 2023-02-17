@@ -1,2 +1,4 @@
-export * from './error.message';
-export * from './postgress-error.message';
+import { ErrorMessage } from './error.message';
+import { PostgresErrorMessage } from './postgress-error.message';
+
+export { ErrorMessage, PostgresErrorMessage };

@@ -1,4 +1,4 @@
-import { UserEntity } from '../../domain/users/types';
+import { UserEntity } from '@domain/users/types';
 
 export type CreateUserRequest = Pick<UserEntity, 'username' | 'email' | 'hashPwd'>;
 

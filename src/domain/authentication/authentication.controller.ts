@@ -2,17 +2,19 @@ import { Body, Controller, Get, HttpCode, Post, Res, UseGuards } from '@nestjs/c
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
+import { CurrentUser } from '@common/decorators';
+import { EmailConfirmationService } from '@domain/email-confirmation';
+import { UsersService } from '@domain/users';
+import { User } from '@domain/users/entities';
+
+import { CookiesNames } from './types';
+import { UserEntity } from '@domain/users/types';
+import { GetOneUserResponse } from '@types';
+
 import { AuthenticationService } from './authentication.service';
 import { CookieService } from './cookie.service';
 import { RegisterDto } from './dto/register.dto';
 import { ActiveUserGuard, JwtAuthenticationGuard, JwtRefreshGuard, LocalAuthenticationGuard } from './guards';
-import { CookiesNames } from './types';
-import { CurrentUser } from '../../common';
-import { GetOneUserResponse } from '../../types';
-import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
-import { User } from '../users/entities/user.entity';
-import { UserEntity } from '../users/types';
-import { UsersService } from '../users/users.service';
 
 @Controller('authentication')
 export class AuthenticationController {

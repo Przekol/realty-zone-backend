@@ -1,9 +1,11 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
+import { checkHash, hashData } from '@shared/utils';
+
 import { OptionsHashToken, Status, UserEntity } from './types';
-import { checkHash, hashData } from '../../shared';
+
+import { CreateUserDto } from './dto';
+import { User } from './entities';
 
 @Injectable()
 export class UsersService {

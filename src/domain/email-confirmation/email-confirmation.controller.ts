@@ -1,10 +1,11 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 
-import { ConfirmEmailDto } from './dto/confirm-email.dto';
+import { CurrentUser } from '@common/decorators';
+import { JwtAuthenticationGuard } from '@domain/authentication/guards';
+import { User } from '@domain/users/entities';
+
+import { ConfirmEmailDto } from './dto';
 import { EmailConfirmationService } from './email-confirmation.service';
-import { CurrentUser } from '../../common';
-import { JwtAuthenticationGuard } from '../authentication/guards';
-import { User } from '../users/entities/user.entity';
 
 @Controller('email-confirmation')
 export class EmailConfirmationController {

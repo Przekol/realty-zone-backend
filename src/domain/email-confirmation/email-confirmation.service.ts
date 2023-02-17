@@ -2,11 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+import { UsersService } from '@domain/users';
+import { User } from '@domain/users/entities';
+import { EmailService } from '@providers/email';
+
 import { VerificationTokenPayload } from './types';
-import { EmailService } from '../../providers';
-import { User } from '../users/entities/user.entity';
-import { Status } from '../users/types';
-import { UsersService } from '../users/users.service';
+import { Status } from '@domain/users/types';
 
 @Injectable()
 export class EmailConfirmationService {
