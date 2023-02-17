@@ -2,14 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { AppController } from './app.controller';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { envValidation } from './config';
-import { DatabaseModule } from './database/database.module';
-import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
-import { GlobalExceptionFilter } from './filters';
-import { GlobalResponseInterceptor } from './interceptors';
-import { UsersModule } from './users/users.module';
+import { GlobalExceptionFilter } from '@common/filters';
+import { GlobalResponseInterceptor } from '@common/interceptors';
+import { envValidation } from '@config';
+import { DatabaseModule } from '@providers/database';
+
+import { ApiModule } from './api';
 
 @Module({
   imports: [
@@ -18,11 +16,9 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
     }),
     DatabaseModule,
-    UsersModule,
-    AuthenticationModule,
-    EmailConfirmationModule,
+    ApiModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     {
       provide: APP_FILTER,
