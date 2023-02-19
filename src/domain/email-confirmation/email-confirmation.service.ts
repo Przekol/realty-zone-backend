@@ -28,12 +28,11 @@ export class EmailConfirmationService {
     await this.usersService.setHashToken(token, user, { tokenType: 'activation' });
 
     const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
-    const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
-    // TODO dodanie szablonów email
-    return this.emailService.sendMail({
-      to: user.email,
-      subject: 'Email confirmation',
-      text,
+
+    await this.emailService.sendMail(user.email, 'Email confirmation', 'authentication/email-confirmation', {
+      username: user.username,
+      url,
+      title: 'Potwierdzenie rejestracji',
     });
   }
 

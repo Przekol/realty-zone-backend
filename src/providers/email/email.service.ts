@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createTransport } from 'nodemailer';
-import Mail from 'nodemailer/lib/mailer';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class EmailService {
-  private nodemailerTransport: Mail;
-  constructor(private readonly configService: ConfigService) {
-    this.nodemailerTransport = createTransport({
-      host: configService.get('EMAIL_HOST'),
-      port: configService.get('EMAIL_PORT'),
-      auth: {
-        user: configService.get('EMAIL_USER'),
-        pass: configService.get('EMAIL_PASSWORD'),
-      },
-    });
-  }
+  constructor(private readonly mailerService: MailerService) {}
 
-  sendMail(options: Mail.Options) {
-    return this.nodemailerTransport.sendMail(options);
+  async sendMail(
+    email: string,
+    subject: string,
+    template: string,
+    context: {
+      [name: string]: unknown;
+    },
+  ) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: `Realty Zone - ${subject}`,
+      template,
+      context,
+    });
   }
 }
