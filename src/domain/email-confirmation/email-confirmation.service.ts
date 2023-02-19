@@ -32,6 +32,7 @@ export class EmailConfirmationService {
     await this.emailService.sendMail(user.email, 'Email confirmation', 'authentication/email-confirmation', {
       username: user.username,
       url,
+      title: 'Potwierdzenie rejestracji',
     });
   }
 

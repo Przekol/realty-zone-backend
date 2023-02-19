@@ -3,6 +3,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 
 import { join } from 'path';
 
+const templatePath = join(__dirname, '..', 'providers', 'email', 'templates');
+
 export const mailerConfig = (configService: ConfigService) => ({
   transport: {
     host: configService.get('EMAIL_HOST'),
@@ -16,10 +18,18 @@ export const mailerConfig = (configService: ConfigService) => ({
     from: `"Realty Zone - Admin" <admin@${configService.get('FRONTEND_DOMAIN')}>`,
   },
   template: {
-    dir: join(__dirname + '/..' + '/providers/email/templates'),
+    dir: join(templatePath, 'pages'),
     adapter: new HandlebarsAdapter(),
     options: {
       strict: true,
+    },
+  },
+  options: {
+    partials: {
+      dir: join(templatePath, 'partials'),
+      options: {
+        strict: true,
+      },
     },
   },
 });
