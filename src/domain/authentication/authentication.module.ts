@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { EmailConfirmationModule } from '@domain/email-confirmation';
 import { UsersModule } from '@domain/users';
+import { EventsModule } from '@providers/event-emitter/events.module';
 
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
@@ -11,7 +12,7 @@ import { CookieService } from './cookie.service';
 import { JwtRefreshTokenStrategy, JwtStrategy, LocalStrategy } from './strategies';
 
 @Module({
-  imports: [UsersModule, PassportModule, JwtModule.register({}), EmailConfirmationModule],
+  imports: [UsersModule, PassportModule, JwtModule.register({}), EmailConfirmationModule, EventsModule],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, LocalStrategy, CookieService, JwtStrategy, JwtRefreshTokenStrategy],
 })
