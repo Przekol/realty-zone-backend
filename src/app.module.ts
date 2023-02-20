@@ -6,6 +6,7 @@ import { GlobalExceptionFilter } from '@common/filters';
 import { GlobalResponseInterceptor } from '@common/interceptors';
 import { envValidation } from '@config';
 import { DatabaseModule } from '@providers/database';
+import { EventsModule } from '@providers/event-emitter/events.module';
 
 import { ApiModule } from './api';
 
@@ -17,6 +18,7 @@ import { ApiModule } from './api';
     }),
     DatabaseModule,
     ApiModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [
