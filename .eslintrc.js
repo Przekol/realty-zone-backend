@@ -37,10 +37,6 @@ module.exports = {
             group: 'internal',
           },
           {
-            pattern: '@providers/**',
-            group: 'internal',
-          },
-          {
             pattern: '**/types',
             group: 'type',
           },
@@ -54,6 +50,10 @@ module.exports = {
           },
           {
             pattern: '@domain/**',
+            group: 'internal',
+          },
+          {
+            pattern: '@providers/**',
             group: 'internal',
           },
           {
