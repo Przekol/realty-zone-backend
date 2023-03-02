@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { checkHash, hashData } from '@shared/utils';
 
@@ -12,7 +12,7 @@ export class UsersService {
   async getByEmail(email: string): Promise<User> {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      throw new NotFoundException(`User with this email does not exist`);
+      throw new BadRequestException(`User with this email does not exist`);
     }
     return user;
   }
