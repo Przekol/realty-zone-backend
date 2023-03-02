@@ -1,10 +1,10 @@
-import { User } from '@domain/users/entities';
+import { UserEntity } from '@domain/users/types';
 
 export interface PasswordResetTokenEntity {
   id: string;
   hashToken: string;
   isUsed: boolean;
-  user: User;
+  user: UserEntity;
   expiresIn: number;
   createdAt: Date;
   updatedAt: Date;
