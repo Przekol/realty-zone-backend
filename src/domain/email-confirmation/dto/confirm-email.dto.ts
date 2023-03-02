@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { ConfirmEmailRequest } from '../../../types/email/email-request';
+import { ConfirmEmailRequest } from '@types';
 
 export class ConfirmEmailDto implements ConfirmEmailRequest {
   @IsString()
