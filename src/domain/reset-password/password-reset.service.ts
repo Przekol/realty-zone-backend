@@ -17,11 +17,15 @@ export class PasswordResetService {
     return !!resetToken;
   }
 
-  async createPasswordResetToken(user: User): Promise<PasswordResetToken> {
-    const token = new PasswordResetToken();
-    token.hashToken = await hashData(uuid());
-    token.user = user;
-    await this.dataSource.manager.save(token);
+  async createPasswordResetToken(user: User): Promise<string> {
+    const passwordResetToken = new PasswordResetToken();
+    const token = await this.generateResetToken();
+    passwordResetToken.hashToken = await hashData(token);
+    passwordResetToken.user = user;
+    await this.dataSource.manager.save(passwordResetToken);
     return token;
+  }
+  private async generateResetToken(): Promise<string> {
+    return uuid();
   }
 }
