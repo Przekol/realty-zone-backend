@@ -1,3 +1,3 @@
-import { ForgetPasswordRequest } from './reset-password.request';
+import { ForgetPasswordRequest, VerifyPasswordResetTokenRequest } from './reset-password.request';
 
-export { ForgetPasswordRequest };
+export { ForgetPasswordRequest, VerifyPasswordResetTokenRequest };

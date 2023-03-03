@@ -1,8 +1,8 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 
 import { checkHash, hashData } from '@shared/utils';
 
-import { OptionsHashToken, Status, UserEntity } from './types';
+import { OptionsHashToken, Status } from './types';
 
 import { CreateUserDto } from './dto';
 import { User } from './entities';
@@ -27,10 +27,10 @@ export class UsersService {
     return user;
   }
 
-  async getById(id: string): Promise<UserEntity> {
+  async getById(id: string): Promise<User> {
     const user = await User.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User with this id does not exist.');
+      throw new BadRequestException(`User with this id does not exist.`);
     }
     return user;
   }
