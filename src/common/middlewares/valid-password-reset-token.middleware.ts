@@ -12,19 +12,20 @@ export class ValidPasswordResetTokenMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const verifyPasswordResetTokenDto = plainToInstance(VerifyPasswordResetTokenDto, req.body);
+    const verifyPasswordResetTokenDto = plainToInstance(VerifyPasswordResetTokenDto, req.query);
+
     const { token, userId } = verifyPasswordResetTokenDto;
+
     const passwordResetTokenActive = await this.passwordResetService.getResetTokenActiveByUserId(userId);
 
     if (!passwordResetTokenActive) {
       throw new UnauthorizedException('Bad confirmation token');
     }
     await this.passwordResetService.verifyToken(
-      token,
+      token || '',
       passwordResetTokenActive.hashToken,
       new UnauthorizedException('Bad confirmation token'),
     );
-
     next();
   }
 }
