@@ -20,6 +20,9 @@ export class PasswordResetModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ValidPasswordResetTokenMiddleware)
-      .forRoutes({ path: 'password-reset/verify-password-reset-token', method: RequestMethod.POST });
+      .forRoutes(
+        { path: 'password-reset', method: RequestMethod.POST },
+        { path: 'password-reset/verify-password-reset-token', method: RequestMethod.POST },
+      );
   }
 }
