@@ -1,6 +1,6 @@
-import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, Post, UnauthorizedException } from '@nestjs/common';
 
-import { ForgetPasswordDto } from '@domain/reset-password/dto';
+import { ForgetPasswordDto, VerifyPasswordResetTokenDto } from '@domain/reset-password/dto';
 import { PasswordResetService } from '@domain/reset-password/password-reset.service';
 import { UsersService } from '@domain/users';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
@@ -33,5 +33,23 @@ export class PasswordResetController {
       subject: 'Resetowanie hasła',
       url: resetTokenLink,
     });
+  }
+
+  @HttpCode(200)
+  @Post('/verify-password-reset-token')
+  async VerifyPasswordResetToken(@Body() verifyPasswordResetTokenDto: VerifyPasswordResetTokenDto) {
+    const { token, userId } = verifyPasswordResetTokenDto;
+
+    const passwordResetTokenActive = await this.passwordResetService.getResetTokenActiveByUserId(userId);
+
+    if (!passwordResetTokenActive) {
+      throw new UnauthorizedException('Bad confirmation token');
+    }
+
+    await this.passwordResetService.verifyToken(
+      token,
+      passwordResetTokenActive.hashToken,
+      new UnauthorizedException('Bad confirmation token'),
+    );
   }
 }
