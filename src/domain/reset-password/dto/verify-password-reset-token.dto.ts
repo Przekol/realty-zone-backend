@@ -1,6 +1,8 @@
 import { IsString, IsUUID } from 'class-validator';
 
-export class VerifyPasswordResetTokenDto {
+import { VerifyPasswordResetTokenRequest } from '@types';
+
+export class VerifyPasswordResetTokenDto implements VerifyPasswordResetTokenRequest {
   @IsUUID()
   userId: string;
 
