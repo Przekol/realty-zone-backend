@@ -16,13 +16,6 @@ export class PasswordResetService {
     private readonly emailService: EmailService,
   ) {}
 
-  async isResetTokenActiveForUser(user: User): Promise<boolean> {
-    const resetToken = await PasswordResetToken.findOne({
-      where: { user: { id: user.id }, isUsed: false, expiresIn: MoreThan(Date.now()) },
-    });
-    return !!resetToken;
-  }
-
   async createPasswordResetToken(user: User): Promise<string> {
     const passwordResetToken = new PasswordResetToken();
     const token = await this.generateResetToken();

@@ -20,8 +20,8 @@ export class PasswordResetController {
 
     const user = await this.usersService.getByEmail(email);
 
-    const alreadyHasToken = await this.passwordResetService.isResetTokenActiveForUser(user);
-    if (alreadyHasToken) {
+    const passwordResetTokenActive = await this.passwordResetService.getResetTokenActiveByUserId(user.id);
+    if (passwordResetTokenActive) {
       throw new BadRequestException('Only after one hour you can request for another token');
     }
 
