@@ -4,10 +4,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { PasswordResetToken } from '@domain/reset-password/entities';
 
 import { Address } from './address.entity';
 
@@ -54,6 +57,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @Column({ nullable: true })
   activationHashToken?: string;
+
+  @OneToMany(() => PasswordResetToken, (passwordResetToken) => passwordResetToken.user)
+  passwordResetTokens: PasswordResetToken[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

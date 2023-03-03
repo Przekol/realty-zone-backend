@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
 import { EmailService } from '@providers/email';
-import { UserRegistrationEmitter } from '@providers/event-emitter/emitters';
+import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 
 import { VerificationTokenPayload } from './types';
 import { Status } from '@domain/users/types';
@@ -17,11 +17,10 @@ export class EmailConfirmationService {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly usersService: UsersService,
-    private readonly userRegistrationEmitter: UserRegistrationEmitter,
+    private readonly authenticationEmitter: AuthenticationEmitter,
   ) {}
 
-  async sendVerificationLink(user: User, subject: string) {
-    const url = await this.generateActivationLink(user);
+  async sendVerificationLink(user: User, subject: string, url: string) {
     await this.emailService.sendMail(user.email, subject, 'authentication/email-confirmation', {
       username: user.username,
       url,
@@ -29,7 +28,7 @@ export class EmailConfirmationService {
     });
   }
 
-  private async generateActivationLink(user: User): Promise<string> {
+  async generateActivationLink(user: User): Promise<string> {
     const payload: VerificationTokenPayload = { email: user.email };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET_VERIFICATION_TOKEN'),
@@ -77,13 +76,11 @@ export class EmailConfirmationService {
     await this.usersService.removeHashToken(user, { tokenType: 'activation' });
   }
 
-  async resendConfirmationLink(user: User) {
-    if (user.status === Status.ACTIVE) {
-      throw new BadRequestException('Email already confirmed');
-    }
-    await this.userRegistrationEmitter.emitRegistrationVerificationLinkSendEvent({
+  async resendConfirmationLink(user: User, url: string) {
+    await this.authenticationEmitter.emitActivationLinkSendEmailEvent({
       user,
       subject: 'Ponowne potwierdzenie rejestracji',
+      url,
     });
   }
 }

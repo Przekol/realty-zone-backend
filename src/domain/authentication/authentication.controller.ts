@@ -6,7 +6,7 @@ import { CurrentUser } from '@common/decorators';
 import { EmailConfirmationService } from '@domain/email-confirmation';
 import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
-import { UserRegistrationEmitter } from '@providers/event-emitter/emitters';
+import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 
 import { CookiesNames } from './types';
 import { UserEntity } from '@domain/users/types';
@@ -25,16 +25,21 @@ export class AuthenticationController {
     private readonly configService: ConfigService,
     private readonly cookiesService: CookieService,
     private readonly emailConfirmationService: EmailConfirmationService,
-    private readonly userRegistrationEmitter: UserRegistrationEmitter,
+    private readonly authenticationEmitter: AuthenticationEmitter,
   ) {}
 
   @Post('signup')
   async register(@Body() registrationData: RegisterDto): Promise<GetOneUserResponse> {
     const user = await this.authenticationService.register(registrationData);
-    await this.userRegistrationEmitter.emitRegistrationVerificationLinkSendEvent({
+
+    const activationLink = await this.emailConfirmationService.generateActivationLink(user);
+
+    await this.authenticationEmitter.emitActivationLinkSendEmailEvent({
       user,
       subject: 'Potwierdzenie rejestracji',
+      url: activationLink,
     });
+
     return user;
   }
 
