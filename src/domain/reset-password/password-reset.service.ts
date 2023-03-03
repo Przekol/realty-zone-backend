@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DataSource, MoreThan } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -8,7 +9,7 @@ import { hashData } from '@shared/utils';
 
 @Injectable()
 export class PasswordResetService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource, private readonly configService: ConfigService) {}
 
   async isResetTokenActiveForUser(user: User): Promise<boolean> {
     const resetToken = await PasswordResetToken.findOne({
@@ -25,7 +26,12 @@ export class PasswordResetService {
     await this.dataSource.manager.save(passwordResetToken);
     return token;
   }
+
   private async generateResetToken(): Promise<string> {
     return uuid();
+  }
+
+  async generateResetTokenLink(token: string, userId: string): Promise<string> {
+    return `${this.configService.get('CLIENT_URL')}/reset-password?token=${token}&id=${userId}`;
   }
 }
