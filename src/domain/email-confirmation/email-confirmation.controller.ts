@@ -1,8 +1,10 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@domain/authentication/guards';
 import { User } from '@domain/users/entities';
+
+import { Status } from '@domain/users/types';
 
 import { ConfirmEmailDto } from './dto';
 import { EmailConfirmationService } from './email-confirmation.service';
@@ -22,6 +24,11 @@ export class EmailConfirmationController {
   @UseGuards(JwtAuthenticationGuard)
   @Post('resend-confirmation-link')
   async resendConfirmationLink(@CurrentUser() user: User) {
-    await this.emailConfirmationService.resendConfirmationLink(user);
+    if (user.status === Status.ACTIVE) {
+      throw new BadRequestException('Email already confirmed');
+    }
+    const activationLink = await this.emailConfirmationService.generateActivationLink(user);
+
+    await this.emailConfirmationService.resendConfirmationLink(user, activationLink);
   }
 }

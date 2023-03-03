@@ -1,4 +1,4 @@
 export const events = {
-  registrationVerificationLinkSend: 'registration.verificationLinkSend',
+  authenticationSendEmailActivationLink: 'authentication.sendEmailActivationLink',
   authenticationSendEmailPasswordResetLink: 'authentication.sendEmailPasswordResetLink',
 };

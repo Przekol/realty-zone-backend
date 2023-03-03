@@ -1,1 +1,3 @@
-export * from './registration';
+import { AuthenticationListener } from './authentication.listener';
+
+export { AuthenticationListener };
