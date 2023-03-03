@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, MoreThan } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { PasswordResetToken } from '@domain/reset-password/entities';
 import { User } from '@domain/users/entities';
 import { EmailService } from '@providers/email';
-import { hashData } from '@shared/utils';
+import { checkHash, hashData } from '@shared/utils';
 
 @Injectable()
 export class PasswordResetService {
@@ -46,5 +46,18 @@ export class PasswordResetService {
       url,
       title: subject,
     });
+  }
+
+  async getResetTokenActiveByUserId(userId: string): Promise<PasswordResetToken> {
+    return await PasswordResetToken.findOne({
+      where: { user: { id: userId }, isUsed: false, expiresIn: MoreThan(Date.now()) },
+    });
+  }
+
+  async verifyToken(data: string, hashedData: string, error: HttpException): Promise<void> {
+    const isTokenMatching = await checkHash(data, hashedData);
+    if (!isTokenMatching) {
+      throw error;
+    }
   }
 }
