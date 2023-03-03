@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 
 import { ForgetPasswordDto } from '@domain/reset-password/dto';
 import { PasswordResetService } from '@domain/reset-password/password-reset.service';
@@ -38,8 +38,8 @@ export class PasswordResetController {
   }
 
   @HttpCode(200)
-  @Post('/verify-password-reset-token')
-  async VerifyPasswordResetToken(): Promise<VerifyPasswordResetTokenResponse> {
+  @Get('/verify-password-reset-token')
+  async verifyPasswordResetToken(): Promise<VerifyPasswordResetTokenResponse> {
     return { valid: true };
   }
 }
