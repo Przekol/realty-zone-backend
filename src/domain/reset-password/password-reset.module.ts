@@ -22,7 +22,7 @@ export class PasswordResetModule {
       .apply(ValidPasswordResetTokenMiddleware)
       .forRoutes(
         { path: 'password-reset', method: RequestMethod.POST },
-        { path: 'password-reset/verify-password-reset-token', method: RequestMethod.POST },
+        { path: 'password-reset/verify-password-reset-token', method: RequestMethod.GET },
       );
   }
 }
