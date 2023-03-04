@@ -30,7 +30,7 @@ export class PasswordResetController {
     const token = await this.passwordResetService.createPasswordResetToken(user);
     const resetTokenLink = await this.passwordResetService.generateResetTokenLink(token, user.id);
 
-    await this.authenticationEmitter.emitPasswordResetLinkSendEmailEvent({
+    await this.authenticationEmitter.emitPasswordResetEmailSendEvent({
       user,
       subject: 'Resetowanie hasła',
       url: resetTokenLink,

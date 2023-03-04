@@ -77,7 +77,7 @@ export class EmailConfirmationService {
   }
 
   async resendConfirmationLink(user: User, url: string) {
-    await this.authenticationEmitter.emitActivationLinkSendEmailEvent({
+    await this.authenticationEmitter.emitActivationEmailSendEvent({
       user,
       subject: 'Ponowne potwierdzenie rejestracji',
       url,

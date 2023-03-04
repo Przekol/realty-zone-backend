@@ -2,27 +2,27 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { events } from '@providers/event-emitter/events';
-import { LinkSendEmailAuthenticationEvent } from '@providers/event-emitter/events/authentication';
+import { EmailSendLinkAuthenticationEvent } from '@providers/event-emitter/events/authentication';
 
 @Injectable()
 export class AuthenticationEmitter {
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
-  async emitActivationLinkSendEmailEvent(payload: LinkSendEmailAuthenticationEvent) {
-    const activationLinkSendEvent = new LinkSendEmailAuthenticationEvent();
-    activationLinkSendEvent.user = payload.user;
-    activationLinkSendEvent.subject = payload.subject;
-    activationLinkSendEvent.url = payload.url;
+  async emitActivationEmailSendEvent(payload: EmailSendLinkAuthenticationEvent) {
+    const activationEmailSendEvent = new EmailSendLinkAuthenticationEvent();
+    activationEmailSendEvent.user = payload.user;
+    activationEmailSendEvent.subject = payload.subject;
+    activationEmailSendEvent.url = payload.url;
 
-    await this.eventEmitter.emitAsync(events.authenticationSendEmailActivationLink, activationLinkSendEvent);
+    await this.eventEmitter.emitAsync(events.authenticationEmailSendActivationLink, activationEmailSendEvent);
   }
 
-  async emitPasswordResetLinkSendEmailEvent(payload: LinkSendEmailAuthenticationEvent): Promise<void> {
-    const passwordResetLinkSendEmailEvent = new LinkSendEmailAuthenticationEvent();
-    passwordResetLinkSendEmailEvent.user = payload.user;
-    passwordResetLinkSendEmailEvent.subject = payload.subject;
-    passwordResetLinkSendEmailEvent.url = payload.url;
+  async emitPasswordResetEmailSendEvent(payload: EmailSendLinkAuthenticationEvent): Promise<void> {
+    const passwordResetEmailSendEvent = new EmailSendLinkAuthenticationEvent();
+    passwordResetEmailSendEvent.user = payload.user;
+    passwordResetEmailSendEvent.subject = payload.subject;
+    passwordResetEmailSendEvent.url = payload.url;
 
-    await this.eventEmitter.emitAsync(events.authenticationSendEmailPasswordResetLink, passwordResetLinkSendEmailEvent);
+    await this.eventEmitter.emitAsync(events.authenticationEmailSendPasswordResetLink, passwordResetEmailSendEvent);
   }
 }

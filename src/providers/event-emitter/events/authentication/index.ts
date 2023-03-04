@@ -1,3 +1,4 @@
-import { LinkSendEmailAuthenticationEvent } from './link-send-email-authentication.event';
+import { ConfirmationEmailSentEvent } from './confirmation-email-send.event';
+import { EmailSendLinkAuthenticationEvent } from './email-send-link-authentication.event';
 
-export { LinkSendEmailAuthenticationEvent };
+export { EmailSendLinkAuthenticationEvent, ConfirmationEmailSentEvent };
