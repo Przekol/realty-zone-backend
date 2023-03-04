@@ -1,4 +1,4 @@
-import { PasswordResetToken } from '@domain/reset-password/entities';
+import { PasswordResetToken } from '@domain/password-reset/entities';
 
 import { UserEntity } from '@domain/users/types';
 

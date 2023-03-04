@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { PasswordResetToken } from '@domain/reset-password/entities';
+import { PasswordResetToken } from '@domain/password-reset/entities';
 
 import { Address } from './address.entity';
 

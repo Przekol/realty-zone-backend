@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 import { EmailConfirmationService } from '@domain/email-confirmation';
-import { PasswordResetService } from '@domain/reset-password';
+import { PasswordResetService } from '@domain/password-reset';
 import { events } from '@providers/event-emitter/events';
 import {
   EmailSendLinkAuthenticationEvent,

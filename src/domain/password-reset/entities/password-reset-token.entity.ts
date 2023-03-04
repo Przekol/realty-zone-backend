@@ -11,7 +11,7 @@ import {
 
 import { User } from '@domain/users/entities';
 
-import { PasswordResetTokenEntity } from '@domain/reset-password/types';
+import { PasswordResetTokenEntity } from '@domain/password-reset/types';
 
 @Entity()
 export class PasswordResetToken extends BaseEntity implements PasswordResetTokenEntity {

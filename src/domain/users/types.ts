@@ -1,4 +1,4 @@
-import { PasswordResetTokenEntity } from '@domain/reset-password/types';
+import { PasswordResetTokenEntity } from '@domain/password-reset/types';
 
 export interface UserEntity {
   id: string;

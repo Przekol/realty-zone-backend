@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { DataSource, MoreThan } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { PasswordResetToken } from '@domain/reset-password/entities';
+import { PasswordResetToken } from '@domain/password-reset/entities';
 import { User } from '@domain/users/entities';
 import { EmailService } from '@providers/email';
 import { checkHash, hashData } from '@shared/utils';
