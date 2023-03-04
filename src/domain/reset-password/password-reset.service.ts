@@ -41,6 +41,13 @@ export class PasswordResetService {
     });
   }
 
+  async sendPasswordResetConfirmation(user: User, subject: string) {
+    await this.emailService.sendMail(user.email, subject, 'authentication/password-reset-success', {
+      username: user.username,
+      title: subject,
+    });
+  }
+
   async getResetTokenActiveByUserId(userId: string): Promise<PasswordResetToken> {
     return await PasswordResetToken.findOne({
       where: { user: { id: userId }, isUsed: false, expiresIn: MoreThan(Date.now()) },
