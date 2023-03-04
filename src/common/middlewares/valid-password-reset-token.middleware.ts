@@ -2,8 +2,8 @@ import { forwardRef, Inject, Injectable, NestMiddleware, UnauthorizedException }
 import { plainToInstance } from 'class-transformer';
 import { Request, Response, NextFunction } from 'express';
 
-import { PasswordResetService } from '@domain/reset-password';
-import { VerifyPasswordResetTokenDto } from '@domain/reset-password/dto';
+import { PasswordResetService } from '@domain/password-reset';
+import { VerifyPasswordResetTokenDto } from '@domain/password-reset/dto';
 
 @Injectable()
 export class ValidPasswordResetTokenMiddleware implements NestMiddleware {

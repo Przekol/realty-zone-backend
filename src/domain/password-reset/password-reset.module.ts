@@ -2,7 +2,7 @@ import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/c
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ValidPasswordResetTokenMiddleware } from '@common/middlewares';
-import { PasswordResetToken } from '@domain/reset-password/entities';
+import { PasswordResetToken } from '@domain/password-reset/entities';
 import { UsersModule } from '@domain/users';
 import { EmailModule } from '@providers/email';
 import { EventsModule } from '@providers/event-emitter';
