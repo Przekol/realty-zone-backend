@@ -4,7 +4,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { EmailConfirmationService } from '@domain/email-confirmation';
 import { PasswordResetService } from '@domain/reset-password';
 import { events } from '@providers/event-emitter/events';
-import { EmailSendLinkAuthenticationEvent } from '@providers/event-emitter/events/authentication';
+import {
+  EmailSendLinkAuthenticationEvent,
+  EmailSendConfirmationEvent,
+} from '@providers/event-emitter/events/authentication';
 
 @Injectable()
 export class AuthenticationListener {
@@ -21,5 +24,10 @@ export class AuthenticationListener {
   @OnEvent(events.authenticationEmailSendPasswordResetLink, { async: true })
   async handleEmailPasswordResetLinkSendEvent(payload: EmailSendLinkAuthenticationEvent) {
     await this.passwordResetService.sendPasswordResetLink(payload.user, payload.subject, payload.url);
+  }
+
+  @OnEvent(events.authenticationEmailSendPasswordResetConfirmation, { async: true })
+  async handlePasswordResetConfirmationSendEvent(payload: EmailSendConfirmationEvent) {
+    await this.passwordResetService.sendPasswordResetConfirmation(payload.user, payload.subject);
   }
 }

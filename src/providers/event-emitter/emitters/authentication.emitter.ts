@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { events } from '@providers/event-emitter/events';
-import { EmailSendLinkAuthenticationEvent } from '@providers/event-emitter/events/authentication';
+import {
+  EmailSendConfirmationEvent,
+  EmailSendLinkAuthenticationEvent,
+} from '@providers/event-emitter/events/authentication';
 
 @Injectable()
 export class AuthenticationEmitter {
@@ -24,5 +27,16 @@ export class AuthenticationEmitter {
     passwordResetEmailSendEvent.url = payload.url;
 
     await this.eventEmitter.emitAsync(events.authenticationEmailSendPasswordResetLink, passwordResetEmailSendEvent);
+  }
+
+  async emitPasswordResetConfirmationEvent(payload: EmailSendConfirmationEvent): Promise<void> {
+    const passwordResetConfirmationEmailSentEvent = new EmailSendConfirmationEvent();
+    passwordResetConfirmationEmailSentEvent.user = payload.user;
+    passwordResetConfirmationEmailSentEvent.subject = payload.subject;
+
+    await this.eventEmitter.emitAsync(
+      events.authenticationEmailSendPasswordResetConfirmation,
+      passwordResetConfirmationEmailSentEvent,
+    );
   }
 }
