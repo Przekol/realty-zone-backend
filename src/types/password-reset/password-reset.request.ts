@@ -6,3 +6,7 @@ export interface VerifyPasswordResetTokenRequest {
   userId: string;
   token: string;
 }
+
+export interface PasswordResetRequest {
+  newPassword: string;
+}

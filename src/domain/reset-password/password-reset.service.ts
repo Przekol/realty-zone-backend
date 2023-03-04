@@ -33,10 +33,17 @@ export class PasswordResetService {
     return `${this.configService.get('CLIENT_URL')}/reset-password?token=${token}&id=${userId}`;
   }
 
-  async sendResetPasswordLink(user: User, subject: string, url: string) {
+  async sendPasswordResetLink(user: User, subject: string, url: string) {
     await this.emailService.sendMail(user.email, subject, 'authentication/password-reset', {
       username: user.username,
       url,
+      title: subject,
+    });
+  }
+
+  async sendPasswordResetConfirmation(user: User, subject: string) {
+    await this.emailService.sendMail(user.email, subject, 'authentication/password-reset-success', {
+      username: user.username,
       title: subject,
     });
   }
@@ -52,5 +59,10 @@ export class PasswordResetService {
     if (!isTokenMatching) {
       throw error;
     }
+  }
+
+  async markTokenAsUsed(passwordResetToken: PasswordResetToken): Promise<void> {
+    passwordResetToken.isUsed = true;
+    await passwordResetToken.save();
   }
 }

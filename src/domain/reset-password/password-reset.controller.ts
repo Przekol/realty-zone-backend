@@ -1,9 +1,12 @@
-import { BadRequestException, Body, Controller, HttpCode, Post, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, Post, Query, Req } from '@nestjs/common';
+import { Request } from 'express';
 
-import { ForgetPasswordDto, VerifyPasswordResetTokenDto } from '@domain/reset-password/dto';
+import { ForgetPasswordDto, PasswordResetDto } from '@domain/reset-password/dto';
 import { PasswordResetService } from '@domain/reset-password/password-reset.service';
 import { UsersService } from '@domain/users';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
+
+import { VerifyPasswordResetTokenResponse } from '@types';
 
 @Controller('password-reset')
 export class PasswordResetController {
@@ -28,7 +31,7 @@ export class PasswordResetController {
     const token = await this.passwordResetService.createPasswordResetToken(user);
     const resetTokenLink = await this.passwordResetService.generateResetTokenLink(token, user.id);
 
-    await this.authenticationEmitter.emitPasswordResetLinkSendEmailEvent({
+    await this.authenticationEmitter.emitPasswordResetEmailSendEvent({
       user,
       subject: 'Resetowanie hasła',
       url: resetTokenLink,
@@ -36,20 +39,28 @@ export class PasswordResetController {
   }
 
   @HttpCode(200)
-  @Post('/verify-password-reset-token')
-  async VerifyPasswordResetToken(@Body() verifyPasswordResetTokenDto: VerifyPasswordResetTokenDto) {
-    const { token, userId } = verifyPasswordResetTokenDto;
+  @Get('/verify-password-reset-token')
+  async verifyPasswordResetToken(): Promise<VerifyPasswordResetTokenResponse> {
+    return { valid: true };
+  }
 
-    const passwordResetTokenActive = await this.passwordResetService.getResetTokenActiveByUserId(userId);
+  @HttpCode(200)
+  @Post()
+  async passwordReset(
+    @Req() req: Request,
+    @Body() passwordResetDto: PasswordResetDto,
+    @Query('userId') userId: string,
+  ) {
+    const { newPassword } = passwordResetDto;
 
-    if (!passwordResetTokenActive) {
-      throw new UnauthorizedException('Bad confirmation token');
-    }
+    const user = await this.usersService.getById(userId);
+    await this.usersService.changePassword(user, newPassword);
 
-    await this.passwordResetService.verifyToken(
-      token,
-      passwordResetTokenActive.hashToken,
-      new UnauthorizedException('Bad confirmation token'),
-    );
+    await this.passwordResetService.markTokenAsUsed(req.passwordResetToken);
+
+    await this.authenticationEmitter.emitPasswordResetConfirmationEvent({
+      user,
+      subject: 'Potwierdzenie zmiany hasła',
+    });
   }
 }

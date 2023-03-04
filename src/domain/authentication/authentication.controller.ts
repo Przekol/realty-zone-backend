@@ -34,7 +34,7 @@ export class AuthenticationController {
 
     const activationLink = await this.emailConfirmationService.generateActivationLink(user);
 
-    await this.authenticationEmitter.emitActivationLinkSendEmailEvent({
+    await this.authenticationEmitter.emitActivationEmailSendEvent({
       user,
       subject: 'Potwierdzenie rejestracji',
       url: activationLink,
