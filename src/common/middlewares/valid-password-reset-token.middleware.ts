@@ -26,6 +26,7 @@ export class ValidPasswordResetTokenMiddleware implements NestMiddleware {
       passwordResetTokenActive.hashToken,
       new UnauthorizedException('Bad confirmation token'),
     );
+    req.passwordResetToken = passwordResetTokenActive;
     next();
   }
 }
