@@ -72,4 +72,9 @@ export class UsersService {
     user.status = status;
     await user.save();
   }
+
+  async changePassword(user: User, newPassword: string): Promise<void> {
+    user.hashPwd = await hashData(newPassword);
+    await user.save();
+  }
 }
