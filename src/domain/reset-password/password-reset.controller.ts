@@ -1,6 +1,7 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, Post, Query, Req } from '@nestjs/common';
+import { Request } from 'express';
 
-import { ForgetPasswordDto } from '@domain/reset-password/dto';
+import { ForgetPasswordDto, PasswordResetDto } from '@domain/reset-password/dto';
 import { PasswordResetService } from '@domain/reset-password/password-reset.service';
 import { UsersService } from '@domain/users';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
@@ -41,5 +42,25 @@ export class PasswordResetController {
   @Get('/verify-password-reset-token')
   async verifyPasswordResetToken(): Promise<VerifyPasswordResetTokenResponse> {
     return { valid: true };
+  }
+
+  @HttpCode(200)
+  @Post()
+  async passwordReset(
+    @Req() req: Request,
+    @Body() passwordResetDto: PasswordResetDto,
+    @Query('userId') userId: string,
+  ) {
+    const { newPassword } = passwordResetDto;
+
+    const user = await this.usersService.getById(userId);
+    await this.usersService.changePassword(user, newPassword);
+
+    await this.passwordResetService.markTokenAsUsed(req.passwordResetToken);
+
+    await this.authenticationEmitter.emitPasswordResetConfirmationEvent({
+      user,
+      subject: 'Potwierdzenie zmiany hasła',
+    });
   }
 }
