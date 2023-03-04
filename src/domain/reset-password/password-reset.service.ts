@@ -33,7 +33,7 @@ export class PasswordResetService {
     return `${this.configService.get('CLIENT_URL')}/reset-password?token=${token}&id=${userId}`;
   }
 
-  async sendResetPasswordLink(user: User, subject: string, url: string) {
+  async sendPasswordResetLink(user: User, subject: string, url: string) {
     await this.emailService.sendMail(user.email, subject, 'authentication/password-reset', {
       username: user.username,
       url,

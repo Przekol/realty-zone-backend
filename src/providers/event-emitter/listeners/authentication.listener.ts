@@ -14,12 +14,12 @@ export class AuthenticationListener {
   ) {}
 
   @OnEvent(events.authenticationEmailSendActivationLink, { async: true })
-  async handleVerificationLinkSendEmailEvent(payload: EmailSendLinkAuthenticationEvent) {
-    await this.emailConfirmationService.sendVerificationLink(payload.user, payload.subject, payload.url);
+  async handleEmailActivationLinkSendEvent(payload: EmailSendLinkAuthenticationEvent) {
+    await this.emailConfirmationService.sendActivationLink(payload.user, payload.subject, payload.url);
   }
 
   @OnEvent(events.authenticationEmailSendPasswordResetLink, { async: true })
-  async handlePasswordResetLinkSendEmailEvent(payload: EmailSendLinkAuthenticationEvent) {
-    await this.passwordResetService.sendResetPasswordLink(payload.user, payload.subject, payload.url);
+  async handleEmailPasswordResetLinkSendEvent(payload: EmailSendLinkAuthenticationEvent) {
+    await this.passwordResetService.sendPasswordResetLink(payload.user, payload.subject, payload.url);
   }
 }

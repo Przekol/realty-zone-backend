@@ -20,7 +20,7 @@ export class EmailConfirmationService {
     private readonly authenticationEmitter: AuthenticationEmitter,
   ) {}
 
-  async sendVerificationLink(user: User, subject: string, url: string) {
+  async sendActivationLink(user: User, subject: string, url: string) {
     await this.emailService.sendMail(user.email, subject, 'authentication/email-confirmation', {
       username: user.username,
       url,
