@@ -53,4 +53,9 @@ export class PasswordResetService {
       throw error;
     }
   }
+
+  async markTokenAsUsed(passwordResetToken: PasswordResetToken): Promise<void> {
+    passwordResetToken.isUsed = true;
+    await passwordResetToken.save();
+  }
 }
