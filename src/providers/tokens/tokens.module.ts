@@ -9,5 +9,6 @@ import { TokensService } from './tokens.service';
 @Module({
   imports: [TypeOrmModule.forFeature([ActivationToken, PasswordResetToken]), EmailModule],
   providers: [TokensService],
+  exports: [TokensService],
 })
 export class TokensModule {}
