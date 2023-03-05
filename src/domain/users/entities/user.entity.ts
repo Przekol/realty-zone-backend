@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { PasswordResetToken } from '@domain/password-reset/entities';
+import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
 
 import { Address } from './address.entity';
 
@@ -57,6 +57,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @Column({ nullable: true })
   activationHashToken?: string;
+
+  @OneToMany(() => ActivationToken, (activationToken) => activationToken.user)
+  activationTokens: ActivationToken[];
 
   @OneToMany(() => PasswordResetToken, (passwordResetToken) => passwordResetToken.user)
   passwordResetTokens: PasswordResetToken[];

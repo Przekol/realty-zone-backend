@@ -11,10 +11,10 @@ import {
 
 import { User } from '@domain/users/entities';
 
-import { PasswordResetTokenEntity } from '@domain/password-reset/types';
+import { TokenEntity } from '@providers/tokens/types';
 
 @Entity()
-export class PasswordResetToken extends BaseEntity implements PasswordResetTokenEntity {
+export class ActivationToken extends BaseEntity implements TokenEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -24,7 +24,7 @@ export class PasswordResetToken extends BaseEntity implements PasswordResetToken
   @Column({ default: false })
   isUsed: boolean;
 
-  @ManyToOne(() => User, (user) => user.passwordResetTokens)
+  @ManyToOne(() => User, (user) => user.activationTokens)
   user: User;
 
   @Column({ type: 'bigint', nullable: false })

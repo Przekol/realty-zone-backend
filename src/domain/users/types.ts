@@ -1,4 +1,4 @@
-import { PasswordResetTokenEntity } from '@domain/password-reset/types';
+import { TokenEntity } from '@providers/tokens/types';
 
 export interface UserEntity {
   id: string;
@@ -13,7 +13,8 @@ export interface UserEntity {
   status: Status;
   currentHashRefreshToken?: string;
   activationHashToken?: string;
-  passwordResetTokens: PasswordResetTokenEntity[];
+  activationTokens: TokenEntity[];
+  passwordResetTokens: TokenEntity[];
   createdAt: Date;
   updatedAt: Date;
 }
