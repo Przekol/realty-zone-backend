@@ -1,3 +1,3 @@
-import { ValidPasswordResetTokenMiddleware } from './valid-password-reset-token.middleware';
+import { ValidTokenMiddleware } from './valid-token.middleware';
 
-export { ValidPasswordResetTokenMiddleware };
+export { ValidTokenMiddleware };
