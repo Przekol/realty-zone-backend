@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from '@domain/users';
-import { User } from '@domain/users/entities';
 import { EmailService } from '@providers/email';
 
 import { VerificationTokenPayload } from './types';
@@ -18,17 +17,17 @@ export class EmailConfirmationService {
     private readonly usersService: UsersService,
   ) {}
 
-  async generateActivationLink(user: User): Promise<string> {
-    const payload: VerificationTokenPayload = { email: user.email };
-    const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET_VERIFICATION_TOKEN'),
-      expiresIn: this.configService.get('JWT_EXPIRATION_TIME_VERIFICATION_TOKEN'),
-    });
-
-    await this.usersService.setHashToken(token, user, { tokenType: 'activation' });
-
-    return `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
-  }
+  // async generateActivationLink(user: User): Promise<string> {
+  //   const payload: VerificationTokenPayload = { email: user.email };
+  //   const token = this.jwtService.sign(payload, {
+  //     secret: this.configService.get('JWT_SECRET_VERIFICATION_TOKEN'),
+  //     expiresIn: this.configService.get('JWT_EXPIRATION_TIME_VERIFICATION_TOKEN'),
+  //   });
+  //
+  //   await this.usersService.setHashToken(token, user, { tokenType: 'activation' });
+  //
+  //   return `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
+  // }
 
   async decodeConfirmationToken(token: string) {
     try {

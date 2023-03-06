@@ -4,6 +4,7 @@ import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@domain/authentication/guards';
 import { User } from '@domain/users/entities';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
+import { TokensService } from '@providers/tokens';
 
 import { Status } from '@domain/users/types';
 import { MailTemplate } from '@providers/email/types';
@@ -16,6 +17,7 @@ export class EmailConfirmationController {
   constructor(
     private readonly emailConfirmationService: EmailConfirmationService,
     private readonly authenticationEmitter: AuthenticationEmitter,
+    private readonly tokensService: TokensService,
   ) {}
 
   @HttpCode(200)
@@ -24,6 +26,7 @@ export class EmailConfirmationController {
     const email = await this.emailConfirmationService.decodeConfirmationToken(confirmationData.token);
     await this.emailConfirmationService.confirmEmail(email);
   }
+  // TODO zmiana logiki
 
   @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
@@ -32,7 +35,20 @@ export class EmailConfirmationController {
     if (user.status === Status.ACTIVE) {
       throw new BadRequestException('Email already confirmed');
     }
-    const activationLink = await this.emailConfirmationService.generateActivationLink(user);
+
+    const activationTokenActive = await this.tokensService.getTokenActiveByUserId(user.id, {
+      tokenType: 'activation',
+    });
+    if (activationTokenActive) {
+      throw new BadRequestException('Only after one hour you can request for another token');
+    }
+    const token = await this.tokensService.createToken(user, {
+      tokenType: 'activation',
+    });
+
+    const activationLink = await this.tokensService.generateTokenLink(token, user.id, {
+      tokenType: 'activation',
+    });
 
     await this.authenticationEmitter.emitActivationEmailSendEvent({
       user,
