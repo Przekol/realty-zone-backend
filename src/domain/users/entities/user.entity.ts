@@ -54,9 +54,6 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ nullable: true })
   currentHashRefreshToken?: string;
 
-  @Column({ nullable: true })
-  activationHashToken?: string;
-
   @OneToMany(() => ActivationToken, (activationToken) => activationToken.user)
   activationTokens: ActivationToken[];
 

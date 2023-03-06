@@ -49,9 +49,6 @@ export class UsersService {
   private async setOrRemoveHashToken(user: User, options: OptionsHashToken, hashToken: string): Promise<void> {
     const { tokenType } = options;
     switch (tokenType) {
-      case 'activation':
-        user.activationHashToken = hashToken;
-        break;
       case 'refresh':
         user.currentHashRefreshToken = hashToken;
         break;

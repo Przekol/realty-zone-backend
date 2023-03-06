@@ -12,7 +12,6 @@ export interface UserEntity {
   address?: AddressEntity;
   status: Status;
   currentHashRefreshToken?: string;
-  activationHashToken?: string;
   activationTokens: TokenEntity[];
   passwordResetTokens: TokenEntity[];
   createdAt: Date;
@@ -41,5 +40,5 @@ export interface AddressEntity {
 }
 
 export interface OptionsHashToken {
-  tokenType: 'activation' | 'refresh';
+  tokenType: 'refresh';
 }
