@@ -46,7 +46,6 @@ export class User extends BaseEntity implements UserEntity {
   phone?: string;
 
   @OneToOne(() => Address, {
-    eager: true,
     cascade: true,
   })
   @JoinColumn()
