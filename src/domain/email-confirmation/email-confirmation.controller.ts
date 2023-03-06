@@ -3,15 +3,20 @@ import { BadRequestException, Body, Controller, HttpCode, Post, UseGuards } from
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@domain/authentication/guards';
 import { User } from '@domain/users/entities';
+import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 
 import { Status } from '@domain/users/types';
+import { MailTemplate } from '@providers/email/types';
 
 import { ConfirmEmailDto } from './dto';
 import { EmailConfirmationService } from './email-confirmation.service';
 
 @Controller('email-confirmation')
 export class EmailConfirmationController {
-  constructor(private readonly emailConfirmationService: EmailConfirmationService) {}
+  constructor(
+    private readonly emailConfirmationService: EmailConfirmationService,
+    private readonly authenticationEmitter: AuthenticationEmitter,
+  ) {}
 
   @HttpCode(200)
   @Post('confirm')
@@ -29,6 +34,11 @@ export class EmailConfirmationController {
     }
     const activationLink = await this.emailConfirmationService.generateActivationLink(user);
 
-    await this.emailConfirmationService.resendConfirmationLink(user, activationLink);
+    await this.authenticationEmitter.emitActivationEmailSendEvent({
+      user,
+      subject: 'Ponowne potwierdzenie rejestracji',
+      url: activationLink,
+      template: MailTemplate.emailConfirmation,
+    });
   }
 }

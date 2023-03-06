@@ -10,6 +10,7 @@ import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 
 import { CookiesNames } from './types';
 import { UserEntity } from '@domain/users/types';
+import { MailTemplate } from '@providers/email/types';
 import { GetOneUserResponse } from '@types';
 
 import { AuthenticationService } from './authentication.service';
@@ -38,6 +39,7 @@ export class AuthenticationController {
       user,
       subject: 'Potwierdzenie rejestracji',
       url: activationLink,
+      template: MailTemplate.emailConfirmation,
     });
 
     return user;

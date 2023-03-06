@@ -16,6 +16,7 @@ export class AuthenticationEmitter {
     activationEmailSendEvent.user = payload.user;
     activationEmailSendEvent.subject = payload.subject;
     activationEmailSendEvent.url = payload.url;
+    activationEmailSendEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(events.authenticationEmailSendActivationLink, activationEmailSendEvent);
   }
@@ -25,6 +26,7 @@ export class AuthenticationEmitter {
     passwordResetEmailSendEvent.user = payload.user;
     passwordResetEmailSendEvent.subject = payload.subject;
     passwordResetEmailSendEvent.url = payload.url;
+    passwordResetEmailSendEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(events.authenticationEmailSendPasswordResetLink, passwordResetEmailSendEvent);
   }

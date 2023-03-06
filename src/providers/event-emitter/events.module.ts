@@ -5,9 +5,10 @@ import { EmailConfirmationModule } from '@domain/email-confirmation';
 import { PasswordResetModule } from '@domain/password-reset';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { AuthenticationListener } from '@providers/event-emitter/listeners';
+import { TokensModule } from '@providers/tokens';
 
 @Module({
-  imports: [EventEmitterModule.forRoot(), EmailConfirmationModule, forwardRef(() => PasswordResetModule)],
+  imports: [EventEmitterModule.forRoot(), EmailConfirmationModule, forwardRef(() => PasswordResetModule), TokensModule],
   providers: [AuthenticationEmitter, AuthenticationListener],
   exports: [AuthenticationEmitter],
 })
