@@ -35,6 +35,7 @@ export class AuthenticationEmitter {
     const passwordResetConfirmationEmailSentEvent = new EmailSendConfirmationEvent();
     passwordResetConfirmationEmailSentEvent.user = payload.user;
     passwordResetConfirmationEmailSentEvent.subject = payload.subject;
+    passwordResetConfirmationEmailSentEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(
       events.authenticationEmailSendPasswordResetConfirmation,

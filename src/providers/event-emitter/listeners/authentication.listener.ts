@@ -30,6 +30,6 @@ export class AuthenticationListener {
 
   @OnEvent(events.authenticationEmailSendPasswordResetConfirmation, { async: true })
   async handlePasswordResetConfirmationSendEvent(payload: EmailSendConfirmationEvent) {
-    await this.passwordResetService.sendPasswordResetConfirmation(payload.user, payload.subject);
+    await this.passwordResetService.sendPasswordResetConfirmation(payload.user, payload.subject, payload.template);
   }
 }

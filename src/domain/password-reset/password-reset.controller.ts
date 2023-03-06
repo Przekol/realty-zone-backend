@@ -69,6 +69,7 @@ export class PasswordResetController {
     await this.authenticationEmitter.emitPasswordResetConfirmationEvent({
       user,
       subject: 'Potwierdzenie zmiany hasła',
+      template: MailTemplate.passwordResetSuccess,
     });
   }
 }
