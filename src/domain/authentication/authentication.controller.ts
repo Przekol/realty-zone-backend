@@ -39,7 +39,7 @@ export class AuthenticationController {
       tokenType: 'activation',
     });
 
-    const activationLink = await this.tokensService.generateTokenLink(token, user.id, {
+    const activationLink = await this.tokensService.generateTokenLink(token, {
       tokenType: 'activation',
     });
 

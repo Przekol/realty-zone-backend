@@ -31,15 +31,15 @@ export class AuthenticationEmitter {
     await this.eventEmitter.emitAsync(events.authenticationEmailSendPasswordResetLink, passwordResetEmailSendEvent);
   }
 
-  async emitPasswordResetConfirmationEvent(payload: EmailSendConfirmationEvent): Promise<void> {
-    const passwordResetConfirmationEmailSentEvent = new EmailSendConfirmationEvent();
-    passwordResetConfirmationEmailSentEvent.user = payload.user;
-    passwordResetConfirmationEmailSentEvent.subject = payload.subject;
-    passwordResetConfirmationEmailSentEvent.template = payload.template;
+  async emitConfirmationEmailSendEvent(payload: EmailSendConfirmationEvent): Promise<void> {
+    const confirmationEmailSentEvent = new EmailSendConfirmationEvent();
+    confirmationEmailSentEvent.user = payload.user;
+    confirmationEmailSentEvent.subject = payload.subject;
+    confirmationEmailSentEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(
       events.authenticationEmailSendPasswordResetConfirmation,
-      passwordResetConfirmationEmailSentEvent,
+      confirmationEmailSentEvent,
     );
   }
 }

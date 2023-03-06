@@ -1,7 +1,9 @@
-import { BadRequestException, Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@domain/authentication/guards';
+import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { TokensService } from '@providers/tokens';
@@ -9,7 +11,6 @@ import { TokensService } from '@providers/tokens';
 import { Status } from '@domain/users/types';
 import { MailTemplate } from '@providers/email/types';
 
-import { ConfirmEmailDto } from './dto';
 import { EmailConfirmationService } from './email-confirmation.service';
 
 @Controller('email-confirmation')
@@ -18,15 +19,22 @@ export class EmailConfirmationController {
     private readonly emailConfirmationService: EmailConfirmationService,
     private readonly authenticationEmitter: AuthenticationEmitter,
     private readonly tokensService: TokensService,
+    private readonly usersService: UsersService,
   ) {}
 
   @HttpCode(200)
   @Post('confirm')
-  async confirm(@Body() confirmationData: ConfirmEmailDto) {
-    const email = await this.emailConfirmationService.decodeConfirmationToken(confirmationData.token);
-    await this.emailConfirmationService.confirmEmail(email);
+  async confirm(@Req() req: Request) {
+    const { tokenActive } = req;
+    const user = await this.usersService.getById(tokenActive.user.id);
+    await this.usersService.updateUserStatus(user, Status.ACTIVE);
+
+    await this.authenticationEmitter.emitConfirmationEmailSendEvent({
+      user,
+      subject: 'Witamy na platformie',
+      template: MailTemplate.welcome,
+    });
   }
-  // TODO zmiana logiki
 
   @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
@@ -46,7 +54,7 @@ export class EmailConfirmationController {
       tokenType: 'activation',
     });
 
-    const activationLink = await this.tokensService.generateTokenLink(token, user.id, {
+    const activationLink = await this.tokensService.generateTokenLink(token, {
       tokenType: 'activation',
     });
 
