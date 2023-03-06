@@ -63,7 +63,7 @@ export class PasswordResetController {
 
     await this.tokensService.markTokenAsUsed(tokenActive);
 
-    await this.authenticationEmitter.emitConfirmationEmailSendEvent({
+    await this.authenticationEmitter.emitMessageEmailSendEvent({
       user,
       subject: 'Potwierdzenie zmiany hasła',
       template: MailTemplate.passwordResetSuccess,

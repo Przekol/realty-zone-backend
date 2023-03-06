@@ -2,7 +2,6 @@ import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/c
 
 import { ValidTokenMiddleware } from '@common/middlewares';
 import { UsersModule } from '@domain/users';
-import { EmailModule } from '@providers/email';
 import { EventsModule } from '@providers/event-emitter';
 import { TokensModule } from '@providers/tokens';
 
@@ -10,7 +9,7 @@ import { PasswordResetController } from './password-reset.controller';
 import { PasswordResetService } from './password-reset.service';
 
 @Module({
-  imports: [UsersModule, EmailModule, forwardRef(() => EventsModule), TokensModule],
+  imports: [UsersModule, forwardRef(() => EventsModule), TokensModule],
   controllers: [PasswordResetController],
   providers: [PasswordResetService],
   exports: [PasswordResetService],

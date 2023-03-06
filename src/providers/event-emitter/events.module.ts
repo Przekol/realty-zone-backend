@@ -1,14 +1,13 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
-import { EmailConfirmationModule } from '@domain/email-confirmation';
-import { PasswordResetModule } from '@domain/password-reset';
+import { EmailModule } from '@providers/email';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { AuthenticationListener } from '@providers/event-emitter/listeners';
 import { TokensModule } from '@providers/tokens';
 
 @Module({
-  imports: [EventEmitterModule.forRoot(), EmailConfirmationModule, forwardRef(() => PasswordResetModule), TokensModule],
+  imports: [EventEmitterModule.forRoot(), TokensModule, EmailModule],
   providers: [AuthenticationEmitter, AuthenticationListener],
   exports: [AuthenticationEmitter],
 })

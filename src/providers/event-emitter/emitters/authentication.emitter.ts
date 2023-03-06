@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { events } from '@providers/event-emitter/events';
 import {
-  EmailSendConfirmationEvent,
+  EmailSendMessageEvent,
   EmailSendLinkAuthenticationEvent,
 } from '@providers/event-emitter/events/authentication';
 
@@ -31,8 +31,8 @@ export class AuthenticationEmitter {
     await this.eventEmitter.emitAsync(events.authenticationEmailSendPasswordResetLink, passwordResetEmailSendEvent);
   }
 
-  async emitConfirmationEmailSendEvent(payload: EmailSendConfirmationEvent): Promise<void> {
-    const confirmationEmailSentEvent = new EmailSendConfirmationEvent();
+  async emitMessageEmailSendEvent(payload: EmailSendMessageEvent): Promise<void> {
+    const confirmationEmailSentEvent = new EmailSendMessageEvent();
     confirmationEmailSentEvent.user = payload.user;
     confirmationEmailSentEvent.subject = payload.subject;
     confirmationEmailSentEvent.template = payload.template;

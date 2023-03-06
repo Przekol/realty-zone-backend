@@ -11,12 +11,9 @@ import { TokensService } from '@providers/tokens';
 import { Status } from '@domain/users/types';
 import { MailTemplate } from '@providers/email/types';
 
-import { EmailConfirmationService } from './email-confirmation.service';
-
 @Controller('email-confirmation')
 export class EmailConfirmationController {
   constructor(
-    private readonly emailConfirmationService: EmailConfirmationService,
     private readonly authenticationEmitter: AuthenticationEmitter,
     private readonly tokensService: TokensService,
     private readonly usersService: UsersService,
@@ -29,7 +26,7 @@ export class EmailConfirmationController {
     const user = await this.usersService.getById(tokenActive.user.id);
     await this.usersService.updateUserStatus(user, Status.ACTIVE);
 
-    await this.authenticationEmitter.emitConfirmationEmailSendEvent({
+    await this.authenticationEmitter.emitMessageEmailSendEvent({
       user,
       subject: 'Witamy na platformie',
       template: MailTemplate.welcome,
