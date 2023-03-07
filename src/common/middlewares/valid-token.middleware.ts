@@ -10,9 +10,8 @@ export class ValidTokenMiddleware implements NestMiddleware {
   constructor(@Inject(forwardRef(() => TokensService)) private readonly tokensService: TokensService) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const validTokenDto = plainToInstance(ValidTokenDto, req.query);
-    const { token } = validTokenDto;
 
-    const { userId, tokenType } = await this.tokensService.decodeToken(token);
+    const { userId, tokenType } = await this.tokensService.decodeToken(validTokenDto);
 
     const tokenActive = await this.tokensService.getTokenActiveByUserId(userId, { tokenType });
 
@@ -20,7 +19,7 @@ export class ValidTokenMiddleware implements NestMiddleware {
       throw new UnauthorizedException('Invalid or expired token!');
     }
 
-    await this.tokensService.verifyToken(token, tokenActive.hashToken);
+    await this.tokensService.verifyToken(validTokenDto.token, tokenActive.hashToken);
 
     req.tokenActive = tokenActive;
     next();

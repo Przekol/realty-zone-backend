@@ -9,7 +9,8 @@ import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities'
 import { checkHash, hashData } from '@shared/utils';
 
 import { MailTemplate } from '@providers/email/types';
-import { TokenOptions, TokenPayload, TokenEntityType } from '@providers/tokens/types';
+import { TokenOptions, TokenPayload, TokenEntityType, JwtTokenOptions } from '@providers/tokens/types';
+import { ValidTokenRequest } from '@types';
 
 @Injectable()
 export class TokensService {
@@ -46,17 +47,28 @@ export class TokensService {
 
   private async generateToken(userId: string, tokenType: TokenOptions['tokenType']): Promise<string> {
     const payload: TokenPayload = { userId, tokenType };
-
+    const { secret, expiresIn } = this.getJwtTokenOptionsByType(tokenType);
     return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET_TOKEN'),
-      expiresIn: this.configService.get('JWT_EXPIRATION_TOKEN'),
+      secret,
+      expiresIn,
     });
   }
 
   async generateTokenLink(token: string, options: TokenOptions): Promise<string> {
     const { tokenType } = options;
+    let path: string;
+    switch (tokenType) {
+      case 'activation':
+        path = 'activate-account';
+        break;
+      case 'password-reset':
+        path = 'change-password';
+        break;
 
-    return `${this.configService.get('CLIENT_URL')}/${tokenType}?token=${token}`;
+      default:
+        throw new BadRequestException('Invalid token type');
+    }
+    return `${this.configService.get('CLIENT_URL')}/${path}?type=${tokenType}?token=${token}`;
   }
 
   async verifyToken(data: string, hashedData: string): Promise<void> {
@@ -108,13 +120,13 @@ export class TokensService {
     });
   }
 
-  async decodeToken(token: string) {
+  async decodeToken({ tokenType, token }: ValidTokenRequest) {
     try {
       const payload: TokenPayload = await this.jwtService.verify(token, {
-        secret: this.configService.get('JWT_SECRET_TOKEN'),
+        secret: this.getJwtTokenOptionsByType(tokenType).secret,
       });
 
-      if (!payload || !payload.userId || !payload.tokenType) {
+      if (!payload || !payload.userId || !payload.tokenType || payload.tokenType !== tokenType) {
         throw new UnauthorizedException('Invalid or expired token');
       }
 
@@ -123,5 +135,23 @@ export class TokensService {
       // error?.name;
       throw new UnauthorizedException('Invalid or expired token!');
     }
+  }
+
+  private getJwtTokenOptionsByType(tokenType: TokenOptions['tokenType']): JwtTokenOptions {
+    let secret: string, expiresIn: number;
+    switch (tokenType) {
+      case 'activation':
+        secret = this.configService.get('JWT_SECRET_TOKEN_ACTIVATION');
+        expiresIn = this.configService.get('JWT_EXPIRATION_TOKEN_ACTIVATION');
+        break;
+      case 'password-reset':
+        secret = this.configService.get('JWT_SECRET_TOKEN_PASSWORD_RESET');
+        expiresIn = this.configService.get('JWT_EXPIRATION_TOKEN_PASSWORD_RESET');
+        break;
+      default:
+        throw new BadRequestException('Invalid token type');
+    }
+
+    return { secret, expiresIn };
   }
 }

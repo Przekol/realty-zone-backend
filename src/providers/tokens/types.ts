@@ -23,3 +23,7 @@ export interface TokenPayload {
   userId: string;
   tokenType: TokenOptions['tokenType'];
 }
+export interface JwtTokenOptions {
+  secret: string;
+  expiresIn: number;
+}
