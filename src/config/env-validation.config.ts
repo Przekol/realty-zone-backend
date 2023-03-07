@@ -20,6 +20,8 @@ export const envValidation = Joi.object({
   EMAIL_USER: Joi.string().required(),
   EMAIL_PASSWORD: Joi.string().required(),
   CLIENT_URL: Joi.string().required(),
-  JWT_SECRET_TOKEN: Joi.string().required(),
-  JWT_EXPIRATION_TOKEN: Joi.number().required(),
+  JWT_SECRET_TOKEN_ACTIVATION: Joi.string().required(),
+  JWT_EXPIRATION_TOKEN_ACTIVATION: Joi.number().required(),
+  JWT_SECRET_TOKEN_PASSWORD_RESET: Joi.string().required(),
+  JWT_EXPIRATION_TOKEN_PASSWORD_RESET: Joi.number().required(),
 });
