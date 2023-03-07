@@ -10,5 +10,5 @@ export class ValidTokenDto implements ValidTokenRequest {
 
   @IsString()
   @IsNotEmpty()
-  tokenType: TokenOptions['tokenType'];
+  type: TokenOptions['tokenType'];
 }

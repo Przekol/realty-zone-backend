@@ -120,13 +120,13 @@ export class TokensService {
     });
   }
 
-  async decodeToken({ tokenType, token }: ValidTokenRequest) {
+  async decodeToken({ type, token }: ValidTokenRequest) {
     try {
       const payload: TokenPayload = await this.jwtService.verify(token, {
-        secret: this.getJwtTokenOptionsByType(tokenType).secret,
+        secret: this.getJwtTokenOptionsByType(type).secret,
       });
 
-      if (!payload || !payload.userId || !payload.tokenType || payload.tokenType !== tokenType) {
+      if (!payload || !payload.userId || !payload.tokenType || payload.tokenType !== type) {
         throw new UnauthorizedException('Invalid or expired token');
       }
 
