@@ -1,23 +1,36 @@
-import { BadRequestException, Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@domain/authentication/guards';
+import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
+import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
+import { TokensService } from '@providers/tokens';
 
 import { Status } from '@domain/users/types';
-
-import { ConfirmEmailDto } from './dto';
-import { EmailConfirmationService } from './email-confirmation.service';
+import { MailTemplate } from '@providers/email/types';
 
 @Controller('email-confirmation')
 export class EmailConfirmationController {
-  constructor(private readonly emailConfirmationService: EmailConfirmationService) {}
+  constructor(
+    private readonly authenticationEmitter: AuthenticationEmitter,
+    private readonly tokensService: TokensService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @HttpCode(200)
   @Post('confirm')
-  async confirm(@Body() confirmationData: ConfirmEmailDto) {
-    const email = await this.emailConfirmationService.decodeConfirmationToken(confirmationData.token);
-    await this.emailConfirmationService.confirmEmail(email);
+  async confirm(@Req() req: Request) {
+    const { tokenActive } = req;
+    const user = await this.usersService.getById(tokenActive.user.id);
+    await this.usersService.updateUserStatus(user, Status.ACTIVE);
+
+    await this.authenticationEmitter.emitMessageEmailSendEvent({
+      user,
+      subject: 'Witamy na platformie',
+      template: MailTemplate.welcome,
+    });
   }
 
   @HttpCode(200)
@@ -27,8 +40,26 @@ export class EmailConfirmationController {
     if (user.status === Status.ACTIVE) {
       throw new BadRequestException('Email already confirmed');
     }
-    const activationLink = await this.emailConfirmationService.generateActivationLink(user);
 
-    await this.emailConfirmationService.resendConfirmationLink(user, activationLink);
+    const activationTokenActive = await this.tokensService.getTokenActiveByUserId(user.id, {
+      tokenType: 'activation',
+    });
+    if (activationTokenActive) {
+      throw new BadRequestException('Only after one hour you can request for another token');
+    }
+    const token = await this.tokensService.createToken(user, {
+      tokenType: 'activation',
+    });
+
+    const activationLink = await this.tokensService.generateTokenLink(token, {
+      tokenType: 'activation',
+    });
+
+    await this.authenticationEmitter.emitActivationEmailSendEvent({
+      user,
+      subject: 'Ponowne potwierdzenie rejestracji',
+      url: activationLink,
+      template: MailTemplate.emailConfirmation,
+    });
   }
 }

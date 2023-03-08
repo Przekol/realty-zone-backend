@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { events } from '@providers/event-emitter/events';
 import {
-  EmailSendConfirmationEvent,
+  EmailSendMessageEvent,
   EmailSendLinkAuthenticationEvent,
 } from '@providers/event-emitter/events/authentication';
 
@@ -16,6 +16,7 @@ export class AuthenticationEmitter {
     activationEmailSendEvent.user = payload.user;
     activationEmailSendEvent.subject = payload.subject;
     activationEmailSendEvent.url = payload.url;
+    activationEmailSendEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(events.authenticationEmailSendActivationLink, activationEmailSendEvent);
   }
@@ -25,18 +26,20 @@ export class AuthenticationEmitter {
     passwordResetEmailSendEvent.user = payload.user;
     passwordResetEmailSendEvent.subject = payload.subject;
     passwordResetEmailSendEvent.url = payload.url;
+    passwordResetEmailSendEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(events.authenticationEmailSendPasswordResetLink, passwordResetEmailSendEvent);
   }
 
-  async emitPasswordResetConfirmationEvent(payload: EmailSendConfirmationEvent): Promise<void> {
-    const passwordResetConfirmationEmailSentEvent = new EmailSendConfirmationEvent();
-    passwordResetConfirmationEmailSentEvent.user = payload.user;
-    passwordResetConfirmationEmailSentEvent.subject = payload.subject;
+  async emitMessageEmailSendEvent(payload: EmailSendMessageEvent): Promise<void> {
+    const confirmationEmailSentEvent = new EmailSendMessageEvent();
+    confirmationEmailSentEvent.user = payload.user;
+    confirmationEmailSentEvent.subject = payload.subject;
+    confirmationEmailSentEvent.template = payload.template;
 
     await this.eventEmitter.emitAsync(
       events.authenticationEmailSendPasswordResetConfirmation,
-      passwordResetConfirmationEmailSentEvent,
+      confirmationEmailSentEvent,
     );
   }
 }

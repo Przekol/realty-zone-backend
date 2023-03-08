@@ -2,9 +2,8 @@ import { User } from '@domain/users/entities';
 
 import { MailTemplate } from '@providers/email/types';
 
-export class EmailSendLinkAuthenticationEvent {
+export class EmailSendMessageEvent {
   user: User;
   subject: string;
-  url: string;
   template: MailTemplate;
 }

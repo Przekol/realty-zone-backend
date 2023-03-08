@@ -1,17 +1,15 @@
 import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ValidPasswordResetTokenMiddleware } from '@common/middlewares';
-import { PasswordResetToken } from '@domain/password-reset/entities';
+import { ValidTokenMiddleware } from '@common/middlewares';
 import { UsersModule } from '@domain/users';
-import { EmailModule } from '@providers/email';
 import { EventsModule } from '@providers/event-emitter';
+import { TokensModule } from '@providers/tokens';
 
 import { PasswordResetController } from './password-reset.controller';
 import { PasswordResetService } from './password-reset.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PasswordResetToken]), UsersModule, EmailModule, forwardRef(() => EventsModule)],
+  imports: [UsersModule, forwardRef(() => EventsModule), TokensModule],
   controllers: [PasswordResetController],
   providers: [PasswordResetService],
   exports: [PasswordResetService],
@@ -19,7 +17,7 @@ import { PasswordResetService } from './password-reset.service';
 export class PasswordResetModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(ValidPasswordResetTokenMiddleware)
+      .apply(ValidTokenMiddleware)
       .forRoutes(
         { path: 'password-reset', method: RequestMethod.POST },
         { path: 'password-reset/verify-password-reset-token', method: RequestMethod.GET },

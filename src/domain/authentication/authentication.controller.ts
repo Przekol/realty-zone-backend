@@ -7,9 +7,11 @@ import { EmailConfirmationService } from '@domain/email-confirmation';
 import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
+import { TokensService } from '@providers/tokens';
 
 import { CookiesNames } from './types';
 import { UserEntity } from '@domain/users/types';
+import { MailTemplate } from '@providers/email/types';
 import { GetOneUserResponse } from '@types';
 
 import { AuthenticationService } from './authentication.service';
@@ -26,18 +28,26 @@ export class AuthenticationController {
     private readonly cookiesService: CookieService,
     private readonly emailConfirmationService: EmailConfirmationService,
     private readonly authenticationEmitter: AuthenticationEmitter,
+    private readonly tokensService: TokensService,
   ) {}
 
   @Post('signup')
   async register(@Body() registrationData: RegisterDto): Promise<GetOneUserResponse> {
     const user = await this.authenticationService.register(registrationData);
 
-    const activationLink = await this.emailConfirmationService.generateActivationLink(user);
+    const token = await this.tokensService.createToken(user, {
+      tokenType: 'activation',
+    });
+
+    const activationLink = await this.tokensService.generateTokenLink(token, {
+      tokenType: 'activation',
+    });
 
     await this.authenticationEmitter.emitActivationEmailSendEvent({
       user,
       subject: 'Potwierdzenie rejestracji',
       url: activationLink,
+      template: MailTemplate.emailConfirmation,
     });
 
     return user;
