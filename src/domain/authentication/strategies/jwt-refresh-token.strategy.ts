@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { AuthenticationService } from '@domain/authentication';
 
-import { AuthenticationTokenPayload } from '@domain/authentication/types';
+import { TokenPayload } from '@providers/tokens/types';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
@@ -28,14 +28,14 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
     });
   }
 
-  async validate(request: Request, payload: AuthenticationTokenPayload) {
+  async validate(request: Request, payload: TokenPayload) {
     try {
-      if (!payload || !payload.id) {
+      if (!payload || !payload.userId || !payload.tokenType || payload.tokenType !== 'refresh') {
         new UnauthorizedException('Wrong credentials provided');
       }
 
       const refreshToken = request.cookies?.Refresh;
-      return await this.authenticationService.getAuthenticatedUserByRefreshToken(refreshToken, payload.id);
+      return await this.authenticationService.getAuthenticatedUserByRefreshToken(refreshToken, payload);
     } catch (error) {
       throw new UnauthorizedException('Wrong credentials provided');
     }

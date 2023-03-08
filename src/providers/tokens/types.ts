@@ -1,4 +1,4 @@
-import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
+import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
 
 import { UserEntity } from '@domain/users/types';
 
@@ -14,10 +14,10 @@ export interface TokenEntity extends AbstractTokenEntity {
   user: UserEntity;
 }
 export interface TokenOptions {
-  tokenType: 'activation' | 'password-reset';
+  tokenType: 'activation' | 'password-reset' | 'refresh' | 'authentication';
 }
 
-export type TokenEntityType = ActivationToken | PasswordResetToken;
+export type TokenEntityType = ActivationToken | PasswordResetToken | RefreshToken;
 
 export interface TokenPayload {
   userId: string;
@@ -25,5 +25,10 @@ export interface TokenPayload {
 }
 export interface JwtTokenOptions {
   secret: string;
+  expiresIn: number;
+}
+
+export interface TokenData {
+  token: string;
   expiresIn: number;
 }

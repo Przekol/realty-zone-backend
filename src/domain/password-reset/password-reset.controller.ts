@@ -31,7 +31,7 @@ export class PasswordResetController {
       throw new BadRequestException('Only after one hour you can request for another token');
     }
 
-    const token = await this.tokensService.createToken(user, {
+    const { token } = await this.tokensService.createToken(user, {
       tokenType: 'password-reset',
     });
     const resetTokenLink = await this.tokensService.generateTokenLink(token, {

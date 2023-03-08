@@ -47,7 +47,7 @@ export class EmailConfirmationController {
     if (activationTokenActive) {
       throw new BadRequestException('Only after one hour you can request for another token');
     }
-    const token = await this.tokensService.createToken(user, {
+    const { token } = await this.tokensService.createToken(user, {
       tokenType: 'activation',
     });
 

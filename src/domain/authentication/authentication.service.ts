@@ -1,13 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Response } from 'express';
 
 import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
+import { CookieService } from '@providers/cookie';
+import { TokensService } from '@providers/tokens';
 import { hashData } from '@shared/utils';
 
-import { AuthenticationsTokens, TokenPayload } from './types';
 import { UserEntity } from '@domain/users/types';
+import { CookiesNames } from '@providers/cookie/types';
+import { TokenOptions, TokenPayload } from '@providers/tokens/types';
 
 import { RegisterDto } from './dto';
 
@@ -15,8 +17,8 @@ import { RegisterDto } from './dto';
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly tokensService: TokensService,
+    private readonly cookieService: CookieService,
   ) {}
   async register(registrationData: RegisterDto): Promise<User> {
     const hashPwd = await hashData(registrationData.password);
@@ -29,7 +31,7 @@ export class AuthenticationService {
   async getAuthenticatedUser(email: string, password: string): Promise<UserEntity> {
     try {
       const user = await this.usersService.getByEmail(email);
-      await this.usersService.verifyToken(
+      await this.usersService.verifyPassword(
         password,
         user.hashPwd,
         new UnauthorizedException('Wrong credentials provided'),
@@ -45,38 +47,53 @@ export class AuthenticationService {
     return await this.usersService.getById(id);
   }
 
-  async getAuthenticatedUserByRefreshToken(refreshToken: string, id: string): Promise<UserEntity> {
-    const user = await this.usersService.getById(id);
-    await this.usersService.verifyToken(
-      refreshToken,
-      user.currentHashRefreshToken,
-      new UnauthorizedException('Wrong credentials provided'),
-    );
+  async getAuthenticatedUserByRefreshToken(refreshToken: string, payload: TokenPayload): Promise<UserEntity> {
+    const { userId, tokenType } = payload;
+    const user = await this.usersService.getById(userId);
+    const tokenActive = await this.tokensService.getTokenActiveByUserId(userId, { tokenType });
+    if (!tokenActive) {
+      throw new UnauthorizedException('Wrong credentials provided');
+    }
+    await this.tokensService.verifyToken(refreshToken, tokenActive.hashToken);
+    await this.tokensService.markTokenAsUsed(tokenActive);
     return user;
   }
 
-  getJwtToken(payload: TokenPayload, secret: string, expiresIn: number): string {
-    return this.jwtService.sign(payload, { secret, expiresIn });
+  async generateAuthenticationTokenAndSetCookie(user: User, res: Response, options: TokenOptions) {
+    let cookieName: CookiesNames;
+    const { tokenType } = options;
+
+    const { token, expiresIn } = await this.tokensService.createToken(user, { tokenType });
+
+    switch (tokenType) {
+      case 'refresh':
+        cookieName = CookiesNames.REFRESH;
+        break;
+      case 'authentication':
+        cookieName = CookiesNames.AUTHENTICATION;
+        break;
+      default:
+        throw new BadRequestException('Invalid token type');
+    }
+
+    await this.cookieService.setTokenInCookie(res, cookieName, {
+      token,
+      expiresIn,
+    });
   }
 
-  createAuthenticationsTokens(id: UserEntity['id']): AuthenticationsTokens {
-    const expiresIn: Record<string, number> = {
-      authenticationToken: this.configService.get('JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN'),
-      refreshToken: this.configService.get('JWT_EXPIRATION_TIME_REFRESH_TOKEN'),
-    };
-    return {
-      authenticationToken: {
-        token: this.getJwtToken(
-          { id },
-          this.configService.get('JWT_SECRET_AUTHENTICATION_TOKEN'),
-          expiresIn.authenticationToken,
-        ),
-        expiresIn: expiresIn.authenticationToken,
-      },
-      refreshToken: {
-        token: this.getJwtToken({ id }, this.configService.get('JWT_SECRET_REFRESH_TOKEN'), expiresIn.refreshToken),
-        expiresIn: expiresIn.refreshToken,
-      },
-    };
+  async renewAuthenticationTokensAndSetCookies(user: User, res: Response) {
+    await this.tokensService.revokeActiveRefreshToken(user.id);
+    await this.generateAuthenticationTokenAndSetCookie(user, res, { tokenType: 'refresh' });
+    await this.generateAuthenticationTokenAndSetCookie(user, res, {
+      tokenType: 'authentication',
+    });
+  }
+
+  async logout(user: User, res: Response) {
+    this.cookieService.clearCookie(res, CookiesNames.AUTHENTICATION);
+    this.cookieService.clearCookie(res, CookiesNames.REFRESH);
+
+    await this.tokensService.revokeActiveRefreshToken(user.id);
   }
 }

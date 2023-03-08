@@ -2,7 +2,7 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 
 import { checkHash, hashData } from '@shared/utils';
 
-import { OptionsHashToken, Status } from './types';
+import { Status } from './types';
 
 import { CreateUserDto } from './dto';
 import { User } from './entities';
@@ -35,30 +35,7 @@ export class UsersService {
     return user;
   }
 
-  async setHashToken(token: string, user: User, options: OptionsHashToken) {
-    const hashToken = await hashData(token);
-    await this.setOrRemoveHashToken(user, options, hashToken);
-    await user.save();
-  }
-
-  async removeHashToken(user: User, options: OptionsHashToken): Promise<void> {
-    await this.setOrRemoveHashToken(user, options, null);
-    await user.save();
-  }
-
-  private async setOrRemoveHashToken(user: User, options: OptionsHashToken, hashToken: string): Promise<void> {
-    const { tokenType } = options;
-    switch (tokenType) {
-      case 'refresh':
-        user.currentHashRefreshToken = hashToken;
-        break;
-      default:
-        throw new HttpException('Invalid token type', 400);
-    }
-    await user.save();
-  }
-
-  async verifyToken(data: string, hashedData: string, error: HttpException): Promise<void> {
+  async verifyPassword(data: string, hashedData: string, error: HttpException): Promise<void> {
     const isTokenMatching = await checkHash(data, hashedData);
     if (!isTokenMatching) {
       throw error;

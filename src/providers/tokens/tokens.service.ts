@@ -5,11 +5,11 @@ import { DataSource, MoreThan } from 'typeorm';
 
 import { User } from '@domain/users/entities';
 import { EmailService } from '@providers/email';
-import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
+import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
 import { checkHash, hashData } from '@shared/utils';
 
 import { MailTemplate } from '@providers/email/types';
-import { TokenOptions, TokenPayload, TokenEntityType, JwtTokenOptions } from '@providers/tokens/types';
+import { TokenOptions, TokenPayload, TokenEntityType, JwtTokenOptions, TokenData } from '@providers/tokens/types';
 import { ValidTokenRequest } from '@types';
 
 @Injectable()
@@ -21,37 +21,55 @@ export class TokensService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async createToken(user: User, options: TokenOptions): Promise<string> {
-    let tokenEntity: ActivationToken | PasswordResetToken;
-    let token: string;
+  async createToken(user: User, options: TokenOptions): Promise<TokenData> {
+    let tokenEntity: TokenEntityType;
+    let tokenData: TokenData;
+
     const { tokenType } = options;
 
     switch (tokenType) {
       case 'activation':
         tokenEntity = new ActivationToken();
-        token = await this.generateToken(user.id, tokenType);
+        tokenData = await this.generateToken(user.id, tokenType);
         break;
       case 'password-reset':
         tokenEntity = new PasswordResetToken();
-        token = await this.generateToken(user.id, tokenType);
+        tokenData = await this.generateToken(user.id, tokenType);
+        break;
+      case 'refresh':
+        tokenEntity = new RefreshToken();
+        tokenData = await this.generateToken(user.id, tokenType);
+        break;
+      case 'authentication':
+        tokenData = await this.generateToken(user.id, tokenType);
         break;
       default:
         throw new BadRequestException('Invalid token type');
     }
+    if (tokenType !== 'authentication') {
+      await this.saveTokenInDatabase(tokenEntity, tokenData.token, user);
+    }
+    return tokenData;
+  }
 
+  private async saveTokenInDatabase(tokenEntity: TokenEntityType, token: string, user: User) {
     tokenEntity.hashToken = await hashData(token);
     tokenEntity.user = user;
     await this.dataSource.manager.save(tokenEntity);
-    return token;
   }
 
-  private async generateToken(userId: string, tokenType: TokenOptions['tokenType']): Promise<string> {
+  private async generateToken(userId: string, tokenType: TokenOptions['tokenType']): Promise<TokenData> {
     const payload: TokenPayload = { userId, tokenType };
     const { secret, expiresIn } = this.getJwtTokenOptionsByType(tokenType);
-    return this.jwtService.sign(payload, {
+    const token = this.jwtService.sign(payload, {
       secret,
       expiresIn,
     });
+
+    return {
+      token,
+      expiresIn,
+    };
   }
 
   async generateTokenLink(token: string, options: TokenOptions): Promise<string> {
@@ -107,6 +125,8 @@ export class TokensService {
         return ActivationToken.findOne(queryOptions);
       case 'password-reset':
         return PasswordResetToken.findOne(queryOptions);
+      case 'refresh':
+        return RefreshToken.findOne(queryOptions);
       default:
         throw new BadRequestException('Invalid token type');
     }
@@ -148,10 +168,25 @@ export class TokensService {
         secret = this.configService.get('JWT_SECRET_TOKEN_PASSWORD_RESET');
         expiresIn = this.configService.get('JWT_EXPIRATION_TOKEN_PASSWORD_RESET');
         break;
+      case 'refresh':
+        secret = this.configService.get('JWT_SECRET_REFRESH_TOKEN');
+        expiresIn = this.configService.get('JWT_EXPIRATION_TIME_REFRESH_TOKEN');
+        break;
+      case 'authentication':
+        secret = this.configService.get('JWT_SECRET_AUTHENTICATION_TOKEN');
+        expiresIn = this.configService.get('JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN');
+        break;
       default:
         throw new BadRequestException('Invalid token type');
     }
 
     return { secret, expiresIn };
+  }
+
+  async revokeActiveRefreshToken(userId: string) {
+    const refreshTokenActive = await this.getTokenActiveByUserId(userId, { tokenType: 'refresh' });
+    if (refreshTokenActive) {
+      await this.markTokenAsUsed(refreshTokenActive);
+    }
   }
 }
