@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { CookieOptions } from 'express';
 
 import { COOKIE_OPTIONS } from '@config';
-import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
 
 import { CookiesNames, CookieTokenData } from './types';
@@ -13,8 +12,7 @@ import { AuthenticationService } from './authentication.service';
 @Injectable()
 export class CookieService {
   constructor(
-    private readonly authenticationService: AuthenticationService,
-    private readonly usersService: UsersService,
+    @Inject(forwardRef(() => AuthenticationService)) private readonly authenticationService: AuthenticationService,
   ) {}
 
   setTokenInCookie(res: Response, name: CookiesNames, tokenData: CookieTokenData, additionalOptions?: CookieOptions) {
@@ -30,16 +28,11 @@ export class CookieService {
   }
 
   async setAuthenticationCookies(res: Response, user: User): Promise<void> {
-    const { authenticationToken, refreshToken } = this.authenticationService.createAuthenticationsTokens(user.id);
+    const { authenticationToken } = this.authenticationService.createAuthenticationsTokens(user.id);
 
     this.setTokenInCookie(res, CookiesNames.AUTHENTICATION, {
       token: authenticationToken.token,
       expiresIn: authenticationToken.expiresIn,
     });
-    this.setTokenInCookie(res, CookiesNames.REFRESH, {
-      token: refreshToken.token,
-      expiresIn: refreshToken.expiresIn,
-    });
-    await this.usersService.setHashToken(refreshToken.token, user, { tokenType: 'refresh' });
   }
 }

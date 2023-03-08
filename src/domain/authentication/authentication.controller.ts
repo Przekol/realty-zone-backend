@@ -57,6 +57,7 @@ export class AuthenticationController {
   @UseGuards(LocalAuthenticationGuard)
   @Post('signin')
   async login(@CurrentUser() user: User, @Res({ passthrough: true }) res: Response): Promise<GetOneUserResponse> {
+    await this.authenticationService.generateRefreshTokenAndSetCookie(user, res);
     await this.cookiesService.setAuthenticationCookies(res, user);
     return user;
   }
@@ -66,7 +67,9 @@ export class AuthenticationController {
   @Post('logout')
   async logout(@CurrentUser() user: User, @Res({ passthrough: true }) res: Response): Promise<void> {
     this.cookiesService.clearCookie(res, CookiesNames.AUTHENTICATION);
-    await this.usersService.removeHashToken(user, { tokenType: 'refresh' });
+    this.cookiesService.clearCookie(res, CookiesNames.REFRESH);
+
+    await this.tokensService.revokeActiveRefreshToken(user.id);
   }
 
   @HttpCode(200)
@@ -85,6 +88,7 @@ export class AuthenticationController {
     @CurrentUser() user: User,
     @Res({ passthrough: true }) res: Response,
   ): Promise<GetOneUserResponse> {
+    await this.authenticationService.generateRefreshTokenAndSetCookie(user, res);
     await this.cookiesService.setAuthenticationCookies(res, user);
     return user;
   }

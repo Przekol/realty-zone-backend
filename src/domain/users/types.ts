@@ -11,7 +11,6 @@ export interface UserEntity {
   phone?: string;
   address?: AddressEntity;
   status: Status;
-  currentHashRefreshToken?: string;
   activationTokens: TokenEntity[];
   passwordResetTokens: TokenEntity[];
   refreshTokens: TokenEntity[];

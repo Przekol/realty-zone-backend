@@ -174,4 +174,11 @@ export class TokensService {
 
     return { secret, expiresIn };
   }
+
+  async revokeActiveRefreshToken(userId: string) {
+    const refreshTokenActive = await this.getTokenActiveByUserId(userId, { tokenType: 'refresh' });
+    if (refreshTokenActive) {
+      await this.markTokenAsUsed(refreshTokenActive);
+    }
+  }
 }
