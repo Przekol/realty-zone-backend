@@ -6,12 +6,12 @@ import { AbstractToken } from '@providers/tokens/entities/abstract-token.entity'
 import { TokenEntity } from '@providers/tokens/types';
 
 @Entity()
-export class PasswordResetToken extends AbstractToken implements TokenEntity {
-  @ManyToOne(() => User, (user) => user.passwordResetTokens)
+export class RefreshToken extends AbstractToken implements TokenEntity {
+  @ManyToOne(() => User, (user) => user.refreshTokens)
   user: User;
 
   @BeforeInsert()
   setExpiresIn() {
-    this.expiresIn = Date.now() + 60 * 60 * 1000;
+    this.expiresIn = Date.now() + 60 * 60 * 10 * 1000;
   }
 }

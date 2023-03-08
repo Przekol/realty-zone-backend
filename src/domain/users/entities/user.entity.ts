@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 
 import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
+import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
 
 import { Address } from './address.entity';
 
@@ -59,6 +60,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @OneToMany(() => PasswordResetToken, (passwordResetToken) => passwordResetToken.user)
   passwordResetTokens: PasswordResetToken[];
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens: RefreshToken[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

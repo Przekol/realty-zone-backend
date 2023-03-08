@@ -14,6 +14,7 @@ export interface UserEntity {
   currentHashRefreshToken?: string;
   activationTokens: TokenEntity[];
   passwordResetTokens: TokenEntity[];
+  refreshTokens: TokenEntity[];
   createdAt: Date;
   updatedAt: Date;
 }

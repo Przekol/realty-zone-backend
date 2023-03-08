@@ -1,4 +1,4 @@
-import { BaseEntity, BeforeInsert, Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { AbstractTokenEntity } from '@providers/tokens/types';
 
@@ -20,9 +20,4 @@ export abstract class AbstractToken extends BaseEntity implements AbstractTokenE
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  @BeforeInsert()
-  setExpiresIn() {
-    this.expiresIn = Date.now() + 60 * 60 * 1000;
-  }
 }
