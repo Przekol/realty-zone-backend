@@ -162,6 +162,10 @@ export class TokensService {
         secret = this.configService.get('JWT_SECRET_TOKEN_PASSWORD_RESET');
         expiresIn = this.configService.get('JWT_EXPIRATION_TOKEN_PASSWORD_RESET');
         break;
+      case 'refresh':
+        secret = this.configService.get('JWT_SECRET_REFRESH_TOKEN');
+        expiresIn = this.configService.get('JWT_EXPIRATION_TIME_REFRESH_TOKEN');
+        break;
       default:
         throw new BadRequestException('Invalid token type');
     }
