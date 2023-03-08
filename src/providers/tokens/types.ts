@@ -14,7 +14,7 @@ export interface TokenEntity extends AbstractTokenEntity {
   user: UserEntity;
 }
 export interface TokenOptions {
-  tokenType: 'activation' | 'password-reset' | 'refresh';
+  tokenType: 'activation' | 'password-reset' | 'refresh' | 'authentication';
 }
 
 export type TokenEntityType = ActivationToken | PasswordResetToken | RefreshToken;

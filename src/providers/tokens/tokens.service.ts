@@ -40,11 +40,15 @@ export class TokensService {
         tokenEntity = new RefreshToken();
         tokenData = await this.generateToken(user.id, tokenType);
         break;
+      case 'authentication':
+        tokenData = await this.generateToken(user.id, tokenType);
+        break;
       default:
         throw new BadRequestException('Invalid token type');
     }
-
-    await this.saveTokenInDatabase(tokenEntity, tokenData.token, user);
+    if (tokenType !== 'authentication') {
+      await this.saveTokenInDatabase(tokenEntity, tokenData.token, user);
+    }
     return tokenData;
   }
 
@@ -167,6 +171,10 @@ export class TokensService {
       case 'refresh':
         secret = this.configService.get('JWT_SECRET_REFRESH_TOKEN');
         expiresIn = this.configService.get('JWT_EXPIRATION_TIME_REFRESH_TOKEN');
+        break;
+      case 'authentication':
+        secret = this.configService.get('JWT_SECRET_AUTHENTICATION_TOKEN');
+        expiresIn = this.configService.get('JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN');
         break;
       default:
         throw new BadRequestException('Invalid token type');

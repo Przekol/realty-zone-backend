@@ -1,6 +1,4 @@
-import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 
 import { CookieService } from '@domain/authentication/cookie.service';
@@ -9,9 +7,9 @@ import { User } from '@domain/users/entities';
 import { TokensService } from '@providers/tokens';
 import { hashData } from '@shared/utils';
 
-import { AuthenticationsTokens, CookiesNames, TokenPayloads } from './types';
+import { CookiesNames } from './types';
 import { UserEntity } from '@domain/users/types';
-import { TokenPayload } from '@providers/tokens/types';
+import { TokenOptions, TokenPayload } from '@providers/tokens/types';
 
 import { RegisterDto } from './dto';
 
@@ -19,10 +17,8 @@ import { RegisterDto } from './dto';
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
     private readonly tokensService: TokensService,
-    @Inject(forwardRef(() => CookieService)) private readonly cookieService: CookieService,
+    private readonly cookieService: CookieService,
   ) {}
   async register(registrationData: RegisterDto): Promise<User> {
     const hashPwd = await hashData(registrationData.password);
@@ -63,33 +59,41 @@ export class AuthenticationService {
     return user;
   }
 
-  getJwtToken(payload: TokenPayloads, secret: string, expiresIn: number): string {
-    return this.jwtService.sign(payload, { secret, expiresIn });
-  }
+  async generateAuthenticationTokenAndSetCookie(user: User, res: Response, options: TokenOptions) {
+    let cookieName: CookiesNames;
+    const { tokenType } = options;
 
-  createAuthenticationsTokens(id: UserEntity['id']): AuthenticationsTokens {
-    const expiresIn: Record<string, number> = {
-      authenticationToken: this.configService.get('JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN'),
-    };
-    return {
-      authenticationToken: {
-        token: this.getJwtToken(
-          { id },
-          this.configService.get('JWT_SECRET_AUTHENTICATION_TOKEN'),
-          expiresIn.authenticationToken,
-        ),
-        expiresIn: expiresIn.authenticationToken,
-      },
-    };
-  }
+    const { token, expiresIn } = await this.tokensService.createToken(user, { tokenType });
 
-  async generateRefreshTokenAndSetCookie(user: User, res: Response) {
-    await this.tokensService.revokeActiveRefreshToken(user.id);
-    const { token, expiresIn } = await this.tokensService.createToken(user, { tokenType: 'refresh' });
+    switch (tokenType) {
+      case 'refresh':
+        cookieName = CookiesNames.REFRESH;
+        break;
+      case 'authentication':
+        cookieName = CookiesNames.AUTHENTICATION;
+        break;
+      default:
+        throw new BadRequestException('Invalid token type');
+    }
 
-    await this.cookieService.setTokenInCookie(res, CookiesNames.REFRESH, {
+    await this.cookieService.setTokenInCookie(res, cookieName, {
       token,
       expiresIn,
     });
+  }
+
+  async renewAuthenticationTokensAndSetCookies(user: User, res: Response) {
+    await this.tokensService.revokeActiveRefreshToken(user.id);
+    await this.generateAuthenticationTokenAndSetCookie(user, res, { tokenType: 'refresh' });
+    await this.generateAuthenticationTokenAndSetCookie(user, res, {
+      tokenType: 'authentication',
+    });
+  }
+
+  async logout(user: User, res: Response) {
+    this.cookieService.clearCookie(res, CookiesNames.AUTHENTICATION);
+    this.cookieService.clearCookie(res, CookiesNames.REFRESH);
+
+    await this.tokensService.revokeActiveRefreshToken(user.id);
   }
 }
