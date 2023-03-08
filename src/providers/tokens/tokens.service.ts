@@ -121,6 +121,8 @@ export class TokensService {
         return ActivationToken.findOne(queryOptions);
       case 'password-reset':
         return PasswordResetToken.findOne(queryOptions);
+      case 'refresh':
+        return RefreshToken.findOne(queryOptions);
       default:
         throw new BadRequestException('Invalid token type');
     }
