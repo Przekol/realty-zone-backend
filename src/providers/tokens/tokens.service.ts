@@ -5,7 +5,7 @@ import { DataSource, MoreThan } from 'typeorm';
 
 import { User } from '@domain/users/entities';
 import { EmailService } from '@providers/email';
-import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
+import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
 import { checkHash, hashData } from '@shared/utils';
 
 import { MailTemplate } from '@providers/email/types';
@@ -22,7 +22,7 @@ export class TokensService {
   ) {}
 
   async createToken(user: User, options: TokenOptions): Promise<string> {
-    let tokenEntity: ActivationToken | PasswordResetToken;
+    let tokenEntity: TokenEntityType;
     let token: string;
     const { tokenType } = options;
 
@@ -35,14 +35,22 @@ export class TokensService {
         tokenEntity = new PasswordResetToken();
         token = await this.generateToken(user.id, tokenType);
         break;
+      case 'refresh':
+        tokenEntity = new RefreshToken();
+        token = await this.generateToken(user.id, tokenType);
+        break;
       default:
         throw new BadRequestException('Invalid token type');
     }
 
+    await this.saveTokenInDatabase(tokenEntity, token, user);
+    return token;
+  }
+
+  private async saveTokenInDatabase(tokenEntity: TokenEntityType, token: string, user: User) {
     tokenEntity.hashToken = await hashData(token);
     tokenEntity.user = user;
     await this.dataSource.manager.save(tokenEntity);
-    return token;
   }
 
   private async generateToken(userId: string, tokenType: TokenOptions['tokenType']): Promise<string> {
