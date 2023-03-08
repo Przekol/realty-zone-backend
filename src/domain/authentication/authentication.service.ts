@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 
-import { CookieService } from '@domain/authentication/cookie.service';
 import { UsersService } from '@domain/users';
 import { User } from '@domain/users/entities';
+import { CookieService } from '@providers/cookie';
 import { TokensService } from '@providers/tokens';
 import { hashData } from '@shared/utils';
 
-import { CookiesNames } from './types';
 import { UserEntity } from '@domain/users/types';
+import { CookiesNames } from '@providers/cookie/types';
 import { TokenOptions, TokenPayload } from '@providers/tokens/types';
 
 import { RegisterDto } from './dto';
