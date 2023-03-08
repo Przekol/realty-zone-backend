@@ -35,7 +35,7 @@ export class AuthenticationService {
   async getAuthenticatedUser(email: string, password: string): Promise<UserEntity> {
     try {
       const user = await this.usersService.getByEmail(email);
-      await this.usersService.verifyToken(
+      await this.usersService.verifyPassword(
         password,
         user.hashPwd,
         new UnauthorizedException('Wrong credentials provided'),

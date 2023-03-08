@@ -35,7 +35,7 @@ export class UsersService {
     return user;
   }
 
-  async verifyToken(data: string, hashedData: string, error: HttpException): Promise<void> {
+  async verifyPassword(data: string, hashedData: string, error: HttpException): Promise<void> {
     const isTokenMatching = await checkHash(data, hashedData);
     if (!isTokenMatching) {
       throw error;
