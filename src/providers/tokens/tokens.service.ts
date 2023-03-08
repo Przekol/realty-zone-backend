@@ -9,7 +9,7 @@ import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/to
 import { checkHash, hashData } from '@shared/utils';
 
 import { MailTemplate } from '@providers/email/types';
-import { TokenOptions, TokenPayload, TokenEntityType, JwtTokenOptions } from '@providers/tokens/types';
+import { TokenOptions, TokenPayload, TokenEntityType, JwtTokenOptions, TokenData } from '@providers/tokens/types';
 import { ValidTokenRequest } from '@types';
 
 @Injectable()
@@ -21,30 +21,31 @@ export class TokensService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async createToken(user: User, options: TokenOptions): Promise<string> {
+  async createToken(user: User, options: TokenOptions): Promise<TokenData> {
     let tokenEntity: TokenEntityType;
-    let token: string;
+    let tokenData: TokenData;
+
     const { tokenType } = options;
 
     switch (tokenType) {
       case 'activation':
         tokenEntity = new ActivationToken();
-        token = await this.generateToken(user.id, tokenType);
+        tokenData = await this.generateToken(user.id, tokenType);
         break;
       case 'password-reset':
         tokenEntity = new PasswordResetToken();
-        token = await this.generateToken(user.id, tokenType);
+        tokenData = await this.generateToken(user.id, tokenType);
         break;
       case 'refresh':
         tokenEntity = new RefreshToken();
-        token = await this.generateToken(user.id, tokenType);
+        tokenData = await this.generateToken(user.id, tokenType);
         break;
       default:
         throw new BadRequestException('Invalid token type');
     }
 
-    await this.saveTokenInDatabase(tokenEntity, token, user);
-    return token;
+    await this.saveTokenInDatabase(tokenEntity, tokenData.token, user);
+    return tokenData;
   }
 
   private async saveTokenInDatabase(tokenEntity: TokenEntityType, token: string, user: User) {
@@ -53,13 +54,18 @@ export class TokensService {
     await this.dataSource.manager.save(tokenEntity);
   }
 
-  private async generateToken(userId: string, tokenType: TokenOptions['tokenType']): Promise<string> {
+  private async generateToken(userId: string, tokenType: TokenOptions['tokenType']): Promise<TokenData> {
     const payload: TokenPayload = { userId, tokenType };
     const { secret, expiresIn } = this.getJwtTokenOptionsByType(tokenType);
-    return this.jwtService.sign(payload, {
+    const token = this.jwtService.sign(payload, {
       secret,
       expiresIn,
     });
+
+    return {
+      token,
+      expiresIn,
+    };
   }
 
   async generateTokenLink(token: string, options: TokenOptions): Promise<string> {

@@ -35,7 +35,7 @@ export class AuthenticationController {
   async register(@Body() registrationData: RegisterDto): Promise<GetOneUserResponse> {
     const user = await this.authenticationService.register(registrationData);
 
-    const token = await this.tokensService.createToken(user, {
+    const { token } = await this.tokensService.createToken(user, {
       tokenType: 'activation',
     });
 
