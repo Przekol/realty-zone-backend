@@ -5,10 +5,9 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from '@common/filters';
 import { GlobalResponseInterceptor } from '@common/interceptors';
 import { envValidation } from '@config';
+import { ApiModule } from '@http/api';
 import { DatabaseModule } from '@providers/database';
 import { EventsModule } from '@providers/event-emitter/events.module';
-
-import { ApiModule } from './api';
 
 @Module({
   imports: [

@@ -4,14 +4,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { AuthenticationService } from '@domain/authentication';
+import { AuthenticationService } from '@http/authentication';
 
 import { TokenPayload } from '@providers/tokens/types';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(ConfigService) private readonly configService: ConfigService,
-    private authenticationService: AuthenticationService,
+    private readonly authenticationService: AuthenticationService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([

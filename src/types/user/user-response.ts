@@ -1,4 +1,4 @@
-import { UserEntity } from '@domain/users/types';
+import { UserEntity } from '@http/users/types';
 
 export type GetOneUserResponse = UserEntity;
 export type GetListOfUserResponse = UserEntity[];

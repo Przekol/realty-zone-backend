@@ -3,7 +3,7 @@ import { Request } from 'express';
 
 import { UserInactiveException } from '@common/exceptions';
 
-import { Status } from '@domain/users/types';
+import { Status } from '@http/users/types';
 
 @Injectable()
 export class ActiveUserGuard implements CanActivate {

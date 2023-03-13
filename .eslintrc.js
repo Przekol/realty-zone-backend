@@ -49,7 +49,7 @@ module.exports = {
             group: 'type',
           },
           {
-            pattern: '@domain/**',
+            pattern: '@http/**',
             group: 'internal',
           },
           {

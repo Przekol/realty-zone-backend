@@ -2,13 +2,13 @@ import { BadRequestException, Controller, HttpCode, Post, Req, UseGuards } from 
 import { Request } from 'express';
 
 import { CurrentUser } from '@common/decorators';
-import { JwtAuthenticationGuard } from '@domain/authentication/guards';
-import { UsersService } from '@domain/users';
-import { User } from '@domain/users/entities';
+import { JwtAuthenticationGuard } from '@common/guards';
+import { UsersService } from '@http/users';
+import { User } from '@http/users/entities';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { TokensService } from '@providers/tokens';
 
-import { Status } from '@domain/users/types';
+import { Status } from '@http/users/types';
 import { MailTemplate } from '@providers/email/types';
 
 @Controller('email-confirmation')

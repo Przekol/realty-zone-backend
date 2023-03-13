@@ -102,7 +102,7 @@
       "^@shared(.*)$": "<rootDir>/..src/shared/$1",
       "^@providers(.*)$": "<rootDir>/..src/providers/$1",
       "^@config": "<rootDir>/../src/config",
-      "^@domain": "<rootDir>/../src/domain/$1"
+      "^@http": "<rootDir>/../src/http/$1"
     }
   },
   "lint-staged": {

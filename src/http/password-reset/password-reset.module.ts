@@ -1,7 +1,7 @@
 import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 
 import { ValidTokenMiddleware } from '@common/middlewares';
-import { UsersModule } from '@domain/users';
+import { UsersModule } from '@http/users';
 import { EventsModule } from '@providers/event-emitter';
 import { TokensModule } from '@providers/tokens';
 

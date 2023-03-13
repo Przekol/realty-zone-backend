@@ -1,6 +1,6 @@
 import { BeforeInsert, Entity, ManyToOne } from 'typeorm';
 
-import { User } from '@domain/users/entities';
+import { User } from '@http/users/entities';
 import { AbstractToken } from '@providers/tokens/entities/abstract-token.entity';
 
 import { TokenEntity } from '@providers/tokens/types';
