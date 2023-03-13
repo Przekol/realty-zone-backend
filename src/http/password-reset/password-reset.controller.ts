@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 
-import { ForgetPasswordDto, PasswordResetDto } from '@domain/password-reset/dto';
-import { UsersService } from '@domain/users';
+import { ForgetPasswordDto, PasswordResetDto } from '@http/password-reset/dto';
+import { UsersService } from '@http/users';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { TokensService } from '@providers/tokens';
 

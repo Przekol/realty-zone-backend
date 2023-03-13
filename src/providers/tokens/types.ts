@@ -1,6 +1,6 @@
 import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
 
-import { UserEntity } from '@domain/users/types';
+import { UserEntity } from '@http/users/types';
 
 export interface AbstractTokenEntity {
   id: string;

@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { EmailConfirmationModule } from '@domain/email-confirmation';
-import { UsersModule } from '@domain/users';
+import { EmailConfirmationModule } from '@http/email-confirmation';
+import { UsersModule } from '@http/users';
 import { CookieModule } from '@providers/cookie';
 import { EventsModule } from '@providers/event-emitter/events.module';
 import { TokensModule } from '@providers/tokens';

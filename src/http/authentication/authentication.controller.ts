@@ -2,18 +2,18 @@ import { Body, Controller, Get, HttpCode, Post, Res, UseGuards } from '@nestjs/c
 import { Response } from 'express';
 
 import { CurrentUser } from '@common/decorators';
-import { UsersService } from '@domain/users';
-import { User } from '@domain/users/entities';
+import { ActiveUserGuard, JwtAuthenticationGuard, JwtRefreshGuard, LocalAuthenticationGuard } from '@common/guards';
+import { UsersService } from '@http/users';
+import { User } from '@http/users/entities';
 import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { TokensService } from '@providers/tokens';
 
-import { UserEntity } from '@domain/users/types';
+import { UserEntity } from '@http/users/types';
 import { MailTemplate } from '@providers/email/types';
 import { GetOneUserResponse } from '@types';
 
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
-import { ActiveUserGuard, JwtAuthenticationGuard, JwtRefreshGuard, LocalAuthenticationGuard } from './guards';
 
 @Controller('authentication')
 export class AuthenticationController {

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { DataSource, MoreThan } from 'typeorm';
 
-import { User } from '@domain/users/entities';
+import { User } from '@http/users/entities';
 import { EmailService } from '@providers/email';
 import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
 import { checkHash, hashData } from '@shared/utils';

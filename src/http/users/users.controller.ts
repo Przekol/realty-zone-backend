@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { CurrentUser } from '@common/decorators';
-import { RoleGuard } from '@domain/authentication/guards';
+import { RoleGuard } from '@common/guards';
 
 import { Role, UserEntity } from './types';
 import { GetOneUserResponse } from '@types';

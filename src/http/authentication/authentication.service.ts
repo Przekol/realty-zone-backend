@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 
-import { UsersService } from '@domain/users';
-import { User } from '@domain/users/entities';
+import { UsersService } from '@http/users';
+import { User } from '@http/users/entities';
 import { CookieService } from '@providers/cookie';
 import { TokensService } from '@providers/tokens';
 import { hashData } from '@shared/utils';
 
-import { UserEntity } from '@domain/users/types';
+import { UserEntity } from '@http/users/types';
 import { CookiesNames } from '@providers/cookie/types';
 import { TokenOptions, TokenPayload } from '@providers/tokens/types';
 

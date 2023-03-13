@@ -2,7 +2,7 @@ import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/c
 import { JwtModule } from '@nestjs/jwt';
 
 import { ValidTokenMiddleware } from '@common/middlewares';
-import { UsersModule } from '@domain/users';
+import { UsersModule } from '@http/users';
 import { EventsModule } from '@providers/event-emitter/events.module';
 import { TokensModule } from '@providers/tokens';
 

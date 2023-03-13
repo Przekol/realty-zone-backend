@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import { Request } from 'express';
 
-import { Role } from '@domain/users/types';
+import { Role } from '@http/users/types';
 
 import { JwtAuthenticationGuard } from './jwt-authentication.guard';
 
