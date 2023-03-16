@@ -12,6 +12,6 @@
     "^@shared(.*)$": "<rootDir>/..src/shared/$1",
     "^@providers(.*)$": "<rootDir>/..src/providers/$1",
     "^@config": "<rootDir>/../src/config",
-    "^@http": "<rootDir>/../src/http/$1"
+    "^@api": "<rootDir>/../src/api/$1"
   }
 }

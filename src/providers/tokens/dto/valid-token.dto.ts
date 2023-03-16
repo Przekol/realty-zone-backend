@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { TokenOptions } from '@providers/tokens/types';
-import { ValidTokenRequest } from '@types';
+import { ValidTokenRequest, TokenOptions } from '@types';
 
 export class ValidTokenDto implements ValidTokenRequest {
   @IsString()

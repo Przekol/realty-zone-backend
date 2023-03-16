@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { AbstractTokenEntity } from '@providers/tokens/types';
+import { AbstractTokenEntity } from '@types';
 
 export abstract class AbstractToken extends BaseEntity implements AbstractTokenEntity {
   @PrimaryGeneratedColumn('uuid')

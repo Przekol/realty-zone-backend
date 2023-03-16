@@ -1,9 +1,9 @@
 import { BeforeInsert, Entity, ManyToOne } from 'typeorm';
 
-import { User } from '@http/users/entities';
+import { User } from '@api/users/entities';
 import { AbstractToken } from '@providers/tokens/entities/abstract-token.entity';
 
-import { TokenEntity } from '@providers/tokens/types';
+import { TokenEntity } from '@types';
 
 @Entity()
 export class RefreshToken extends AbstractToken implements TokenEntity {

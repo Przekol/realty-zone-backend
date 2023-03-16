@@ -23,7 +23,7 @@
       "@shared/*": ["src/shared/*"],
       "@providers/*": ["src/providers/*"],
       "@config": ["src/config"],
-      "@http/*": ["src/http/*"]
+      "@api/*": ["src/api/*"]
     }
   }
 }

@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-export const typeOrmConfig = (configService: ConfigService) =>
+export const getTypeOrmConfig = (configService: ConfigService) =>
   ({
     type: 'postgres',
     host: configService.get('POSTGRES_HOST'),

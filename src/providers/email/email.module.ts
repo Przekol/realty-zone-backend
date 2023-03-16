@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 
-import { mailerConfig } from '@config';
+import { getMailerConfig } from '@config';
 
 import { EmailService } from './email.service';
 
@@ -10,7 +10,7 @@ import { EmailService } from './email.service';
   imports: [
     MailerModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: mailerConfig,
+      useFactory: getMailerConfig,
       inject: [ConfigService],
     }),
   ],
