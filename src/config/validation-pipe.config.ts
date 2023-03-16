@@ -1,6 +1,6 @@
 import { ValidationPipeOptions } from '@nestjs/common';
 
-export const validationPipeConfig: ValidationPipeOptions = {
+export const validationPipeOptions: ValidationPipeOptions = {
   disableErrorMessages: false,
   whitelist: true,
   forbidNonWhitelisted: true,

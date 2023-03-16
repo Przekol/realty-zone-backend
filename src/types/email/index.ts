@@ -1,3 +1,4 @@
-import { ConfirmEmailRequest } from './email-request';
+import { MailTemplate } from './email';
+import { ConfirmEmailRequest } from './email.request';
 
-export { ConfirmEmailRequest };
+export { ConfirmEmailRequest, MailTemplate };

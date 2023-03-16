@@ -1,6 +1,6 @@
-import { User } from '@http/users/entities';
+import { User } from '@api/users/entities';
 
-import { MailTemplate } from '@providers/email/types';
+import { MailTemplate } from '@types';
 
 export class EmailSendLinkAuthenticationEvent {
   user: User;

@@ -36,20 +36,13 @@ module.exports = {
             pattern: '@shared/**',
             group: 'internal',
           },
-          {
-            pattern: '**/types',
-            group: 'type',
-          },
+
           {
             pattern: '@types',
             group: 'type',
           },
           {
-            pattern: './types',
-            group: 'type',
-          },
-          {
-            pattern: '@http/**',
+            pattern: '@api/**',
             group: 'internal',
           },
           {

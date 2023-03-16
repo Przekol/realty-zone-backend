@@ -5,7 +5,7 @@ import { join } from 'path';
 
 const templatePath = join(__dirname, '..', 'providers', 'email', 'templates');
 
-export const mailerConfig = (configService: ConfigService) => ({
+export const getMailerConfig = (configService: ConfigService) => ({
   transport: {
     host: configService.get('EMAIL_HOST'),
     port: configService.get('EMAIL_PORT'),

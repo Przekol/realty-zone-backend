@@ -1,7 +1,7 @@
-import { COOKIE_OPTIONS } from './cookie.config';
-import { envValidation } from './env-validation.config';
-import { mailerConfig } from './mailer.config';
-import { typeOrmConfig } from './typeorm.config';
-import { validationPipeConfig } from './validation-pipe.config';
+import { cookieOptions } from './cookie.config';
+import { envValidationObjectSchema } from './env-validation.config';
+import { getMailerConfig } from './mailer.config';
+import { getTypeOrmConfig } from './typeorm.config';
+import { validationPipeOptions } from './validation-pipe.config';
 
-export { COOKIE_OPTIONS, envValidation, typeOrmConfig, mailerConfig, validationPipeConfig };
+export { cookieOptions, envValidationObjectSchema, getTypeOrmConfig, getMailerConfig, validationPipeOptions };

@@ -3,14 +3,20 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { DataSource, MoreThan } from 'typeorm';
 
-import { User } from '@http/users/entities';
+import { User } from '@api/users/entities';
 import { EmailService } from '@providers/email';
 import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
 import { checkHash, hashData } from '@shared/utils';
 
-import { MailTemplate } from '@providers/email/types';
-import { TokenOptions, TokenPayload, TokenEntityType, JwtTokenOptions, TokenData } from '@providers/tokens/types';
-import { ValidTokenRequest } from '@types';
+import {
+  JwtTokenOptions,
+  MailTemplate,
+  TokenData,
+  TokenEntityType,
+  TokenOptions,
+  TokenPayload,
+  ValidTokenRequest,
+} from '@types';
 
 @Injectable()
 export class TokensService {

@@ -12,8 +12,9 @@ import { QueryFailedError } from 'typeorm';
 
 import { ErrorMessage, PostgresErrorMessage } from '@shared/messages';
 
-import { ErrorResponseBadRequestException, PostgresErrorCode } from './types';
 import { ClientApiResponse } from '@types';
+
+import { ErrorResponseBadRequestException, PostgresErrorCode } from './types';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
