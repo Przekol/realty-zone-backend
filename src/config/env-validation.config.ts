@@ -20,8 +20,8 @@ export const envValidationObjectSchema = Joi.object({
   EMAIL_USER: Joi.string().required(),
   EMAIL_PASSWORD: Joi.string().required(),
   CLIENT_URL: Joi.string().required(),
-  JWT_SECRET_TOKEN_ACTIVATION: Joi.string().required(),
-  JWT_EXPIRATION_TOKEN_ACTIVATION: Joi.number().required(),
-  JWT_SECRET_TOKEN_PASSWORD_RESET: Joi.string().required(),
-  JWT_EXPIRATION_TOKEN_PASSWORD_RESET: Joi.number().required(),
+  JWT_SECRET_ACTIVATION_TOKEN: Joi.string().required(),
+  JWT_EXPIRATION_TIME_ACTIVATION_TOKEN: Joi.number().required(),
+  JWT_SECRET_PASSWORD_RESET_TOKEN: Joi.string().required(),
+  JWT_EXPIRATION_TIME_PASSWORD_RESET_TOKEN: Joi.number().required(),
 });

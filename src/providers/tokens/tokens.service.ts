@@ -20,6 +20,22 @@ import {
 
 @Injectable()
 export class TokensService {
+  private readonly jwtSecretActivationToken = this.configService.get<string>('JWT_SECRET_ACTIVATION_TOKEN');
+  private readonly jwtExpirationTimeActivationToken = this.configService.get<number>(
+    'JWT_EXPIRATION_TIME_ACTIVATION_TOKEN',
+  );
+  private readonly jwtSecretPasswordResetToken = this.configService.get<string>('JWT_SECRET_PASSWORD_RESET_TOKEN');
+  private readonly jwtExpirationTimePasswordResetToken = this.configService.get<number>(
+    'JWT_EXPIRATION_TIME_PASSWORD_RESET_TOKEN',
+  );
+  private readonly jwtSecretRefreshToken = this.configService.get<string>('JWT_SECRET_REFRESH_TOKEN');
+  private readonly jwtExpirationTimeRefreshToken = this.configService.get<number>('JWT_EXPIRATION_TIME_REFRESH_TOKEN');
+  private readonly jwtSecretAuthenticationToken = this.configService.get<string>('JWT_SECRET_AUTHENTICATION_TOKEN');
+  private readonly jwtExpirationTimeAuthenticationToken = this.configService.get<number>(
+    'JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN',
+  );
+  private readonly clientUrl = this.configService.get<string>('CLIENT_URL');
+
   constructor(
     private readonly dataSource: DataSource,
     private readonly configService: ConfigService,
@@ -92,7 +108,7 @@ export class TokensService {
       default:
         throw new BadRequestException('Invalid token type');
     }
-    return `${this.configService.get('CLIENT_URL')}/${path}?type=${tokenType}?token=${token}`;
+    return `${this.clientUrl}/${path}?type=${tokenType}?token=${token}`;
   }
 
   async verifyToken(data: string, hashedData: string): Promise<void> {
@@ -167,20 +183,20 @@ export class TokensService {
     let secret: string, expiresIn: number;
     switch (tokenType) {
       case 'activation':
-        secret = this.configService.get('JWT_SECRET_TOKEN_ACTIVATION');
-        expiresIn = this.configService.get('JWT_EXPIRATION_TOKEN_ACTIVATION');
+        secret = this.jwtSecretActivationToken;
+        expiresIn = this.jwtExpirationTimeActivationToken;
         break;
       case 'password-reset':
-        secret = this.configService.get('JWT_SECRET_TOKEN_PASSWORD_RESET');
-        expiresIn = this.configService.get('JWT_EXPIRATION_TOKEN_PASSWORD_RESET');
+        secret = this.jwtSecretPasswordResetToken;
+        expiresIn = this.jwtExpirationTimePasswordResetToken;
         break;
       case 'refresh':
-        secret = this.configService.get('JWT_SECRET_REFRESH_TOKEN');
-        expiresIn = this.configService.get('JWT_EXPIRATION_TIME_REFRESH_TOKEN');
+        secret = this.jwtSecretRefreshToken;
+        expiresIn = this.jwtExpirationTimeRefreshToken;
         break;
       case 'authentication':
-        secret = this.configService.get('JWT_SECRET_AUTHENTICATION_TOKEN');
-        expiresIn = this.configService.get('JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN');
+        secret = this.jwtSecretAuthenticationToken;
+        expiresIn = this.jwtExpirationTimeAuthenticationToken;
         break;
       default:
         throw new BadRequestException('Invalid token type');
