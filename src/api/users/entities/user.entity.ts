@@ -31,8 +31,8 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ type: 'enum', enum: Status, default: Status.PENDING_EMAIL_CONFIRMATION })
   status: Status;
 
-  @Column({ nullable: false })
-  username: string;
+  @Column({ nullable: true })
+  username?: string;
 
   @Column({ type: 'enum', enum: Role, array: true, default: [Role.User] })
   roles: Role[];

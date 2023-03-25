@@ -18,9 +18,8 @@ export class UsersService {
   }
 
   async create(userData: CreateUserDto): Promise<User> {
-    const { username, email, hashPwd } = userData;
+    const { email, hashPwd } = userData;
     const user = new User();
-    user.username = username;
     user.email = email;
     user.hashPwd = hashPwd;
     await user.save();
