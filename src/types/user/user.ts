@@ -4,7 +4,7 @@ export interface UserEntity {
   id: string;
   firstName?: string;
   lastName?: string;
-  username: string;
+  username?: string;
   email: string;
   roles: Role[];
   hashPwd: string;
