@@ -108,7 +108,7 @@ export class TokensService {
       default:
         throw new BadRequestException('Invalid token type');
     }
-    return `${this.clientUrl}/${path}?type=${tokenType}?token=${token}`;
+    return `${this.clientUrl}/auth/${path}?type=${tokenType}&token=${token}`;
   }
 
   async verifyToken(data: string, hashedData: string): Promise<void> {
