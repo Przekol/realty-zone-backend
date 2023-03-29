@@ -24,6 +24,7 @@ export class EmailConfirmationController {
     const { tokenActive } = req;
     const user = await this.usersService.getById(tokenActive.user.id);
     await this.usersService.updateUserStatus(user, Status.ACTIVE);
+    await this.tokensService.markTokenAsUsed(tokenActive);
 
     await this.authenticationEmitter.emitMessageEmailSendEvent({
       user,
