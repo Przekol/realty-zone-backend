@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { validationPipeOptions } from '@config';
 
 import { AppModule } from './app.module';
+import { corsOptions } from './config/cors.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +16,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get('APP_PORT');
   const hostname = configService.get('APP_HOSTNAME');
-
+  app.enableCors(corsOptions);
   await app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
   });

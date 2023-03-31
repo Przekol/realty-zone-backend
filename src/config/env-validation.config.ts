@@ -24,4 +24,5 @@ export const envValidationObjectSchema = Joi.object({
   JWT_EXPIRATION_TIME_ACTIVATION_TOKEN: Joi.number().required(),
   JWT_SECRET_PASSWORD_RESET_TOKEN: Joi.string().required(),
   JWT_EXPIRATION_TIME_PASSWORD_RESET_TOKEN: Joi.number().required(),
+  FRONTEND_URL: Joi.string().required(),
 });
