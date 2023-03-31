@@ -1,6 +1,6 @@
 export type ClientApiResponse<T> = {
   ok: boolean;
   data?: T;
-  error?: string | string[];
+  error?: string;
   status: number;
 };

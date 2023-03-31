@@ -24,7 +24,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let statusCode: number;
-    let message: string | string[];
+    let message: string;
 
     if (exception instanceof NotFoundException) {
       statusCode = exception.getStatus();
@@ -34,9 +34,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       const code = exception.driverError.code;
       message = this.getPostgresErrorMessage(code);
     } else if (exception instanceof BadRequestException) {
-      const errorResponse = exception.getResponse();
-      message = (errorResponse as ErrorResponseBadRequestException).message;
-      statusCode = (errorResponse as ErrorResponseBadRequestException).statusCode;
+      const errorResponse = exception.getResponse() as ErrorResponseBadRequestException;
+      if (Array.isArray(errorResponse.message)) {
+        message = errorResponse.message.join(' ');
+      } else {
+        message = errorResponse.message;
+      }
+      statusCode = errorResponse.statusCode;
     } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
       message = exception.message;
