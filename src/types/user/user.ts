@@ -38,3 +38,10 @@ export interface AddressEntity {
   city: string;
   country: string;
 }
+
+export interface UserSerializerResponse {
+  id: string;
+  email: string;
+  status: Status;
+  roles: Role[];
+}

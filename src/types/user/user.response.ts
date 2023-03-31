@@ -1,4 +1,4 @@
-import { UserEntity } from './user';
+import { UserSerializerResponse } from './user';
 
-export type GetOneUserResponse = UserEntity;
-export type GetListOfUserResponse = UserEntity[];
+export type GetOneUserResponse = UserSerializerResponse;
+export type GetListOfUserResponse = UserSerializerResponse[];
