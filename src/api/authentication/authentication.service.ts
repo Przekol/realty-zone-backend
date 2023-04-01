@@ -4,10 +4,11 @@ import { Response } from 'express';
 import { UsersService } from '@api/users';
 import { User } from '@api/users/entities';
 import { CookieService } from '@providers/cookie';
+import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { TokensService } from '@providers/tokens';
 import { hashData } from '@shared/utils';
 
-import { TokenOptions, CookiesNames, UserEntity, TokenPayload } from '@types';
+import { TokenOptions, CookiesNames, UserEntity, TokenPayload, MailTemplate } from '@types';
 
 import { RegisterDto } from './dto';
 
@@ -17,8 +18,10 @@ export class AuthenticationService {
     private readonly usersService: UsersService,
     private readonly tokensService: TokensService,
     private readonly cookieService: CookieService,
+    private readonly authenticationEmitter: AuthenticationEmitter,
+    private readonly authenticationService: AuthenticationService,
   ) {}
-  async register(registrationData: RegisterDto): Promise<User> {
+  async signup(registrationData: RegisterDto): Promise<User> {
     const hashPwd = await hashData(registrationData.password);
 
     return await this.usersService.create({
@@ -93,5 +96,36 @@ export class AuthenticationService {
     this.cookieService.clearCookie(res, CookiesNames.REFRESH);
 
     await this.tokensService.revokeActiveRefreshToken(user.id);
+  }
+
+  async register(registrationData: RegisterDto) {
+    const user = await this.signup(registrationData);
+
+    const { token } = await this.tokensService.createToken(user, {
+      tokenType: 'activation',
+    });
+
+    const activationLink = await this.tokensService.generateTokenLink(token, {
+      tokenType: 'activation',
+    });
+
+    await this.authenticationEmitter.emitActivationEmailSendEvent({
+      user,
+      subject: 'Potwierdzenie rejestracji',
+      url: activationLink,
+      template: MailTemplate.emailConfirmation,
+    });
+
+    return user;
+  }
+
+  async login(user: User, res: Response) {
+    await this.authenticationService.renewAuthenticationTokensAndSetCookies(user, res);
+    return user;
+  }
+
+  async getNewAuthenticatedTokensByRefreshToken(user: User, res: Response) {
+    await this.authenticationService.renewAuthenticationTokensAndSetCookies(user, res);
+    return user;
   }
 }
