@@ -102,7 +102,7 @@ export class AuthenticationService {
     this.cookieService.clearCookie(res, CookiesNames.REFRESH);
 
     await this.tokensService.revokeActiveRefreshToken(user.id);
-    return this.createAuthenticatedStatusResponse(!user);
+    return this.getAuthenticatedStatus(null);
   }
 
   async register(registrationData: RegisterDto) {
@@ -126,7 +126,7 @@ export class AuthenticationService {
 
   async login(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
     await this.renewAuthenticationTokensAndSetCookies(user, res);
-    return this.createAuthenticatedStatusResponse(!!user);
+    return this.getAuthenticatedStatus(user);
   }
 
   async getNewAuthenticatedTokensByRefreshToken(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
@@ -135,9 +135,10 @@ export class AuthenticationService {
   }
 
   getAuthenticatedStatus(user: User): AuthenticatedStatusResponse {
-    return this.createAuthenticatedStatusResponse(!!user);
-  }
-  private createAuthenticatedStatusResponse(isAuthenticated: boolean): AuthenticatedStatusResponse {
-    return { isAuthenticated };
+    if (!user) {
+      return { isAuthenticated: false };
+    } else {
+      return { isAuthenticated: true };
+    }
   }
 }

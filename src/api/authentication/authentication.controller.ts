@@ -1,11 +1,9 @@
 import { Body, Controller, Get, HttpCode, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
-import { UserSerializerDto } from '@api/users/dto';
 import { User } from '@api/users/entities';
 import { CurrentUser } from '@common/decorators';
 import { ActiveUserGuard, JwtAuthenticationGuard, JwtRefreshGuard, LocalAuthenticationGuard } from '@common/guards';
-import { Serialize } from '@common/interceptors';
 
 import { AuthenticatedStatusResponse } from '@types';
 
@@ -13,7 +11,6 @@ import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
 
 @Controller('authentication')
-@Serialize(UserSerializerDto)
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
