@@ -1,7 +1,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
+import { UserSerializerDto } from '@api/users/dto';
 import { CurrentUser } from '@common/decorators';
-import { RoleGuard } from '@common/guards';
+import { JwtAuthenticationGuard, RoleGuard } from '@common/guards';
+import { Serialize } from '@common/interceptors';
 
 import { GetOneUserResponse, Role, UserEntity } from '@types';
 
@@ -15,8 +17,11 @@ export class UsersController {
       users: 'tutaj jest lista',
     };
   }
-  @Get('/profile')
-  async getUser(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Serialize(UserSerializerDto)
+  @Get('/me')
+  async getMe(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
     return user;
   }
 }

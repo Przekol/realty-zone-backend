@@ -10,6 +10,9 @@ export class UserSerializerDto implements UserSerializerResponse {
   email: string;
 
   @Expose()
+  username?: string;
+
+  @Expose()
   status: Status;
 
   @Expose()
