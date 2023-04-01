@@ -26,7 +26,6 @@ export class AuthenticationService {
     private readonly tokensService: TokensService,
     private readonly cookieService: CookieService,
     private readonly authenticationEmitter: AuthenticationEmitter,
-    private readonly authenticationService: AuthenticationService,
   ) {}
   async signup(registrationData: RegisterDto): Promise<User> {
     const hashPwd = await hashData(registrationData.password);
@@ -126,12 +125,12 @@ export class AuthenticationService {
   }
 
   async login(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
-    await this.authenticationService.renewAuthenticationTokensAndSetCookies(user, res);
+    await this.renewAuthenticationTokensAndSetCookies(user, res);
     return this.createAuthenticatedStatusResponse(!!user);
   }
 
   async getNewAuthenticatedTokensByRefreshToken(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
-    await this.authenticationService.renewAuthenticationTokensAndSetCookies(user, res);
+    await this.renewAuthenticationTokensAndSetCookies(user, res);
     return this.getAuthenticatedStatus(user);
   }
 
