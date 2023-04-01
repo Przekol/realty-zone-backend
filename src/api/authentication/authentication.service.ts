@@ -8,7 +8,14 @@ import { AuthenticationEmitter } from '@providers/event-emitter/emitters';
 import { TokensService } from '@providers/tokens';
 import { hashData } from '@shared/utils';
 
-import { TokenOptions, CookiesNames, UserEntity, TokenPayload, MailTemplate } from '@types';
+import {
+  TokenOptions,
+  CookiesNames,
+  UserEntity,
+  TokenPayload,
+  MailTemplate,
+  AuthenticatedStatusResponse,
+} from '@types';
 
 import { RegisterDto } from './dto';
 
@@ -91,11 +98,12 @@ export class AuthenticationService {
     });
   }
 
-  async logout(user: User, res: Response) {
+  async logout(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
     this.cookieService.clearCookie(res, CookiesNames.AUTHENTICATION);
     this.cookieService.clearCookie(res, CookiesNames.REFRESH);
 
     await this.tokensService.revokeActiveRefreshToken(user.id);
+    return this.createAuthenticatedStatusResponse(!user);
   }
 
   async register(registrationData: RegisterDto) {
@@ -115,17 +123,22 @@ export class AuthenticationService {
       url: activationLink,
       template: MailTemplate.emailConfirmation,
     });
-
-    return user;
   }
 
-  async login(user: User, res: Response) {
+  async login(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
     await this.authenticationService.renewAuthenticationTokensAndSetCookies(user, res);
-    return user;
+    return this.createAuthenticatedStatusResponse(!!user);
   }
 
-  async getNewAuthenticatedTokensByRefreshToken(user: User, res: Response) {
+  async getNewAuthenticatedTokensByRefreshToken(user: User, res: Response): Promise<AuthenticatedStatusResponse> {
     await this.authenticationService.renewAuthenticationTokensAndSetCookies(user, res);
-    return user;
+    return this.getAuthenticatedStatus(user);
+  }
+
+  getAuthenticatedStatus(user: User): AuthenticatedStatusResponse {
+    return this.createAuthenticatedStatusResponse(!!user);
+  }
+  private createAuthenticatedStatusResponse(isAuthenticated: boolean): AuthenticatedStatusResponse {
+    return { isAuthenticated };
   }
 }
