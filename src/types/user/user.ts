@@ -42,6 +42,7 @@ export interface AddressEntity {
 export interface UserSerializerResponse {
   id: string;
   email: string;
+  username?: string;
   status: Status;
   roles: Role[];
 }
