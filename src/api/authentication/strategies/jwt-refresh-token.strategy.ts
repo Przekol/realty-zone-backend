@@ -1,10 +1,11 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { AuthenticationService } from '@api/authentication';
+import { UnauthorizedAuthenticationTokenException } from '@common/exceptions';
 
 import { TokenPayload } from '@types';
 
@@ -18,7 +19,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
           if (!request?.cookies?.Refresh) {
-            throw new UnauthorizedException('Wrong credentials provided');
+            throw new UnauthorizedAuthenticationTokenException('NO_TOKEN');
           }
           return request?.cookies?.Refresh;
         },
@@ -31,13 +32,13 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
   async validate(request: Request, payload: TokenPayload) {
     try {
       if (!payload || !payload.userId || !payload.tokenType || payload.tokenType !== 'refresh') {
-        new UnauthorizedException('Wrong credentials provided');
+        new UnauthorizedAuthenticationTokenException('NO_TOKEN');
       }
 
       const refreshToken = request.cookies?.Refresh;
       return await this.authenticationService.getAuthenticatedUserByRefreshToken(refreshToken, payload);
     } catch (error) {
-      throw new UnauthorizedException('Wrong credentials provided');
+      throw new UnauthorizedAuthenticationTokenException('NO_TOKEN');
     }
   }
 }

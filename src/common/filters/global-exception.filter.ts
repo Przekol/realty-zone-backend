@@ -10,11 +10,16 @@ import {
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
+import { UnauthorizedAuthenticationTokenException } from '@common/exceptions';
 import { ErrorMessage, PostgresErrorMessage } from '@shared/messages';
 
 import { ClientApiResponse } from '@types';
 
-import { ErrorResponseBadRequestException, PostgresErrorCode } from './types';
+import {
+  ErrorResponseBadRequestException,
+  ErrorResponseUnauthorizedAuthenticationTokenException,
+  PostgresErrorCode,
+} from './types';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -24,7 +29,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let statusCode: number;
-    let message: string;
+    let message: string | string[];
+    let code: string;
 
     if (exception instanceof NotFoundException) {
       statusCode = exception.getStatus();
@@ -35,12 +41,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = this.getPostgresErrorMessage(code);
     } else if (exception instanceof BadRequestException) {
       const errorResponse = exception.getResponse() as ErrorResponseBadRequestException;
-      if (Array.isArray(errorResponse.message)) {
-        message = errorResponse.message.join(' ');
-      } else {
-        message = errorResponse.message;
-      }
+      message = (errorResponse as ErrorResponseBadRequestException).message;
+      statusCode = (errorResponse as ErrorResponseBadRequestException).statusCode;
       statusCode = errorResponse.statusCode;
+    } else if (exception instanceof UnauthorizedAuthenticationTokenException) {
+      statusCode = exception.getStatus();
+      const errorResponse = exception.getResponse() as ErrorResponseUnauthorizedAuthenticationTokenException;
+      message = (errorResponse as ErrorResponseUnauthorizedAuthenticationTokenException).message;
+      code = (errorResponse as ErrorResponseUnauthorizedAuthenticationTokenException).code;
     } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
       message = exception.message;
@@ -56,13 +64,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     console.log({
       statusCode,
-      message,
+      error: { message, code },
       timestamp: new Date().toISOString(),
       path: request.url,
     });
     response.status(statusCode).json({
       ok: false,
-      error: message,
+      error: { message, code },
       status: statusCode,
     });
   }
