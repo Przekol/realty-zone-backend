@@ -1,10 +1,11 @@
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { AuthenticationService } from '@api/authentication';
+import { UnauthorizedAuthenticationTokenException } from '@common/exceptions';
 
 import { TokenPayload } from '@types';
 
@@ -17,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
           if (!request?.cookies?.Authentication) {
-            throw new UnauthorizedException('Wrong credentials provided');
+            throw new UnauthorizedAuthenticationTokenException('TOKEN_EXPIRED');
           }
           return request?.cookies?.Authentication;
         },
@@ -28,11 +29,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: TokenPayload) {
     try {
       if (!payload || !payload.userId || !payload.tokenType || payload.tokenType !== 'authentication') {
-        new UnauthorizedException('Wrong credentials provided');
+        new UnauthorizedAuthenticationTokenException('TOKEN_EXPIRED');
       }
       return await this.authenticationService.getAuthenticatedUserByAuthenticationToken(payload.userId);
     } catch (error) {
-      throw new UnauthorizedException('Wrong credentials provided');
+      throw new UnauthorizedAuthenticationTokenException('TOKEN_EXPIRED');
     }
   }
 }

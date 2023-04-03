@@ -7,3 +7,8 @@ export interface ErrorResponseBadRequestException {
   statusCode: number;
   message: string | string[];
 }
+
+export interface ErrorResponseUnauthorizedAuthenticationTokenException {
+  code: string;
+  message: string | string[];
+}
