@@ -44,6 +44,9 @@ export class User extends BaseEntity implements UserEntity {
   lastName?: string;
 
   @Column({ default: null, nullable: true })
+  src?: string;
+
+  @Column({ default: null, nullable: true })
   phone?: string;
 
   @OneToOne(() => Address, {

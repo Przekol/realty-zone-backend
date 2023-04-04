@@ -1,10 +1,11 @@
-import { TokenEntity } from '@types';
+import { TokenEntity } from '../token';
 
 export interface UserEntity {
   id: string;
   firstName?: string;
   lastName?: string;
   username?: string;
+  src?: string;
   email: string;
   roles: Role[];
   hashPwd: string;
@@ -40,9 +41,11 @@ export interface AddressEntity {
 }
 
 export interface UserSerializerResponse {
-  id: string;
   email: string;
   username?: string;
+  firstName?: string;
+  lastName?: string;
+  src?: string;
   status: Status;
-  roles: Role[];
+  roles: string[];
 }

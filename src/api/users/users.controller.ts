@@ -5,7 +5,7 @@ import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard, RoleGuard } from '@common/guards';
 import { Serialize } from '@common/interceptors';
 
-import { GetOneUserResponse, Role, UserEntity } from '@types';
+import { UserDetailsResponse, Role } from '@types';
 
 @UseGuards(RoleGuard(Role.User))
 @Controller('users')
@@ -21,7 +21,7 @@ export class UsersController {
   @UseGuards(JwtAuthenticationGuard)
   @Serialize(UserSerializerDto)
   @Get('/me')
-  async getMe(@CurrentUser() user: UserEntity): Promise<GetOneUserResponse> {
+  async getMe(@CurrentUser() user: UserDetailsResponse): Promise<UserDetailsResponse> {
     return user;
   }
 }
