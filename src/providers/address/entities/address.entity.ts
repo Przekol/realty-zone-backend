@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-// import { OfferAddress } from '@api/offers/entities/offer-address.entity';
+import { OfferAddress } from '@api/offers/entities';
 import { UserAddress } from '@api/users/entities';
 
 import { AddressEntity } from '@types';
@@ -45,6 +45,6 @@ export class Address extends BaseEntity implements AddressEntity {
   @OneToOne(() => UserAddress, (userAddress) => userAddress.address)
   userAddress: UserAddress;
 
-  // @OneToOne(() => OfferAddress, (offerAddress) => offerAddress.address)
-  // offerAddress: OfferAddress;
+  @OneToOne(() => OfferAddress, (offerAddress) => offerAddress.address)
+  offerAddress: OfferAddress;
 }
