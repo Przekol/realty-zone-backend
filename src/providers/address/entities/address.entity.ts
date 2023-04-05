@@ -13,7 +13,7 @@ import { UserAddress } from '@api/users/entities';
 
 import { AddressEntity } from '@types';
 
-@Entity()
+@Entity({ name: 'addresses' })
 export class Address extends BaseEntity implements AddressEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

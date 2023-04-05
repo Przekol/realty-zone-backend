@@ -15,7 +15,7 @@ import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
 
 import { Role, Status, UserEntity } from '@types';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User extends BaseEntity implements UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

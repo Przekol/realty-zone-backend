@@ -16,7 +16,7 @@ import { OfferEntity } from '@types';
 
 import { OfferAddress } from './offer-address.entity';
 
-@Entity()
+@Entity({ name: 'offers' })
 export class Offer extends BaseEntity implements OfferEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
