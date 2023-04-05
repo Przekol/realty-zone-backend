@@ -1,4 +1,15 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+// import { OfferAddress } from '@api/offers/entities/offer-address.entity';
+import { UserAddress } from '@api/users/entities';
 
 import { AddressEntity } from '@types';
 
@@ -30,4 +41,10 @@ export class Address extends BaseEntity implements AddressEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @OneToOne(() => UserAddress, (userAddress) => userAddress.address)
+  userAddress: UserAddress;
+
+  // @OneToOne(() => OfferAddress, (offerAddress) => offerAddress.address)
+  // offerAddress: OfferAddress;
 }

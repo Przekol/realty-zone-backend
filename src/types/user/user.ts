@@ -1,3 +1,6 @@
+import { UserAddress } from '@api/users/entities';
+
+import { AddressEntity } from '../address';
 import { TokenEntity } from '../token';
 
 export interface UserEntity {
@@ -11,6 +14,7 @@ export interface UserEntity {
   hashPwd: string;
   phone?: string;
   status: Status;
+  userAddress: UserAddress;
   activationTokens: TokenEntity[];
   passwordResetTokens: TokenEntity[];
   refreshTokens: TokenEntity[];
@@ -37,4 +41,10 @@ export interface UserSerializerResponse {
   src?: string;
   status: Status;
   roles: string[];
+}
+
+export interface UserAddressEntity {
+  id: string;
+  user: UserEntity;
+  address: AddressEntity;
 }

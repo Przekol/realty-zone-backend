@@ -3,11 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
+import { UserAddress } from '@api/users/entities/user-address.entity';
 import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
 import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
 
@@ -53,6 +56,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
   refreshTokens: RefreshToken[];
+
+  @OneToOne(() => UserAddress, (userAddress) => userAddress.user)
+  userAddress: UserAddress;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
