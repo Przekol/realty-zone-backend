@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { User } from '@api/users/entities';
 import { Market, Ownership, Status, Transaction, Types } from '@providers/dictionaries/entities/dictionary.entity';
 
 import { OfferEntity } from '@types';
@@ -50,7 +51,7 @@ export class Offer extends BaseEntity implements OfferEntity {
   type: Types;
 
   @ManyToOne(() => Status)
-  @JoinColumn()
+  @JoinColumn({ name: 'status' })
   status: Status;
 
   @Column()
@@ -73,6 +74,10 @@ export class Offer extends BaseEntity implements OfferEntity {
 
   @OneToOne(() => OfferAddress, (offerAddress) => offerAddress.offer, {})
   offerAddress: OfferAddress;
+
+  @ManyToOne(() => User, (user) => user.offers)
+  @JoinColumn({ name: 'user_id' }) // dodaj JoinColumn
+  user: User;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

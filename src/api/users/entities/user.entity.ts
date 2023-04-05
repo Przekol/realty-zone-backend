@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { Offer } from '@api/offers/entities';
 import { UserAddress } from '@api/users/entities/user-address.entity';
 import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
 import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
@@ -58,6 +59,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @OneToOne(() => UserAddress, (userAddress) => userAddress.user)
   userAddress: UserAddress;
+
+  @OneToMany(() => Offer, (offer) => offer.user)
+  offers: Offer[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
