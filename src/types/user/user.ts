@@ -1,5 +1,3 @@
-import { UserAddress } from '@api/users/entities';
-
 import { AddressEntity } from '../address';
 import { TokenEntity } from '../token';
 
@@ -14,7 +12,7 @@ export interface UserEntity {
   hashPwd: string;
   phone?: string;
   status: Status;
-  userAddress: UserAddress;
+  userAddress: UserAddressEntity;
   activationTokens: TokenEntity[];
   passwordResetTokens: TokenEntity[];
   refreshTokens: TokenEntity[];
