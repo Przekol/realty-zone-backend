@@ -5,7 +5,7 @@ import { AbstractToken } from '@providers/tokens/entities/abstract-token.entity'
 
 import { TokenEntity } from '@types';
 
-@Entity()
+@Entity({ name: 'tokens_refresh' })
 export class RefreshToken extends AbstractToken implements TokenEntity {
   @ManyToOne(() => User, (user) => user.refreshTokens)
   user: User;

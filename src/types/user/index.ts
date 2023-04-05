@@ -1,16 +1,16 @@
-import { AddressEntity, Role, Status, UserEntity, UserSerializerResponse } from './user';
+import { Role, Status, UserAddressEntity, UserEntity, UserSerializerResponse } from './user';
 import { CreateUserRequest, LoginUserRequest, RegisterUserRequest } from './user.request';
-import { GetListOfUserResponse, GetOneUserResponse } from './user.response';
+import { GetListOfUserResponse, UserDetailsResponse } from './user.response';
 
 export {
   CreateUserRequest,
-  GetOneUserResponse,
+  UserDetailsResponse,
   GetListOfUserResponse,
   RegisterUserRequest,
   UserEntity,
   Status,
   Role,
-  AddressEntity,
   LoginUserRequest,
   UserSerializerResponse,
+  UserAddressEntity,
 };

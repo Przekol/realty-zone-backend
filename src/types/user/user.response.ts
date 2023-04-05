@@ -1,4 +1,4 @@
 import { UserSerializerResponse } from './user';
 
-export type GetOneUserResponse = UserSerializerResponse;
+export type UserDetailsResponse = UserSerializerResponse;
 export type GetListOfUserResponse = UserSerializerResponse[];

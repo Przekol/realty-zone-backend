@@ -3,21 +3,20 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
+import { Offer } from '@api/offers/entities';
+import { UserAddress } from '@api/users/entities/user-address.entity';
 import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
 import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
 
 import { Role, Status, UserEntity } from '@types';
 
-import { Address } from './address.entity';
-
-@Entity()
+@Entity({ name: 'users' })
 export class User extends BaseEntity implements UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -44,13 +43,10 @@ export class User extends BaseEntity implements UserEntity {
   lastName?: string;
 
   @Column({ default: null, nullable: true })
-  phone?: string;
+  src?: string;
 
-  @OneToOne(() => Address, {
-    cascade: true,
-  })
-  @JoinColumn()
-  address?: Address;
+  @Column({ default: null, nullable: true })
+  phone?: string;
 
   @OneToMany(() => ActivationToken, (activationToken) => activationToken.user)
   activationTokens: ActivationToken[];
@@ -60,6 +56,12 @@ export class User extends BaseEntity implements UserEntity {
 
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
   refreshTokens: RefreshToken[];
+
+  @OneToOne(() => UserAddress, (userAddress) => userAddress.user)
+  userAddress: UserAddress;
+
+  @OneToMany(() => Offer, (offer) => offer.user)
+  offers: Offer[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

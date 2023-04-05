@@ -1,16 +1,18 @@
-import { TokenEntity } from '@types';
+import { AddressEntity } from '../address';
+import { TokenEntity } from '../token';
 
 export interface UserEntity {
   id: string;
   firstName?: string;
   lastName?: string;
   username?: string;
+  src?: string;
   email: string;
   roles: Role[];
   hashPwd: string;
   phone?: string;
-  address?: AddressEntity;
   status: Status;
+  userAddress: UserAddressEntity;
   activationTokens: TokenEntity[];
   passwordResetTokens: TokenEntity[];
   refreshTokens: TokenEntity[];
@@ -29,20 +31,18 @@ export enum Role {
   Admin,
 }
 
-export interface AddressEntity {
-  id: string;
-  street: string;
-  streetNumber: string;
-  flatNumber: string;
-  zipCode: string;
-  city: string;
-  country: string;
-}
-
 export interface UserSerializerResponse {
-  id: string;
   email: string;
   username?: string;
+  firstName?: string;
+  lastName?: string;
+  src?: string;
   status: Status;
-  roles: Role[];
+  roles: string[];
+}
+
+export interface UserAddressEntity {
+  id: string;
+  user: UserEntity;
+  address: AddressEntity;
 }
