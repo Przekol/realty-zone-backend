@@ -1,6 +1,6 @@
 import { IsIn, IsNumber, IsOptional, Min } from 'class-validator';
 
-import { PaginationOptionsRequest } from '../../../types/offer/offer.request';
+import { PaginationOptionsRequest } from '@types';
 
 export class PaginationOptionsDto implements PaginationOptionsRequest {
   @IsOptional()
