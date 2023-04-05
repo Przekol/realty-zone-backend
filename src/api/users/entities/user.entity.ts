@@ -3,9 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,8 +12,6 @@ import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities'
 import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
 
 import { Role, Status, UserEntity } from '@types';
-
-import { Address } from './address.entity';
 
 @Entity()
 export class User extends BaseEntity implements UserEntity {
@@ -48,12 +44,6 @@ export class User extends BaseEntity implements UserEntity {
 
   @Column({ default: null, nullable: true })
   phone?: string;
-
-  @OneToOne(() => Address, {
-    cascade: true,
-  })
-  @JoinColumn()
-  address?: Address;
 
   @OneToMany(() => ActivationToken, (activationToken) => activationToken.user)
   activationTokens: ActivationToken[];

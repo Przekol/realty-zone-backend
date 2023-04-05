@@ -5,3 +5,5 @@ export * from './password-reset';
 export * from './token';
 export * from './cookie';
 export * from './authentication';
+export * from './offer';
+export * from './address';

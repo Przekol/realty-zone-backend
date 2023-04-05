@@ -1,8 +1,6 @@
-import { BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { AddressEntity } from '@types';
-
-import { User } from './user.entity';
 
 @Entity()
 export class Address extends BaseEntity implements AddressEntity {
@@ -27,6 +25,9 @@ export class Address extends BaseEntity implements AddressEntity {
   @Column()
   country: string;
 
-  @OneToOne(() => User, (user: User) => user.address)
-  user?: User;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
