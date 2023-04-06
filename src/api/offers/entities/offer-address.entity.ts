@@ -10,11 +10,11 @@ export class OfferAddress extends BaseEntity implements OfferAddressEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Offer)
+  @OneToOne(() => Offer, (offer: Offer) => offer.offerAddress)
   @JoinColumn()
   offer: Offer;
 
-  @OneToOne(() => Address)
+  @OneToOne(() => Address, (address: Address) => address.offerAddress)
   @JoinColumn()
   address: Address;
 }
