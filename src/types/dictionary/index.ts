@@ -1,3 +1,4 @@
-import { DictionaryEntity } from './dictionary';
+import { DictionaryEntity, EntityClass } from './dictionary';
+import { FindDictionariesRequest } from './dictionary.request';
 
-export { DictionaryEntity };
+export { DictionaryEntity, FindDictionariesRequest, EntityClass };

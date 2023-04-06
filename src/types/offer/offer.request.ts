@@ -1,4 +1,4 @@
-import { AddressRequest } from '@types';
+import { AddressRequest, FindDictionariesRequest } from '@types';
 
 export interface PaginationOptionsRequest {
   page?: number;
@@ -16,10 +16,6 @@ export interface OfferRequest {
   buildingFloors: number;
   constructionYear: number;
   pictures: string[];
-  market: number;
-  transaction: number;
-  ownership: number;
-  status: number;
-  type: number;
+  dictionaries: FindDictionariesRequest;
   address: AddressRequest;
 }

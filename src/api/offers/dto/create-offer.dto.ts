@@ -1,7 +1,8 @@
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsNumber, Min, IsArray, ArrayNotEmpty, ValidateNested, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, Min, IsArray, ArrayNotEmpty, ValidateNested } from 'class-validator';
 
 import { AddressDto } from '@providers/address/dto';
+import { FindDictionariesDto } from '@providers/dictionaries/dto/find-dictionaries.dto';
 
 import { OfferRequest } from '@types';
 
@@ -42,27 +43,11 @@ export class CreateOfferDto implements OfferRequest {
   @ArrayNotEmpty()
   pictures: string[];
 
-  @IsNumber()
-  market: number;
-
-  @IsNumber()
-  transaction: number;
-
-  @IsNumber()
-  ownership: number;
-
-  @IsNumber()
-  status: number;
-
-  @IsNumber()
-  type: number;
+  @Type(() => FindDictionariesDto)
+  @ValidateNested()
+  dictionaries: FindDictionariesDto;
 
   @Type(() => AddressDto)
   @ValidateNested()
   address: AddressDto;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID('4')
-  user: string;
 }
