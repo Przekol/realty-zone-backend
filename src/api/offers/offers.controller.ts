@@ -1,8 +1,21 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@api/users/entities';
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@common/guards';
+import { multerOptions } from '@config';
 
 import { OffersResponse } from '@types';
 
@@ -28,9 +41,16 @@ export class OffersController {
   }
 
   @HttpCode(201)
-  @UseGuards(JwtAuthenticationGuard)
+  // @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(FilesInterceptor('pictures', 12, multerOptions))
   @Post('/')
-  createOffer(@Body() createOfferDto: CreateOfferDto, @CurrentUser() user: User): Promise<void> {
-    return this.offersService.createOffer(createOfferDto, user);
+  createOffer(
+    // @Body() createOfferDto: CreateOfferDto,
+    @CurrentUser() user: User,
+    @UploadedFiles() pictures: Express.Multer.File[],
+  ): Promise<void> {
+    console.log({ pictures });
+    return null;
+    // return this.offersService.createOffer(createOfferDto, user);
   }
 }
