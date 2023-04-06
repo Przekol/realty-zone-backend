@@ -8,5 +8,6 @@ import { DictionariesService } from './dictionaries.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Market, Ownership, Types, Status, Transaction])],
   providers: [DictionariesService],
+  exports: [DictionariesService],
 })
 export class DictionariesModule {}
