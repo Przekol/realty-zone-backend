@@ -1,3 +1,4 @@
 import { AddressEntity } from './address';
+import { AddressRequest } from './address.request';
 
-export { AddressEntity };
+export { AddressEntity, AddressRequest };
