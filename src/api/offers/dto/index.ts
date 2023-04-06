@@ -1,3 +1,4 @@
+import { OneOfferParamsDto } from './one-offer-params.dto';
 import { PaginationOptionsDto } from './pagination-options.dto';
 
-export { PaginationOptionsDto };
+export { PaginationOptionsDto, OneOfferParamsDto };
