@@ -15,7 +15,6 @@ export interface OfferRequest {
   floor: number;
   buildingFloors: number;
   constructionYear: number;
-  pictures: string[];
   dictionaries: FindDictionariesRequest;
   address: AddressRequest;
 }

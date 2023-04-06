@@ -32,3 +32,7 @@ export type OfferResponse = {
   };
   user: string;
 };
+
+export type CreateOfferResponse = {
+  id: number;
+};

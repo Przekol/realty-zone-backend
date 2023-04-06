@@ -7,7 +7,7 @@ import { AddressService } from '@providers/address/address.service';
 import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
 
-import { EntityClass, OffersResponse } from '@types';
+import { CreateOfferResponse, EntityClass, OffersResponse } from '@types';
 
 import { PaginationOptionsDto, CreateOfferDto } from './dto';
 import { mapRawOfferToFormattedOffer } from './response.mappers';
@@ -110,7 +110,6 @@ export class OffersService {
     newOffer.type = type;
     newOffer.user = user;
     newOffer.offerNumber = this.generateOfferNumber();
-    newOffer.pictures = createOfferDto.pictures;
     return newOffer.save();
   }
 
@@ -122,10 +121,17 @@ export class OffersService {
     return await newOfferAddress.save();
   }
 
-  async createOffer(createOfferDto: CreateOfferDto, user: User) {
+  async createOffer(createOfferDto: CreateOfferDto, user: User): Promise<CreateOfferResponse> {
     const address = await this.addressService.createAddress(createOfferDto.address);
     const entities = await this.dictionariesService.findDictionaries(createOfferDto.dictionaries);
     const offer = await this.createNewOffer(createOfferDto, user, entities);
     await this.createOfferAddress(offer, address);
+    return { id: offer.offerNumber };
+  }
+
+  async uploadPictures(offerNumber: number, user: User, pictures: Express.Multer.File[]) {
+    const offer = await Offer.findOneOrFail({ where: { offerNumber, user: { id: user.id } } });
+    offer.pictures = [...offer.pictures, ...pictures.map((picture) => picture.filename)];
+    await offer.save();
   }
 }

@@ -1,7 +1,7 @@
 import { cookieOptions } from './cookie.config';
 import { envValidationObjectSchema } from './env-validation.config';
 import { getMailerConfig } from './mailer.config';
-import { multerOptions } from './multer.config';
+import { createMulterOptions } from './multer.config';
 import { getTypeOrmConfig } from './typeorm.config';
 import { validationPipeOptions } from './validation-pipe.config';
 
@@ -11,5 +11,5 @@ export {
   getTypeOrmConfig,
   getMailerConfig,
   validationPipeOptions,
-  multerOptions,
+  createMulterOptions,
 };
