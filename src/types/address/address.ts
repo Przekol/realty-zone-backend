@@ -5,6 +5,7 @@ export interface AddressEntity {
   flatNumber: string;
   zipCode: string;
   city: string;
+  district: string;
   country: string;
   createdAt: Date;
   updatedAt: Date;

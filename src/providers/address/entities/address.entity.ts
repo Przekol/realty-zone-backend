@@ -34,6 +34,9 @@ export class Address extends BaseEntity implements AddressEntity {
   city: string;
 
   @Column()
+  district: string;
+
+  @Column()
   country: string;
 
   @CreateDateColumn({ type: 'timestamp' })

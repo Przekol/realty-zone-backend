@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { QueryFailedError } from 'typeorm';
+import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 
 import { UnauthorizedAuthenticationTokenException } from '@common/exceptions';
 import { ErrorMessage, PostgresErrorMessage } from '@shared/messages';
@@ -39,6 +39,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       statusCode = 400;
       const code = exception.driverError.code;
       message = this.getPostgresErrorMessage(code);
+    } else if (exception instanceof EntityNotFoundError) {
+      message = ErrorMessage.NotFoundItem;
+      statusCode = HttpStatus.NOT_FOUND;
     } else if (exception instanceof BadRequestException) {
       const errorResponse = exception.getResponse() as ErrorResponseBadRequestException;
       message = (errorResponse as ErrorResponseBadRequestException).message;

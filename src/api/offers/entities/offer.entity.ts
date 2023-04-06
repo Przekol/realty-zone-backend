@@ -69,7 +69,7 @@ export class Offer extends BaseEntity implements OfferEntity {
   @Column()
   constructionYear: number;
 
-  @Column('simple-array')
+  @Column({ type: 'json', nullable: true })
   pictures: string[];
 
   @OneToOne(() => OfferAddress, (offerAddress) => offerAddress.offer, {})

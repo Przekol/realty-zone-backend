@@ -29,3 +29,10 @@ export interface OfferAddressEntity {
   offer: OfferEntity;
   address: AddressEntity;
 }
+
+export interface PaginationInfo {
+  currentPage: number;
+  itemsPerPage: number;
+  totalPages: number;
+  totalItems: number;
+}
