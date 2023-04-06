@@ -1,16 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
-import { Offer } from '@api/offers/entities';
+import { Offer, OfferAddress } from '@api/offers/entities';
+import { User } from '@api/users/entities';
+import { AddressService } from '@providers/address/address.service';
+import { Address } from '@providers/address/entities/address.entity';
+import { DictionariesService } from '@providers/dictionaries';
 
-import { OffersResponse } from '@types';
+import { EntityClass, OffersResponse } from '@types';
 
-import { PaginationOptionsDto } from './dto';
+import { PaginationOptionsDto, CreateOfferDto } from './dto';
 import { mapRawOfferToFormattedOffer } from './response.mappers';
 
 @Injectable()
 export class OffersService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly addressService: AddressService,
+    private readonly dictionariesService: DictionariesService,
+  ) {}
 
   async getAllOffers(paginationOptionsDto: PaginationOptionsDto): Promise<OffersResponse> {
     const { page = 1, limit = 10, sortOrder = 'DESC' } = paginationOptionsDto;
@@ -79,8 +87,45 @@ export class OffersService {
 
   private generateOfferNumber(): number {
     const now = new Date();
-    const timestamp = Math.floor(now.getTime() / 1000);
+    const timestamp = Math.floor(now.getTime() / 10000);
     const randomNumber = Math.floor(Math.random() * 100);
-    return timestamp * 100 + randomNumber;
+    return (timestamp * 100 + randomNumber) % 100000000;
+  }
+
+  private async createNewOffer(createOfferDto: CreateOfferDto, user: User, entities: EntityClass[]) {
+    const [market, transaction, ownership, status, type] = entities;
+    const newOffer = new Offer();
+    newOffer.title = createOfferDto.title;
+    newOffer.description = createOfferDto.description;
+    newOffer.price = createOfferDto.price;
+    newOffer.area = createOfferDto.area;
+    newOffer.rooms = createOfferDto.rooms;
+    newOffer.floor = createOfferDto.floor;
+    newOffer.buildingFloors = createOfferDto.buildingFloors;
+    newOffer.constructionYear = createOfferDto.constructionYear;
+    newOffer.market = market;
+    newOffer.transaction = transaction;
+    newOffer.ownership = ownership;
+    newOffer.status = status;
+    newOffer.type = type;
+    newOffer.user = user;
+    newOffer.offerNumber = this.generateOfferNumber();
+    newOffer.pictures = createOfferDto.pictures;
+    return newOffer.save();
+  }
+
+  async createOfferAddress(offer: Offer, address: Address) {
+    const newOfferAddress = new OfferAddress();
+    newOfferAddress.address = address;
+    newOfferAddress.offer = offer;
+
+    return await newOfferAddress.save();
+  }
+
+  async createOffer(createOfferDto: CreateOfferDto, user: User) {
+    const address = await this.addressService.createAddress(createOfferDto.address);
+    const entities = await this.dictionariesService.findDictionaries(createOfferDto.dictionaries);
+    const offer = await this.createNewOffer(createOfferDto, user, entities);
+    await this.createOfferAddress(offer, address);
   }
 }
