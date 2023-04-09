@@ -58,5 +58,9 @@ export interface UserProfileSerializerResponse {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-  avatar: Photo;
+  avatar: { id: string; url: string };
+  user: {
+    id: string;
+    email: string;
+  };
 }

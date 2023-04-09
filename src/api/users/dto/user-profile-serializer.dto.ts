@@ -1,9 +1,22 @@
-import { Expose } from 'class-transformer';
-
-import { Photo } from '@providers/photos/entities';
+import { Expose, Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
 
 import { UserProfileSerializerResponse } from '@types';
+class PhotoResponseDto {
+  @Expose()
+  id: string;
 
+  @Expose()
+  url: string;
+}
+
+class UserResponseDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  email: string;
+}
 export class UserProfileSerializerDto implements UserProfileSerializerResponse {
   @Expose()
   username?: string;
@@ -14,5 +27,12 @@ export class UserProfileSerializerDto implements UserProfileSerializerResponse {
   @Expose()
   phoneNumber?: string;
   @Expose()
-  avatar: Photo;
+  @Type(() => UserResponseDto)
+  @ValidateNested()
+  user: UserResponseDto;
+
+  @Expose()
+  @Type(() => PhotoResponseDto)
+  @ValidateNested()
+  avatar: PhotoResponseDto;
 }
