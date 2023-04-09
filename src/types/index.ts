@@ -8,3 +8,4 @@ export * from './authentication';
 export * from './offer';
 export * from './address';
 export * from './dictionary';
+export * from './photo';
