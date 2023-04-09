@@ -15,7 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { User } from '@api/users/entities';
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@common/guards';
-import { createMulterOptions } from '@config';
+import { createMulterOptions, StorageDestinations } from '@config';
 
 import { CreateOfferResponse, OffersResponse } from '@types';
 
@@ -49,7 +49,7 @@ export class OffersController {
 
   @HttpCode(201)
   @UseGuards(JwtAuthenticationGuard)
-  @UseInterceptors(FilesInterceptor('pictures', 3, { storage: createMulterOptions('offers') }))
+  @UseInterceptors(FilesInterceptor('pictures', 3, { storage: createMulterOptions(StorageDestinations.OFFERS) }))
   @Post('/:id/pictures')
   async uploadPictures(
     @Param('id') offerNumber: number,

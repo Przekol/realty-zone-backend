@@ -11,6 +11,7 @@ import {
 
 import { Offer } from '@api/offers/entities';
 import { UserAddress } from '@api/users/entities/user-address.entity';
+import { UserProfile } from '@api/users/entities/user-profile.entity';
 import { ActivationToken, PasswordResetToken } from '@providers/tokens/entities';
 import { RefreshToken } from '@providers/tokens/entities/refresh-token.entity';
 
@@ -30,23 +31,8 @@ export class User extends BaseEntity implements UserEntity {
   @Column({ type: 'enum', enum: Status, default: Status.PENDING_EMAIL_CONFIRMATION })
   status: Status;
 
-  @Column({ nullable: true })
-  username?: string;
-
   @Column({ type: 'enum', enum: Role, array: true, default: [Role.User] })
   roles: Role[];
-
-  @Column({ default: null, nullable: true })
-  firstName?: string;
-
-  @Column({ default: null, nullable: true })
-  lastName?: string;
-
-  @Column({ default: null, nullable: true })
-  src?: string;
-
-  @Column({ default: null, nullable: true })
-  phone?: string;
 
   @OneToMany(() => ActivationToken, (activationToken) => activationToken.user)
   activationTokens: ActivationToken[];
@@ -59,6 +45,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @OneToOne(() => UserAddress, (userAddress) => userAddress.user)
   userAddress: UserAddress;
+
+  @OneToOne(() => UserProfile, (profile) => profile.user)
+  profile: UserProfile;
 
   @OneToMany(() => Offer, (offer) => offer.user)
   offers: Offer[];

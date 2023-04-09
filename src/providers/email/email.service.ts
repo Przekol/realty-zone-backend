@@ -27,7 +27,7 @@ export class EmailService {
 
   async sendMessage(user: User, subject: string, template: MailTemplate) {
     await this.sendMail(user.email, subject, template, {
-      username: user.username,
+      username: user.profile.username,
       title: subject,
     });
   }
