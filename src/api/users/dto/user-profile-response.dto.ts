@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 
-import { roleMappers, statusMappers } from '@api/users/response.mappers';
+import { avatarUrlMappers, roleMappers, statusMappers } from '@api/users/response.mappers';
 
 import { UserProfileResponse } from '@types';
 
@@ -18,7 +18,7 @@ export class UserProfileResponseDto implements UserProfileResponse {
   phoneNumber?: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.avatar?.url)
+  @Transform(({ obj }) => avatarUrlMappers(obj.avatar?.url))
   avatar: string;
 
   @Expose()

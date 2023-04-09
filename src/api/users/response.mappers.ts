@@ -21,3 +21,7 @@ export const roleMappers = (roles: string[]) => {
       return 'Administrator';
   }
 };
+
+export const avatarUrlMappers = (url: string) => {
+  return `${process.env.API_URL}/static/avatars/${url}`;
+};
