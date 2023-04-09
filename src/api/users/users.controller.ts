@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { UserProfileDto, UserSerializerDto } from '@api/users/dto';
 import { UserProfileSerializerDto } from '@api/users/dto/user-profile-serializer.dto';
@@ -28,5 +28,12 @@ export class UsersController {
   @Post('/profile')
   async createProfile(@Body() userProfileDto: UserProfileDto, @CurrentUser() user: User) {
     return this.usersProfileService.createProfile(userProfileDto, user);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Serialize(UserProfileSerializerDto)
+  @Patch('/profile')
+  async updateProfile(@Body() userProfileDto: UserProfileDto, @CurrentUser() user: User) {
+    return this.usersProfileService.updateProfile(userProfileDto, user);
   }
 }
