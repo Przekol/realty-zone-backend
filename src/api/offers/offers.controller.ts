@@ -1,10 +1,23 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@api/users/entities';
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@common/guards';
+import { createMulterOptions } from '@config';
 
-import { OffersResponse } from '@types';
+import { CreateOfferResponse, OffersResponse } from '@types';
 
 import { CreateOfferDto, OneOfferParamsDto, PaginationOptionsDto } from './dto';
 import { OffersService } from './offers.service';
@@ -30,7 +43,19 @@ export class OffersController {
   @HttpCode(201)
   @UseGuards(JwtAuthenticationGuard)
   @Post('/')
-  createOffer(@Body() createOfferDto: CreateOfferDto, @CurrentUser() user: User): Promise<void> {
+  createOffer(@Body() createOfferDto: CreateOfferDto, @CurrentUser() user: User): Promise<CreateOfferResponse> {
     return this.offersService.createOffer(createOfferDto, user);
+  }
+
+  @HttpCode(201)
+  @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(FilesInterceptor('pictures', 3, { storage: createMulterOptions('offers') }))
+  @Post('/:id/pictures')
+  async uploadPictures(
+    @Param('id') offerNumber: number,
+    @CurrentUser() user: User,
+    @UploadedFiles() pictures: Express.Multer.File[],
+  ) {
+    await this.offersService.uploadPictures(offerNumber, user, pictures);
   }
 }

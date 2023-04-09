@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsNumber, Min, IsArray, ArrayNotEmpty, ValidateNested } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, Min, ValidateNested } from 'class-validator';
 
 import { AddressDto } from '@providers/address/dto';
 import { FindDictionariesDto } from '@providers/dictionaries/dto/find-dictionaries.dto';
@@ -38,10 +38,6 @@ export class CreateOfferDto implements OfferRequest {
   @IsNumber()
   @Min(0)
   constructionYear: number;
-
-  @IsArray()
-  @ArrayNotEmpty()
-  pictures: string[];
 
   @Type(() => FindDictionariesDto)
   @ValidateNested()
