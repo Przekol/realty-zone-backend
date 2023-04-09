@@ -10,4 +10,8 @@ export class PhotosService {
     photo.url = photoDto.url;
     return photo.save();
   }
+
+  async deletePhoto(avatar: Photo) {
+    return avatar.remove();
+  }
 }
