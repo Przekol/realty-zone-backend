@@ -30,10 +30,7 @@ export enum Role {
 
 export interface UserSerializerResponse {
   email: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  src?: string;
+  profile?: UserProfileSerializerResponse;
   status: Status;
   roles: string[];
 }
@@ -54,4 +51,12 @@ export interface UserProfileEntity {
   user: UserEntity;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface UserProfileSerializerResponse {
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  avatar: Photo;
 }

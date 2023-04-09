@@ -1,5 +1,7 @@
-import { Expose, Transform, TransformFnParams } from 'class-transformer';
+import { Expose, Transform, TransformFnParams, Type } from 'class-transformer';
 import { IsEnum } from 'class-validator';
+
+import { UserProfileSerializerDto } from '@api/users/dto/user-profile-serializer.dto';
 
 import { Role, Status, UserSerializerResponse } from '@types';
 export function getRoleString(role: Role): string {
@@ -17,16 +19,8 @@ export class UserSerializerDto implements UserSerializerResponse {
   email: string;
 
   @Expose()
-  username?: string;
-
-  @Expose()
-  firstName?: string;
-
-  @Expose()
-  lastName?: string;
-
-  @Expose()
-  src?: string;
+  @Type(() => UserProfileSerializerDto)
+  profile: UserProfileSerializerDto;
 
   @Expose()
   status: Status;

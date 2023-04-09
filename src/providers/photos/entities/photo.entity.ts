@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import {
   BaseEntity,
   Column,
@@ -15,9 +16,11 @@ import { PhotoEntity } from '@types';
 @Entity({ name: 'photos' })
 export class Photo extends BaseEntity implements PhotoEntity {
   @PrimaryGeneratedColumn('uuid')
+  @Expose()
   id: string;
 
   @Column({ length: 255 })
+  @Expose()
   url: string;
 
   @CreateDateColumn({ type: 'timestamp' })
