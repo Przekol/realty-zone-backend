@@ -1,4 +1,4 @@
-import { OfferAddressEntity, OfferEntity } from './offer';
+import { OfferAddressEntity, OfferEntity, OfferPhotosEntity } from './offer';
 import { OfferRequest, PaginationOptionsRequest } from './offer.request';
 import { CreateOfferResponse, OfferResponse, OffersResponse } from './offer.response';
 
@@ -10,4 +10,5 @@ export {
   OfferResponse,
   OfferRequest,
   CreateOfferResponse,
+  OfferPhotosEntity,
 };
