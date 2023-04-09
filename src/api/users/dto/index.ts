@@ -1,5 +1,5 @@
 import { CreateUserDto } from './create-user.dto';
+import { UserProfileResponseDto } from './user-profile-response.dto';
 import { UserProfileDto } from './user-profile.dto';
-import { UserSerializerDto } from './user-serializer.dto';
 
-export { CreateUserDto, UserSerializerDto, UserProfileDto };
+export { CreateUserDto, UserProfileDto, UserProfileResponseDto };

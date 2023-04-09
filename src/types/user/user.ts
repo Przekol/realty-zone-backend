@@ -1,5 +1,7 @@
 import { Photo } from '@providers/photos/entities/photo.entity';
 
+import { UserProfileResponse } from './user.response';
+
 import { AddressEntity } from '../address';
 import { TokenEntity } from '../token';
 
@@ -28,13 +30,6 @@ export enum Role {
   Admin,
 }
 
-export interface UserSerializerResponse {
-  email: string;
-  profile?: UserProfileSerializerResponse;
-  status: Status;
-  roles: string[];
-}
-
 export interface UserAddressEntity {
   id: string;
   user: UserEntity;
@@ -51,16 +46,4 @@ export interface UserProfileEntity {
   user: UserEntity;
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface UserProfileSerializerResponse {
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  avatar: { id: string; url: string };
-  user: {
-    id: string;
-    email: string;
-  };
 }

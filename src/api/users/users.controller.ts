@@ -1,13 +1,12 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 
-import { UserProfileDto, UserSerializerDto } from '@api/users/dto';
-import { UserProfileSerializerDto } from '@api/users/dto/user-profile-serializer.dto';
+import { UserProfileDto, UserProfileResponseDto } from '@api/users/dto';
 import { UsersProfileService } from '@api/users/users-profile.service';
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard, RoleGuard } from '@common/guards';
 import { Serialize } from '@common/interceptors';
 
-import { UserDetailsResponse, Role } from '@types';
+import { Role } from '@types';
 
 import { User } from './entities';
 
@@ -17,21 +16,21 @@ export class UsersController {
   constructor(private readonly usersProfileService: UsersProfileService) {}
 
   @UseGuards(JwtAuthenticationGuard)
-  @Serialize(UserSerializerDto)
-  @Get('/me')
-  async getMe(@CurrentUser() user: UserDetailsResponse): Promise<UserDetailsResponse> {
-    return user;
+  @Serialize(UserProfileResponseDto)
+  @Get('/profile')
+  async getProfile(@CurrentUser() user: User) {
+    return this.usersProfileService.getProfile(user);
   }
 
   @UseGuards(JwtAuthenticationGuard)
-  @Serialize(UserProfileSerializerDto)
+  @Serialize(UserProfileResponseDto)
   @Post('/profile')
   async createProfile(@Body() userProfileDto: UserProfileDto, @CurrentUser() user: User) {
     return this.usersProfileService.createProfile(userProfileDto, user);
   }
 
   @UseGuards(JwtAuthenticationGuard)
-  @Serialize(UserProfileSerializerDto)
+  @Serialize(UserProfileResponseDto)
   @Patch('/profile')
   async updateProfile(@Body() userProfileDto: UserProfileDto, @CurrentUser() user: User) {
     return this.usersProfileService.updateProfile(userProfileDto, user);

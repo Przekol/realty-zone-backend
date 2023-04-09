@@ -34,10 +34,7 @@ export class UsersProfileService {
   }
 
   async updateProfile(userProfileDto: UserProfileDto, user: User) {
-    const userProfile = await UserProfile.findOneOrFail({
-      where: { user: { id: user.id } },
-      relations: { avatar: true },
-    });
+    const userProfile = await this.getProfile(user);
     await this.updateAvatar(userProfile, userProfileDto);
 
     if (userProfileDto.firstName) {
@@ -65,5 +62,12 @@ export class UsersProfileService {
       }
       userProfile.avatar = await this.photosService.createPhoto(userProfileDto.avatar);
     }
+  }
+
+  async getProfile(user: User) {
+    return await UserProfile.findOneOrFail({
+      where: { user: { id: user.id } },
+      relations: { avatar: true, user: true },
+    });
   }
 }
