@@ -23,9 +23,4 @@ export class UserProfileDto {
   @IsString()
   @MaxLength(15)
   phoneNumber?: string;
-
-  @IsOptional()
-  @Type(() => PhotoDto)
-  @ValidateNested()
-  avatar?: PhotoDto;
 }

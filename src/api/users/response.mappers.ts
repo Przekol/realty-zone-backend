@@ -23,5 +23,8 @@ export const roleMappers = (roles: string[]) => {
 };
 
 export const avatarUrlMappers = (url: string) => {
+  if (!url) {
+    return null;
+  }
   return `${process.env.API_URL}/static/avatars/${url}`;
 };

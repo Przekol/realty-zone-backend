@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { UserProfileDto } from '@api/users/dto';
 import { User, UserProfile } from '@api/users/entities';
-import { Photo } from '@providers/photos/entities';
+import { PhotoDto } from '@providers/photos/dto';
 import { PhotosService } from '@providers/photos/photos.service';
 
 @Injectable()
@@ -14,14 +14,11 @@ export class UsersProfileService {
     if (existingProfile) {
       throw new ConflictException('User already has a profile');
     }
-    let photo: Photo | null = null;
-    if (userProfileDto.avatar) {
-      photo = await this.photosService.createPhoto(userProfileDto.avatar);
-    }
-    return this.createNewUserProfile(userProfileDto, user, photo);
+
+    return this.createNewUserProfile(userProfileDto, user);
   }
 
-  private async createNewUserProfile(userProfileDto: UserProfileDto, user: User, photo: Photo) {
+  private async createNewUserProfile(userProfileDto: UserProfileDto, user: User) {
     const userProfile = new UserProfile();
     userProfile.firstName = userProfileDto.firstName;
     userProfile.lastName = userProfileDto.lastName;
@@ -29,13 +26,11 @@ export class UsersProfileService {
     userProfile.username = userProfileDto.username;
     await userProfile.save();
     userProfile.user = user;
-    userProfile.avatar = photo;
     return userProfile.save();
   }
 
   async updateProfile(userProfileDto: UserProfileDto, user: User) {
     const userProfile = await this.getProfile(user);
-    await this.updateAvatar(userProfile, userProfileDto);
 
     if (userProfileDto.firstName) {
       userProfile.firstName = userProfileDto.firstName;
@@ -52,15 +47,16 @@ export class UsersProfileService {
     return userProfile.save();
   }
 
-  private async updateAvatar(userProfile: UserProfile, userProfileDto: UserProfileDto) {
-    if (userProfileDto.avatar) {
+  private async updateAvatar(userProfile: UserProfile, avatar: PhotoDto) {
+    if (avatar) {
       if (userProfile.avatar) {
         const avatar = userProfile.avatar;
         userProfile.avatar = null;
         await userProfile.save();
         await this.photosService.deletePhoto(avatar);
       }
-      userProfile.avatar = await this.photosService.createPhoto(userProfileDto.avatar);
+      userProfile.avatar = await this.photosService.createPhoto(avatar);
+      await userProfile.save();
     }
   }
 
@@ -69,5 +65,10 @@ export class UsersProfileService {
       where: { user: { id: user.id } },
       relations: { avatar: true, user: true },
     });
+  }
+
+  async uploadAvatar(avatar: Express.Multer.File, user: User) {
+    const userProfile = await this.getProfile(user);
+    await this.updateAvatar(userProfile, { url: avatar.filename } as PhotoDto);
   }
 }
