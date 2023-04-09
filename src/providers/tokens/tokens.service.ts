@@ -156,7 +156,7 @@ export class TokensService {
 
   async sendTokenLink(user: User, subject: string, url: string, template: MailTemplate) {
     await this.emailService.sendMail(user.email, subject, template, {
-      username: user.username,
+      username: user.profile.username,
       url,
       title: subject,
     });

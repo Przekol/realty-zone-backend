@@ -1,9 +1,18 @@
-import { BaseEntity, Column, CreateDateColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 import { UserProfile } from '@api/users/entities/user-profile.entity';
 
 import { PhotoEntity } from '@types';
 
+@Entity({ name: 'photos' })
 export class Photo extends BaseEntity implements PhotoEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

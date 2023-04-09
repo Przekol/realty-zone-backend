@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Photo } from '@providers/photos/entities';
 
@@ -6,6 +6,7 @@ import { UserProfileEntity } from '@types';
 
 import { User } from './user.entity';
 
+@Entity({ name: 'users_profiles' })
 export class UserProfile extends BaseEntity implements UserProfileEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
