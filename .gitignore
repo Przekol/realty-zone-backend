@@ -37,3 +37,6 @@ lerna-debug.log*
 # Environment
 .env
 docker.env
+
+#Storage
+/storage
