@@ -27,7 +27,8 @@ export class UsersService {
   }
 
   async getById(id: string): Promise<User> {
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findOne({ where: { id }, relations: ['profile'] });
+    delete user.hashPwd;
     if (!user) {
       throw new BadRequestException(`User with this id does not exist.`);
     }
