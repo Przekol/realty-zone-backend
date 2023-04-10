@@ -1,3 +1,1 @@
-import { AuthenticatedStatusResponse } from './authentication.response';
-
-export { AuthenticatedStatusResponse };
+export * from './authentication.response';

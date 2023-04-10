@@ -1,3 +1,1 @@
-import { CookiesNames } from './cookie';
-
-export { CookiesNames };
+export * from './cookie';

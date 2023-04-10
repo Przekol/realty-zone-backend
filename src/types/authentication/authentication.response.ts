@@ -1,3 +1,3 @@
-export interface AuthenticatedStatusResponse {
+export type AuthenticatedStatusResponse = {
   isAuthenticated: boolean;
-}
+};

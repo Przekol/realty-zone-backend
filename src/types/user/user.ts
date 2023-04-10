@@ -1,5 +1,5 @@
-import { Photo } from '../../providers/photos/entities';
 import { AddressEntity } from '../address';
+import { PhotoEntity } from '../photo';
 import { TokenEntity } from '../token';
 
 export interface UserEntity {
@@ -39,7 +39,7 @@ export interface UserProfileEntity {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-  avatar: Photo;
+  avatar: PhotoEntity;
   user: UserEntity;
   createdAt: Date;
   updatedAt: Date;

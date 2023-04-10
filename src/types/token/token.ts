@@ -1,6 +1,4 @@
-import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
-
-import { UserEntity } from '@types';
+import { UserEntity } from '../user';
 
 export interface AbstractTokenEntity {
   id: string;
@@ -16,8 +14,6 @@ export interface TokenEntity extends AbstractTokenEntity {
 export interface TokenOptions {
   tokenType: 'activation' | 'password-reset' | 'refresh' | 'authentication';
 }
-
-export type TokenEntityType = ActivationToken | PasswordResetToken | RefreshToken;
 
 export interface TokenPayload {
   userId: string;

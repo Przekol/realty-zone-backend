@@ -1,4 +1,2 @@
-import { AddressEntity } from './address';
-import { AddressRequest } from './address.request';
-
-export { AddressEntity, AddressRequest };
+export * from './address';
+export * from './address.request';

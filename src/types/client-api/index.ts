@@ -1,3 +1,1 @@
-import { ClientApiResponse } from './client-api.response';
-
-export { ClientApiResponse };
+export * from './client-api.response';

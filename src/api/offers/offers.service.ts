@@ -3,13 +3,14 @@ import { plainToInstance } from 'class-transformer';
 import { DataSource } from 'typeorm';
 
 import { Offer, OfferAddress, OfferPhotos } from '@api/offers/entities';
+import { EntityClass } from '@api/offers/types';
 import { User } from '@api/users/entities';
 import { AddressService } from '@providers/address/address.service';
 import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
 import { Photo } from '@providers/photos/entities';
 
-import { CreateOfferResponse, EntityClass, OffersResponse, OneOfferResponse } from '@types';
+import { CreateOfferResponse, OffersResponse, OneOfferResponse } from '@types';
 
 import { PaginationOptionsDto, CreateOfferDto, OneOfferResponseDto } from './dto';
 

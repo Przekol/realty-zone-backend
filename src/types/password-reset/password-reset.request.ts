@@ -1,7 +1,7 @@
-export interface ForgetPasswordRequest {
+export type ForgetPasswordRequest = {
   email: string;
-}
+};
 
-export interface PasswordResetRequest {
+export type PasswordResetRequest = {
   newPassword: string;
-}
+};
