@@ -132,18 +132,22 @@ export class OffersService {
 
   async uploadPictures(offerNumber: number, user: User, pictures: Express.Multer.File[]) {
     const offer = await Offer.findOneOrFail({ where: { offerNumber, user: { id: user.id } } });
+    const photos = await this.savePictures(pictures);
+    await this.saveOfferPhotos(offer, photos);
+  }
 
-    const photos = await Promise.all(
+  private async savePictures(pictures: Express.Multer.File[]): Promise<Photo[]> {
+    return await Promise.all(
       pictures.map(async (picture) => {
         const photo = new Photo();
         photo.url = picture.filename;
-
         await photo.save();
-
         return photo;
       }),
     );
+  }
 
+  private async saveOfferPhotos(offer: Offer, photos: Photo[]): Promise<void> {
     const offerPhotos = new OfferPhotos();
     offerPhotos.offer = offer;
     await offerPhotos.save();
