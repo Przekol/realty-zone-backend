@@ -17,7 +17,7 @@ import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@common/guards';
 import { createMulterOptions, StorageDestinations } from '@config';
 
-import { CreateOfferResponse, OffersResponse } from '@types';
+import { CreateOfferResponse, OffersResponse, OneOfferResponse } from '@types';
 
 import { CreateOfferDto, OneOfferParamsDto, PaginationOptionsDto } from './dto';
 import { OffersService } from './offers.service';
@@ -25,18 +25,14 @@ import { OffersService } from './offers.service';
 @Controller('offers')
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
+
   @Get('/')
   getAllOffers(@Query() paginationOptionsDto: PaginationOptionsDto): Promise<OffersResponse> {
     return this.offersService.getAllOffers(paginationOptionsDto);
   }
 
-  // @Get('/basic')
-  // getBasicOffers() {
-  //   return this.offersService.getBasicOffers();
-  // }
-
   @Get('/:offerNumber/:offerSlug?')
-  getOfferByOfferNumber(@Param() oneOfferParamsDto: OneOfferParamsDto) {
+  getOfferByOfferNumber(@Param() oneOfferParamsDto: OneOfferParamsDto): Promise<OneOfferResponse> {
     return this.offersService.getOfferByOfferNumber(oneOfferParamsDto.offerNumber);
   }
 

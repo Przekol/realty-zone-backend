@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { DataSource } from 'typeorm';
 
 import { Offer, OfferAddress, OfferPhotos } from '@api/offers/entities';
@@ -8,10 +9,9 @@ import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
 import { Photo } from '@providers/photos/entities';
 
-import { CreateOfferResponse, EntityClass, OffersResponse } from '@types';
+import { CreateOfferResponse, EntityClass, OffersResponse, OneOfferResponse } from '@types';
 
-import { PaginationOptionsDto, CreateOfferDto } from './dto';
-import { mapRawOfferToFormattedOffer } from './response.mappers';
+import { PaginationOptionsDto, CreateOfferDto, OneOfferResponseDto } from './dto';
 
 @Injectable()
 export class OffersService {
@@ -31,10 +31,11 @@ export class OffersService {
       order: {
         createdAt: sortOrder,
       },
+      relations: ['market', 'transaction', 'ownership', 'status', 'type', 'offerAddress.address', 'user.profile'],
     });
 
     return {
-      offers,
+      offers: offers.map((offer) => this.transformToOneOfferResponse(offer)),
       pagination: {
         currentPage: page,
         itemsPerPage: limit,
@@ -44,46 +45,12 @@ export class OffersService {
     };
   }
 
-  async getOfferByOfferNumber(offerNumber: number) {
-    const rawOffer = await this.dataSource
-      .createQueryBuilder(Offer, 'offer')
-      .leftJoinAndSelect('offer.market', 'market')
-      .leftJoinAndSelect('offer.transaction', 'transaction')
-      .leftJoinAndSelect('offer.ownership', 'ownership')
-      .leftJoinAndSelect('offer.status', 'status')
-      .leftJoinAndSelect('offer.type', 'type')
-      .leftJoinAndMapOne('offer.offerAddress', 'offers_addresses', 'offerAddress', 'offerAddress.offer = offer.id')
-      .leftJoinAndSelect('offerAddress.address', 'address')
-      .leftJoinAndSelect('offer.user', 'user')
-      .select([
-        'offer.id',
-        'offer.offerNumber',
-        'offer.title',
-        'offer.description',
-        'offer.price',
-        'offer.area',
-        'offer.rooms',
-        'offer.floor',
-        'offer.buildingFloors',
-        'offer.constructionYear',
-        'offer.pictures',
-        'offer.createdAt',
-        'offer.updatedAt',
-        'market.name',
-        'transaction.name',
-        'ownership.name',
-        'status.name',
-        'offerAddress.id',
-        'address.street',
-        'address.streetNumber',
-        'address.city',
-        'address.district',
-        'user.id',
-        'type.name',
-      ])
-      .where('offer.offerNumber = :offerNumber', { offerNumber })
-      .getRawOne();
-    return mapRawOfferToFormattedOffer(rawOffer);
+  async getOfferByOfferNumber(offerNumber: number): Promise<OneOfferResponse> {
+    const offer = await Offer.findOneOrFail({
+      where: { offerNumber },
+      relations: ['market', 'transaction', 'ownership', 'status', 'type', 'offerAddress.address', 'user.profile'],
+    });
+    return this.transformToOneOfferResponse(offer);
   }
 
   private generateOfferNumber(): number {
@@ -154,5 +121,9 @@ export class OffersService {
 
     offerPhotos.photos = photos;
     await offerPhotos.save();
+  }
+
+  private transformToOneOfferResponse(offer: Offer): OneOfferResponse {
+    return plainToInstance(OneOfferResponseDto, offer, { excludeExtraneousValues: true });
   }
 }
