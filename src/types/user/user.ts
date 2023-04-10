@@ -1,7 +1,4 @@
-import { Photo } from '@providers/photos/entities/photo.entity';
-
-import { UserProfileResponse } from './user.response';
-
+import { Photo } from '../../providers/photos/entities';
 import { AddressEntity } from '../address';
 import { TokenEntity } from '../token';
 

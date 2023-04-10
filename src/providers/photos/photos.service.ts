@@ -16,8 +16,9 @@ export class PhotosService {
 
   async deletePhoto(photo: Photo) {
     const dir = photo.profile ? 'avatars' : 'offers';
-    const filePath = join(__dirname, '..', '..', '..', 'storage', dir, photo.url);
-    await unlink(filePath);
+    // const filePath = join(__dirname, '..', '..', '..', 'storage', dir, photo.url);
+    // await unlink(filePath);
+
     return photo.remove();
   }
 }

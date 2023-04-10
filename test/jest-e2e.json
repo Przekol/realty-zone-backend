@@ -7,11 +7,11 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@types": "<rootDir>/../src/types",
-    "^@common/(.*)$": "<rootDir>/..src/common/$1",
-    "^@shared(.*)$": "<rootDir>/..src/shared/$1",
-    "^@providers(.*)$": "<rootDir>/..src/providers/$1",
-    "^@config": "<rootDir>/../src/config",
-    "^@api": "<rootDir>/../src/api/$1"
+    "^@types": "<rootDir>/types",
+    "^@common(.*)$": "<rootDir>/common/$1",
+    "^@shared(.*)$": "<rootDir>/shared/$1",
+    "^@providers(.*)$": "<rootDir>/providers/$1",
+    "^@config": "<rootDir>/config",
+    "^@api(.*)$": "<rootDir>/api/$1"
   }
 }

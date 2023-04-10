@@ -1,3 +1,3 @@
-import { AddressEntity } from '@types';
+import { AddressEntity } from './address';
 
 export type AddressRequest = Omit<AddressEntity, 'id' | 'createdAt' | 'updatedAt'>;

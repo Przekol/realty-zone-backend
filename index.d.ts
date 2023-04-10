@@ -1,4 +1,5 @@
 import { UserEntity } from '@domain/users/types';
+
 import { TokenEntityType } from '@providers/tokens/types';
 
 declare global {
