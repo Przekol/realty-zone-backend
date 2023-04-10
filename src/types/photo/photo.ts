@@ -1,3 +1,4 @@
+import { OfferPhotosEntity } from '../offer';
 import { UserProfileEntity } from '../user';
 
 export interface PhotoEntity {
@@ -6,4 +7,5 @@ export interface PhotoEntity {
   createdAt: Date;
   updatedAt: Date;
   profile: UserProfileEntity;
+  offerPhotos: OfferPhotosEntity;
 }

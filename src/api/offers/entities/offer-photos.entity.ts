@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Offer } from '@api/offers/entities/offer.entity';
 import { Photo } from '@providers/photos/entities';
@@ -14,7 +14,7 @@ export class OfferPhotos extends BaseEntity implements OfferPhotosEntity {
   @JoinColumn()
   offer: Offer;
 
-  @ManyToOne(() => Photo, (photo) => photo.offerPhotos)
+  @OneToMany(() => Photo, (photo) => photo.offerPhotos)
   @JoinColumn()
   photos: Photo[];
 }

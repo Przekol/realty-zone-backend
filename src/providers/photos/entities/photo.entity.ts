@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -34,6 +34,6 @@ export class Photo extends BaseEntity implements PhotoEntity {
   @OneToOne(() => UserProfile, (userProfile) => userProfile.avatar)
   profile: UserProfile;
 
-  @OneToMany(() => OfferPhotos, (offerPhoto) => offerPhoto.photos)
+  @ManyToOne(() => OfferPhotos, (offerPhoto) => offerPhoto.photos)
   offerPhotos: OfferPhotos;
 }
