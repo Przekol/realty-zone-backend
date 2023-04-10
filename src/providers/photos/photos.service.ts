@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
+import { unlink } from 'node:fs/promises';
+import { join } from 'path';
+
 import { PhotoDto } from '@providers/photos/dto';
 import { Photo } from '@providers/photos/entities';
 
@@ -11,7 +14,10 @@ export class PhotosService {
     return photo.save();
   }
 
-  async deletePhoto(avatar: Photo) {
-    return avatar.remove();
+  async deletePhoto(photo: Photo) {
+    const dir = photo.profile ? 'avatars' : 'offers';
+    const filePath = join(__dirname, '..', '..', '..', 'storage', dir, photo.url);
+    await unlink(filePath);
+    return photo.remove();
   }
 }

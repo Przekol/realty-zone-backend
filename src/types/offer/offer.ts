@@ -1,6 +1,7 @@
 import { Market, Ownership, Status, Types, Transaction } from '@providers/dictionaries/entities/dictionary.entity';
 
 import { AddressEntity } from '../address';
+import { PhotoEntity } from '../photo';
 
 export interface OfferEntity {
   id: string;
@@ -18,7 +19,7 @@ export interface OfferEntity {
   floor: number;
   buildingFloors: number;
   constructionYear: number;
-  pictures: string[];
+  offerPhotos: OfferPhotosEntity;
   offerAddress: OfferAddressEntity;
   createdAt: Date;
   updatedAt: Date;
@@ -28,6 +29,12 @@ export interface OfferAddressEntity {
   id: string;
   offer: OfferEntity;
   address: AddressEntity;
+}
+
+export interface OfferPhotosEntity {
+  id: string;
+  offer: OfferEntity;
+  photos: PhotoEntity[];
 }
 
 export interface PaginationInfo {

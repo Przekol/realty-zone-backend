@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { DataSource } from 'typeorm';
 
-import { Offer, OfferAddress } from '@api/offers/entities';
+import { Offer, OfferAddress, OfferPhotos } from '@api/offers/entities';
 import { User } from '@api/users/entities';
 import { AddressService } from '@providers/address/address.service';
 import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
+import { Photo } from '@providers/photos/entities';
 
-import { CreateOfferResponse, EntityClass, OffersResponse } from '@types';
+import { CreateOfferResponse, EntityClass, OffersResponse, OneOfferResponse } from '@types';
 
-import { PaginationOptionsDto, CreateOfferDto } from './dto';
-import { mapRawOfferToFormattedOffer } from './response.mappers';
+import { PaginationOptionsDto, CreateOfferDto, OneOfferResponseDto } from './dto';
 
 @Injectable()
 export class OffersService {
@@ -30,10 +31,11 @@ export class OffersService {
       order: {
         createdAt: sortOrder,
       },
+      relations: ['market', 'transaction', 'ownership', 'status', 'type', 'offerAddress.address', 'user.profile'],
     });
 
     return {
-      offers,
+      offers: offers.map((offer) => this.transformToOneOfferResponse(offer)),
       pagination: {
         currentPage: page,
         itemsPerPage: limit,
@@ -43,46 +45,12 @@ export class OffersService {
     };
   }
 
-  async getOfferByOfferNumber(offerNumber: number) {
-    const rawOffer = await this.dataSource
-      .createQueryBuilder(Offer, 'offer')
-      .leftJoinAndSelect('offer.market', 'market')
-      .leftJoinAndSelect('offer.transaction', 'transaction')
-      .leftJoinAndSelect('offer.ownership', 'ownership')
-      .leftJoinAndSelect('offer.status', 'status')
-      .leftJoinAndSelect('offer.type', 'type')
-      .leftJoinAndMapOne('offer.offerAddress', 'offers_addresses', 'offerAddress', 'offerAddress.offer = offer.id')
-      .leftJoinAndSelect('offerAddress.address', 'address')
-      .leftJoinAndSelect('offer.user', 'user')
-      .select([
-        'offer.id',
-        'offer.offerNumber',
-        'offer.title',
-        'offer.description',
-        'offer.price',
-        'offer.area',
-        'offer.rooms',
-        'offer.floor',
-        'offer.buildingFloors',
-        'offer.constructionYear',
-        'offer.pictures',
-        'offer.createdAt',
-        'offer.updatedAt',
-        'market.name',
-        'transaction.name',
-        'ownership.name',
-        'status.name',
-        'offerAddress.id',
-        'address.street',
-        'address.streetNumber',
-        'address.city',
-        'address.district',
-        'user.id',
-        'type.name',
-      ])
-      .where('offer.offerNumber = :offerNumber', { offerNumber })
-      .getRawOne();
-    return mapRawOfferToFormattedOffer(rawOffer);
+  async getOfferByOfferNumber(offerNumber: number): Promise<OneOfferResponse> {
+    const offer = await Offer.findOneOrFail({
+      where: { offerNumber },
+      relations: ['market', 'transaction', 'ownership', 'status', 'type', 'offerAddress.address', 'user.profile'],
+    });
+    return this.transformToOneOfferResponse(offer);
   }
 
   private generateOfferNumber(): number {
@@ -131,7 +99,31 @@ export class OffersService {
 
   async uploadPictures(offerNumber: number, user: User, pictures: Express.Multer.File[]) {
     const offer = await Offer.findOneOrFail({ where: { offerNumber, user: { id: user.id } } });
-    offer.pictures = [...offer.pictures, ...pictures.map((picture) => picture.filename)];
-    await offer.save();
+    const photos = await this.savePictures(pictures);
+    await this.saveOfferPhotos(offer, photos);
+  }
+
+  private async savePictures(pictures: Express.Multer.File[]): Promise<Photo[]> {
+    return await Promise.all(
+      pictures.map(async (picture) => {
+        const photo = new Photo();
+        photo.url = picture.filename;
+        await photo.save();
+        return photo;
+      }),
+    );
+  }
+
+  private async saveOfferPhotos(offer: Offer, photos: Photo[]): Promise<void> {
+    const offerPhotos = new OfferPhotos();
+    offerPhotos.offer = offer;
+    await offerPhotos.save();
+
+    offerPhotos.photos = photos;
+    await offerPhotos.save();
+  }
+
+  private transformToOneOfferResponse(offer: Offer): OneOfferResponse {
+    return plainToInstance(OneOfferResponseDto, offer, { excludeExtraneousValues: true });
   }
 }

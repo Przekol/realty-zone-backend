@@ -1,12 +1,11 @@
-import { OfferEntity, PaginationInfo } from './offer';
+import { PaginationInfo } from './offer';
 
-export interface OffersResponse {
-  offers: OfferEntity[];
+export type OffersResponse = {
+  offers: OneOfferResponse[];
   pagination: PaginationInfo;
-}
+};
 
-export type OfferResponse = {
-  id: string;
+export type OneOfferResponse = {
   offerNumber: number;
   title: string;
   description: string;
@@ -16,21 +15,25 @@ export type OfferResponse = {
   floor: number;
   buildingFloors: number;
   constructionYear: number;
-  pictures: string[];
-  createdAt: string;
-  updatedAt: string;
   market: string;
   transaction: string;
   ownership: string;
-  status: string;
   type: string;
-  address: {
-    street: string;
-    streetNumber: string;
-    city: string;
-    district: string;
-  };
-  user: string;
+  status: string;
+  address: OneOfferAddressResponse;
+  user: OneOfferUserResponse;
+};
+
+export type OneOfferAddressResponse = {
+  street: string;
+  city: string;
+  district: string;
+  country: string;
+};
+
+export type OneOfferUserResponse = {
+  email: string;
+  phone: string | null;
 };
 
 export type CreateOfferResponse = {
