@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
-import { Offer, OfferAddress } from '@api/offers/entities';
+import { Offer, OfferAddress, OfferPhotos } from '@api/offers/entities';
 import { User } from '@api/users/entities';
 import { AddressService } from '@providers/address/address.service';
 import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
+import { Photo } from '@providers/photos/entities';
 
 import { CreateOfferResponse, EntityClass, OffersResponse } from '@types';
 
@@ -131,7 +132,23 @@ export class OffersService {
 
   async uploadPictures(offerNumber: number, user: User, pictures: Express.Multer.File[]) {
     const offer = await Offer.findOneOrFail({ where: { offerNumber, user: { id: user.id } } });
-    offer.pictures = [...offer.pictures, ...pictures.map((picture) => picture.filename)];
-    await offer.save();
+
+    const photos = await Promise.all(
+      pictures.map(async (picture) => {
+        const photo = new Photo();
+        photo.url = picture.filename;
+
+        await photo.save();
+
+        return photo;
+      }),
+    );
+
+    const offerPhotos = new OfferPhotos();
+    offerPhotos.offer = offer;
+    await offerPhotos.save();
+
+    offerPhotos.photos = photos;
+    await offerPhotos.save();
   }
 }
