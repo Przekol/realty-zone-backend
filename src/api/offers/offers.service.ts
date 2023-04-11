@@ -10,7 +10,7 @@ import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
 import { Photo } from '@providers/photos/entities';
 
-import { CreateOfferResponse, OffersListResponse, OneOfferResponse } from '@types';
+import { CreateOfferResponse, DictionaryResponse, OffersListResponse, OneOfferResponse } from '@types';
 
 import { PaginationOptionsDto, CreateOfferDto, OneOfferResponseDto } from './dto';
 
@@ -143,5 +143,9 @@ export class OffersService {
 
   private transformToOneOfferResponse(offer: Offer): OneOfferResponse {
     return plainToInstance(OneOfferResponseDto, offer, { excludeExtraneousValues: true });
+  }
+
+  getDictionaries(): Promise<DictionaryResponse> {
+    return this.dictionariesService.getDictionaries();
   }
 }
