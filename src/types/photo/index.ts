@@ -1,3 +1,1 @@
-import { PhotoEntity } from './photo';
-
-export { PhotoEntity };
+export * from './photo';

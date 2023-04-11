@@ -1,3 +1,3 @@
-export interface VerifyPasswordResetTokenResponse {
+export type VerifyPasswordResetTokenResponse = {
   valid: boolean;
-}
+};

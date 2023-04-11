@@ -1,12 +1,13 @@
-import { AddressRequest, FindDictionariesRequest } from '@types';
+import { AddressRequest } from '../address/address.request';
+import { FindDictionariesRequest } from '../dictionary/dictionary.request';
 
-export interface PaginationOptionsRequest {
+export type PaginationOptionsRequest = {
   page?: number;
   limit?: number;
   sortOrder?: 'ASC' | 'DESC';
-}
+};
 
-export interface OfferRequest {
+export type OfferRequest = {
   title: string;
   description: string;
   price: number;
@@ -17,4 +18,4 @@ export interface OfferRequest {
   constructionYear: number;
   dictionaries: FindDictionariesRequest;
   address: AddressRequest;
-}
+};

@@ -6,17 +6,10 @@ import { DataSource, MoreThan } from 'typeorm';
 import { User } from '@api/users/entities';
 import { EmailService } from '@providers/email';
 import { ActivationToken, PasswordResetToken, RefreshToken } from '@providers/tokens/entities';
+import { TokenEntityType } from '@providers/tokens/types';
 import { checkHash, hashData } from '@shared/utils';
 
-import {
-  JwtTokenOptions,
-  MailTemplate,
-  TokenData,
-  TokenEntityType,
-  TokenOptions,
-  TokenPayload,
-  ValidTokenRequest,
-} from '@types';
+import { JwtTokenOptions, MailTemplate, TokenData, TokenOptions, TokenPayload, ValidTokenRequest } from '@types';
 
 @Injectable()
 export class TokensService {

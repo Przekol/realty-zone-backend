@@ -1,3 +1,3 @@
-export interface ConfirmEmailRequest {
+export type ConfirmEmailRequest = {
   token: string;
-}
+};

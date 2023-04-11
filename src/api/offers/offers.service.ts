@@ -3,13 +3,14 @@ import { plainToInstance } from 'class-transformer';
 import { DataSource } from 'typeorm';
 
 import { Offer, OfferAddress, OfferPhotos } from '@api/offers/entities';
+import { EntityClass } from '@api/offers/types';
 import { User } from '@api/users/entities';
 import { AddressService } from '@providers/address/address.service';
 import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
 import { Photo } from '@providers/photos/entities';
 
-import { CreateOfferResponse, EntityClass, OffersResponse, OneOfferResponse } from '@types';
+import { CreateOfferResponse, OffersListResponse, OneOfferResponse } from '@types';
 
 import { PaginationOptionsDto, CreateOfferDto, OneOfferResponseDto } from './dto';
 
@@ -21,7 +22,7 @@ export class OffersService {
     private readonly dictionariesService: DictionariesService,
   ) {}
 
-  async getAllOffers(paginationOptionsDto: PaginationOptionsDto): Promise<OffersResponse> {
+  async getAllOffers(paginationOptionsDto: PaginationOptionsDto): Promise<OffersListResponse> {
     const { page = 1, limit = 10, sortOrder = 'DESC' } = paginationOptionsDto;
     const skip = (page - 1) * limit;
 
@@ -31,9 +32,17 @@ export class OffersService {
       order: {
         createdAt: sortOrder,
       },
-      relations: ['market', 'transaction', 'ownership', 'status', 'type', 'offerAddress.address', 'user.profile'],
+      relations: [
+        'market',
+        'transaction',
+        'ownership',
+        'status',
+        'type',
+        'offerAddress.address',
+        'user.profile',
+        'offerPhotos.photos',
+      ],
     });
-
     return {
       offers: offers.map((offer) => this.transformToOneOfferResponse(offer)),
       pagination: {
@@ -48,7 +57,16 @@ export class OffersService {
   async getOfferByOfferNumber(offerNumber: number): Promise<OneOfferResponse> {
     const offer = await Offer.findOneOrFail({
       where: { offerNumber },
-      relations: ['market', 'transaction', 'ownership', 'status', 'type', 'offerAddress.address', 'user.profile'],
+      relations: [
+        'market',
+        'transaction',
+        'ownership',
+        'status',
+        'type',
+        'offerAddress.address',
+        'user.profile',
+        'offerPhotos.photos',
+      ],
     });
     return this.transformToOneOfferResponse(offer);
   }

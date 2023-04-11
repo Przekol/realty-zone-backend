@@ -1,6 +1,6 @@
-import { TokenOptions } from '@types';
+import { TokenOptions } from './token';
 
-export interface ValidTokenRequest {
+export type ValidTokenRequest = {
   token: string;
   type: TokenOptions['tokenType'];
-}
+};
