@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 
-import { addressOfferMappers, userOfferMappers } from '@api/offers/response.mappers';
+import { addressOfferMappers, offerPhotosMappers, userOfferMappers } from '@api/offers/response.mappers';
 
 import { OneOfferResponse, OneOfferAddressResponse, OneOfferUserResponse } from '@types';
 
@@ -59,6 +59,10 @@ export class OneOfferResponseDto implements OneOfferResponse {
   @Expose()
   @Transform(({ obj }) => userOfferMappers(obj.user))
   user: OneOfferUserResponse;
+
+  @Expose()
+  @Transform(({ obj }) => offerPhotosMappers(obj.offerPhotos.photos))
+  photos: string[];
 
   @Expose()
   createdAt: Date;

@@ -1,6 +1,6 @@
 import { PaginationInfo } from './offer';
 
-export type OffersResponse = {
+export type OffersListResponse = {
   offers: OneOfferResponse[];
   pagination: PaginationInfo;
 };
@@ -22,6 +22,7 @@ export type OneOfferResponse = {
   status: string;
   address: OneOfferAddressResponse;
   user: OneOfferUserResponse;
+  photos: string[];
 };
 
 export type OneOfferAddressResponse = {
