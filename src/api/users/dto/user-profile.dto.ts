@@ -1,9 +1,8 @@
-import { Type } from 'class-transformer';
-import { IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
 
-import { PhotoDto } from '@providers/photos/dto';
+import { UpdateUserRequest } from '@types';
 
-export class UserProfileDto {
+export class UserProfileDto implements UpdateUserRequest {
   @IsOptional()
   @IsString()
   @MaxLength(50)
