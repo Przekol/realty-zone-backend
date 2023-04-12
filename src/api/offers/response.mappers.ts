@@ -28,5 +28,8 @@ const photoUrlMappers = (photoUrl: string): string => {
 };
 
 export const offerPhotosMappers = (photos: Photo[]): string[] => {
+  if (!photos || !photos.length) {
+    return [];
+  }
   return photos.map((photo) => photoUrlMappers(photo.url));
 };
