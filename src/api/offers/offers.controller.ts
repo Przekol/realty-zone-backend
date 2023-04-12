@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -51,7 +52,7 @@ export class OffersController {
 
   @HttpCode(201)
   @UseGuards(JwtAuthenticationGuard)
-  @UseInterceptors(FilesInterceptor('pictures', 3, { storage: createMulterOptions(StorageDestinations.OFFERS) }))
+  @UseInterceptors(FilesInterceptor('pictures', 10, { storage: createMulterOptions(StorageDestinations.OFFERS) }))
   @Post('/:id/pictures')
   async uploadPictures(
     @Param('id') offerNumber: number,
@@ -59,5 +60,12 @@ export class OffersController {
     @UploadedFiles() pictures: Express.Multer.File[],
   ) {
     await this.offersService.uploadPictures(offerNumber, user, pictures);
+  }
+
+  @HttpCode(200)
+  @UseGuards(JwtAuthenticationGuard)
+  @Delete('/:id')
+  async deleteOffer(@Param('id') offerNumber: number, @CurrentUser() user: User) {
+    await this.offersService.deleteOffer(offerNumber, user);
   }
 }
