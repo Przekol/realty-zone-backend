@@ -20,6 +20,7 @@ export class AuthenticationController {
   }
 
   @HttpCode(200)
+  @UseGuards(ActiveUserGuard)
   @UseGuards(LocalAuthenticationGuard)
   @Post('signin')
   async login(

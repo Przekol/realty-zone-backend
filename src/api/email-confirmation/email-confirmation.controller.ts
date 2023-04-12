@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 
-import { UsersService } from '@api/users';
+import { UsersProfileService, UsersService } from '@api/users';
 import { User } from '@api/users/entities';
 import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@common/guards';
@@ -16,6 +16,7 @@ export class EmailConfirmationController {
     private readonly authenticationEmitter: AuthenticationEmitter,
     private readonly tokensService: TokensService,
     private readonly usersService: UsersService,
+    private readonly userProfileService: UsersProfileService,
   ) {}
 
   @HttpCode(200)
@@ -25,6 +26,7 @@ export class EmailConfirmationController {
     const user = await this.usersService.getById(tokenActive.user.id);
     await this.usersService.updateUserStatus(user, Status.ACTIVE);
     await this.tokensService.markTokenAsUsed(tokenActive);
+    await this.userProfileService.createProfile(user);
 
     await this.authenticationEmitter.emitMessageEmailSendEvent({
       user,

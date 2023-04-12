@@ -34,13 +34,13 @@ export class UsersController {
     return this.usersProfileService.getProfile(user);
   }
 
-  @HttpCode(201)
-  @UseGuards(JwtAuthenticationGuard)
-  @Serialize(UserProfileResponseDto)
-  @Post('/profile')
-  async createProfile(@Body() userProfileDto: UserProfileDto, @CurrentUser() user: User) {
-    return this.usersProfileService.createProfile(userProfileDto, user);
-  }
+  // @HttpCode(201)
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Serialize(UserProfileResponseDto)
+  // @Post('/profile')
+  // async createProfile(@Body() userProfileDto: UserProfileDto, @CurrentUser() user: User) {
+  //   return this.usersProfileService.createProfile(userProfileDto, user);
+  // }
 
   @UseGuards(JwtAuthenticationGuard)
   @Serialize(UserProfileResponseDto)
