@@ -9,21 +9,18 @@ import { PhotosService } from '@providers/photos/photos.service';
 export class UsersProfileService {
   constructor(private readonly photosService: PhotosService) {}
 
-  async createProfile(userProfileDto: UserProfileDto, user: User) {
+  async createProfile(user: User) {
     const existingProfile = await UserProfile.findOne({ where: { user: { id: user.id } } });
     if (existingProfile) {
       throw new ConflictException('User already has a profile');
     }
 
-    return this.createNewUserProfile(userProfileDto, user);
+    return this.createNewUserProfile(user);
   }
 
-  private async createNewUserProfile(userProfileDto: UserProfileDto, user: User) {
+  private async createNewUserProfile(user: User) {
     const userProfile = new UserProfile();
-    userProfile.firstName = userProfileDto.firstName;
-    userProfile.lastName = userProfileDto.lastName;
-    userProfile.phoneNumber = userProfileDto.phoneNumber;
-    userProfile.username = userProfileDto.username;
+
     await userProfile.save();
     userProfile.user = user;
     return userProfile.save();

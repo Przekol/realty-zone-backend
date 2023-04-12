@@ -14,6 +14,6 @@ import { UsersController } from './users.controller';
   imports: [AddressModule, PhotosModule, TypeOrmModule.forFeature([User, UserAddress, UserProfile])],
   controllers: [UsersController],
   providers: [UsersService, UsersProfileService],
-  exports: [UsersService],
+  exports: [UsersService, UsersProfileService],
 })
 export class UsersModule {}
