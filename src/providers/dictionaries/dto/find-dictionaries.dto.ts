@@ -17,9 +17,5 @@ export class FindDictionariesDto implements FindDictionariesRequest {
 
   @IsInt()
   @IsNumber()
-  status: number;
-
-  @IsInt()
-  @IsNumber()
   type: number;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 
 import { Offer, OfferAddress, OfferPhotos } from '@api/offers/entities';
 import { EntityClass } from '@api/offers/types';
@@ -9,8 +9,9 @@ import { AddressService } from '@providers/address/address.service';
 import { Address } from '@providers/address/entities/address.entity';
 import { DictionariesService } from '@providers/dictionaries';
 import { Photo } from '@providers/photos/entities';
+import { PhotosService } from '@providers/photos/photos.service';
 
-import { CreateOfferResponse, OffersListResponse, OneOfferResponse } from '@types';
+import { CreateOfferResponse, DictionaryResponse, OffersListResponse, OneOfferResponse } from '@types';
 
 import { PaginationOptionsDto, CreateOfferDto, OneOfferResponseDto } from './dto';
 
@@ -20,6 +21,7 @@ export class OffersService {
     private readonly dataSource: DataSource,
     private readonly addressService: AddressService,
     private readonly dictionariesService: DictionariesService,
+    private readonly photosService: PhotosService,
   ) {}
 
   async getAllOffers(paginationOptionsDto: PaginationOptionsDto): Promise<OffersListResponse> {
@@ -143,5 +145,46 @@ export class OffersService {
 
   private transformToOneOfferResponse(offer: Offer): OneOfferResponse {
     return plainToInstance(OneOfferResponseDto, offer, { excludeExtraneousValues: true });
+  }
+
+  getDictionaries(): Promise<DictionaryResponse> {
+    return this.dictionariesService.getDictionaries();
+  }
+
+  async deleteOffer(offerNumber: number, user: User) {
+    const offer = await Offer.findOneOrFail({ where: { offerNumber, user: { id: user.id } } });
+
+    await this.deleteOfferAddress(offer);
+    await this.deleteOfferPhotos(offer);
+    await offer.remove();
+  }
+
+  private async deleteOfferPhotos(offer: Offer): Promise<void> {
+    const offerPhotos = await OfferPhotos.findOne({ where: { offer: { id: offer.id } }, relations: ['photos'] });
+
+    if (!offerPhotos) {
+      return;
+    }
+
+    if (offerPhotos.photos) {
+      const photoIds = offerPhotos.photos.map((photo) => photo.id);
+      const photosToDelete = await Photo.findBy({ id: In(photoIds) });
+      for (const photo of photosToDelete) {
+        await this.photosService.deletePhoto(photo);
+      }
+    }
+
+    await offerPhotos.remove();
+  }
+
+  private async deleteOfferAddress(offer: Offer): Promise<void> {
+    const offerAddress = await OfferAddress.findOneOrFail({
+      where: { offer: { id: offer.id } },
+      relations: ['address'],
+    });
+
+    const address = await Address.findOneOrFail({ where: { id: offerAddress.address.id } });
+    await offerAddress.remove();
+    await address.remove();
   }
 }

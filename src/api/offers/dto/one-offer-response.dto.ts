@@ -61,7 +61,7 @@ export class OneOfferResponseDto implements OneOfferResponse {
   user: OneOfferUserResponse;
 
   @Expose()
-  @Transform(({ obj }) => offerPhotosMappers(obj.offerPhotos.photos))
+  @Transform(({ obj }) => offerPhotosMappers(obj.offerPhotos.photos || []))
   photos: string[];
 
   @Expose()

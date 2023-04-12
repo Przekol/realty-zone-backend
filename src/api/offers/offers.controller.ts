@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -17,7 +18,7 @@ import { CurrentUser } from '@common/decorators';
 import { JwtAuthenticationGuard } from '@common/guards';
 import { createMulterOptions, StorageDestinations } from '@config';
 
-import { CreateOfferResponse, OffersListResponse, OneOfferResponse } from '@types';
+import { CreateOfferResponse, DictionaryResponse, OffersListResponse, OneOfferResponse } from '@types';
 
 import { CreateOfferDto, OneOfferParamsDto, PaginationOptionsDto } from './dto';
 import { OffersService } from './offers.service';
@@ -29,6 +30,12 @@ export class OffersController {
   @Get('/')
   getAllOffers(@Query() paginationOptionsDto: PaginationOptionsDto): Promise<OffersListResponse> {
     return this.offersService.getAllOffers(paginationOptionsDto);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('/dictionaries')
+  getDictionaries(): Promise<DictionaryResponse> {
+    return this.offersService.getDictionaries();
   }
 
   @Get('/:offerNumber/:offerSlug?')
@@ -45,7 +52,7 @@ export class OffersController {
 
   @HttpCode(201)
   @UseGuards(JwtAuthenticationGuard)
-  @UseInterceptors(FilesInterceptor('pictures', 3, { storage: createMulterOptions(StorageDestinations.OFFERS) }))
+  @UseInterceptors(FilesInterceptor('pictures', 10, { storage: createMulterOptions(StorageDestinations.OFFERS) }))
   @Post('/:id/pictures')
   async uploadPictures(
     @Param('id') offerNumber: number,
@@ -53,5 +60,12 @@ export class OffersController {
     @UploadedFiles() pictures: Express.Multer.File[],
   ) {
     await this.offersService.uploadPictures(offerNumber, user, pictures);
+  }
+
+  @HttpCode(200)
+  @UseGuards(JwtAuthenticationGuard)
+  @Delete('/:id')
+  async deleteOffer(@Param('id') offerNumber: number, @CurrentUser() user: User) {
+    await this.offersService.deleteOffer(offerNumber, user);
   }
 }
