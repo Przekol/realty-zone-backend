@@ -5,6 +5,6 @@ import { CookieOptions } from 'express';
 export const cookieOptions: CookieOptions = {
   maxAge: 0,
   secure: false,
-  domain: process.env.FRONTEND_DOMAIN,
+  domain: process.env.APP_HOSTNAME,
   httpOnly: true,
 };

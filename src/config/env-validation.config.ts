@@ -12,7 +12,7 @@ export const envValidationObjectSchema = Joi.object({
   APP_HOSTNAME: Joi.string().required(),
   JWT_SECRET_AUTHENTICATION_TOKEN: Joi.string().required(),
   JWT_EXPIRATION_TIME_AUTHENTICATION_TOKEN: Joi.number().required(),
-  FRONTEND_DOMAIN: Joi.string().required(),
+  EMAIL_DOMAIN: Joi.string().required(),
   JWT_SECRET_REFRESH_TOKEN: Joi.string().required(),
   JWT_EXPIRATION_TIME_REFRESH_TOKEN: Joi.number().required(),
   EMAIL_HOST: Joi.string().required(),
@@ -24,6 +24,5 @@ export const envValidationObjectSchema = Joi.object({
   JWT_EXPIRATION_TIME_ACTIVATION_TOKEN: Joi.number().required(),
   JWT_SECRET_PASSWORD_RESET_TOKEN: Joi.string().required(),
   JWT_EXPIRATION_TIME_PASSWORD_RESET_TOKEN: Joi.number().required(),
-  FRONTEND_URL: Joi.string().required(),
   API_URL: Joi.string().required(),
 });
