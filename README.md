@@ -75,6 +75,8 @@ Celem projektu **Realty Zone** jest stworzenie wydajnej i przyjaznej dla użytko
 
 **Formularz kontaktowy do konkretnego ogłoszenia:** Brak formularza kontaktowego, który pozwalałby użytkownikom bezpośrednio wysyłać zapytania do sprzedawców lub właścicieli nieruchomości dotyczących konkretnego ogłoszenia.
 
+**Wdrożenie aplikacji na serwer:** Niestety, nie udało się przeprowadzić procesu wdrożenia aplikacji na serwer zdalny. W związku z tym, nie można obecnie korzystać z aplikacji online. W przyszłości planowane jest poprawienie tej kwestii i umożliwienie dostępu do aplikacji przez internet.
+
 ## 4. Instalacja projektu
 
 ### I. Klonowanie z GitHub 
@@ -88,6 +90,14 @@ Celem projektu **Realty Zone** jest stworzenie wydajnej i przyjaznej dla użytko
    $ cd realty-zone-backend
     ```
 3. Stwórz pliki `.env` oraz `docker.env` w katalogu `realty-zone-backend` i ustaw swoje zmienne środowiskowe na podstawie pliku `.env.example` i `docker.env`.
+Zwróć szczególną uwagę na zmienne dotyczące poczty.
+   ```
+   EMAIL_HOST=
+   EMAIL_USER=
+   EMAIL_PORT=
+   EMAIL_PASSWORD=
+   ```
+   W tym celu polecam skorzystać z darmowego konta na https://mailtrap.io/.
 
 ### II. Uruchomienie bazy danych PostgreSQL
 ##### _1. Instalacja bazy danych na komputerze_:
@@ -101,12 +111,12 @@ Celem projektu **Realty Zone** jest stworzenie wydajnej i przyjaznej dla użytko
    2. Otwórz terminal i przejdź do katalogu `realty-zone-backend`, w którym znajduje się plik `db-docker-compose.yml`.
    3. Aby utworzyć kontener, wykonaj jedno z poleceń:
    ```bash
-    # Utworzenie i uruchomienie w kontenerze o nazwie "database" w terminalu
-    $ docker compose -f db-docker-compose.yml -p database up 
+    # Utworzenie i uruchomienie w kontenerze o nazwie "realty-zone-database" w terminalu
+    $ docker compose -f db-docker-compose.yml -p realty-zone-database up 
    ```
    ```bash 
-   # Utworzenie i uruchomienie w kontenerze o nazwie "database" w tle
-   $ docker compose -f db-docker-compose.yml -p database up -d
+   # Utworzenie i uruchomienie w kontenerze o nazwie "realty-zone-database" w tle
+   $ docker compose -f db-docker-compose.yml -p realty-zone-database up -d
   ```
   Kontener zostanie automatycznie uruchomiony po jego utworzeniu.
 
@@ -130,6 +140,13 @@ Celem projektu **Realty Zone** jest stworzenie wydajnej i przyjaznej dla użytko
 - serwer backendowy zostanie uruchomiony pod adresem: http://localhost:3001
 - serwer frontendowy zostanie uruchomiony pod adresem: http://localhost:5173
 
+5. Aby zalogować się na konta testowe, użyj następujących danych
+   ```
+   Użytkownik
+   
+      - E-mail: johndoe@example.com
+      - Hasło:  johndoe
+   ```
 
 ## 5. Pozostałe
 
