@@ -1,4 +1,4 @@
-import { DictionaryEntity } from '@types';
+import { DictionaryEntity } from './dictionary';
 
 export type DictionaryResponse = {
   market: DictionaryEntity[];
