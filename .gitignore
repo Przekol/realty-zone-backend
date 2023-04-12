@@ -39,4 +39,4 @@ lerna-debug.log*
 docker.env
 
 #Storage
-/storage
+#/storage

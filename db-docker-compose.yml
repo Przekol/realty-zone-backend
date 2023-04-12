@@ -2,7 +2,9 @@ version: '3.1'
 services:
   db:
     container_name: realty-zone-database
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "5432:5432"
     volumes:
@@ -12,6 +14,17 @@ services:
     networks:
       - app
 
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - docker.env
+    networks:
+      - app
 
 networks:
   app:

@@ -1,13 +1,2 @@
-FROM node:18-alpine
-
-WORKDIR /usr/app/
-
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-EXPOSE 3001
-
-
+FROM postgres:latest
+COPY db-dump/realty-zone-db.sql /docker-entrypoint-initdb.d/

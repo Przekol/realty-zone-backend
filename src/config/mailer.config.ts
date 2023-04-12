@@ -15,7 +15,7 @@ export const getMailerConfig = (configService: ConfigService) => ({
     },
   },
   defaults: {
-    from: `"Realty Zone - Admin" <admin@${configService.get('FRONTEND_DOMAIN')}>`,
+    from: `"Realty Zone - Admin" <admin@${configService.get('EMAIL_DOMAIN')}>`,
   },
   template: {
     dir: join(templatePath, 'pages'),
