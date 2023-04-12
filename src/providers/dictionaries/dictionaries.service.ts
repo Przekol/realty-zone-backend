@@ -12,7 +12,7 @@ export class DictionariesService {
       Market.findOneByOrFail({ id: findDictionariesDto.market }),
       Transaction.findOneByOrFail({ id: findDictionariesDto.transaction }),
       Ownership.findOneByOrFail({ id: findDictionariesDto.ownership }),
-      Status.findOneByOrFail({ id: findDictionariesDto.status }),
+      Status.findOneByOrFail({ id: 41 }),
       Types.findOneByOrFail({ id: findDictionariesDto.type }),
     ]);
   }
